@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Proxy\MovimentoEstoque;
+namespace SGR\Proxy\MovimentoEstoque;
 
 /**
  * Description of MovimentoEstoque

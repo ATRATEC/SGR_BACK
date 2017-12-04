@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Proxy\ConsultaEstoque;
+namespace SGR\Proxy\ConsultaEstoque;
 
 /**
  * Resposta do consulta de movimentação do Estoque

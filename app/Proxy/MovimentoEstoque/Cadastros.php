@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Proxy\MovimentoEstoque;
+namespace SGR\Proxy\MovimentoEstoque;
 
 /**
  * Lista os cadastros de produtos encontrados.

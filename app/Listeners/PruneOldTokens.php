@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners;
+namespace SGR\Listeners;
 
 use Laravel\Passport\Events\RefreshTokenCreated;
 use Illuminate\Queue\InteractsWithQueue;

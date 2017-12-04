@@ -5,9 +5,9 @@
  * Date: Mon, 20 Nov 2017 02:28:30 +0000.
  */
 
-namespace App;
+namespace SGR;
 
-use App\BaseModel as Eloquent;
+use SGR\BaseModel as Eloquent;
 
 /**
  * Class FamiliaProduto

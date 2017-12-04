@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace SGR\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -13,14 +13,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'SGR\Events\Event' => [
+            'SGR\Listeners\EventListener',
         ],
         'Laravel\Passport\Events\AccessTokenCreated' => [
-            'App\Listeners\RevokeOldTokens',
+            'SGR\Listeners\RevokeOldTokens',
         ],
         'Laravel\Passport\Events\RefreshTokenCreated' => [
-            'App\Listeners\PruneOldTokens',
+            'SGR\Listeners\PruneOldTokens',
         ],
     ];
 

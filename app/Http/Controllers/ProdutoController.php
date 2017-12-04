@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace SGR\Http\Controllers;
 
-use App\Produto;
+use SGR\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
+use SGR\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
 class ProdutoController extends Controller
@@ -64,7 +64,7 @@ class ProdutoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\produto  $produto
+     * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
     public function show(produto $produto)
@@ -75,7 +75,7 @@ class ProdutoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\produto  $produto
+     * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
     public function edit(produto $produto)
@@ -87,7 +87,7 @@ class ProdutoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\produto  $produto
+     * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, produto $produto)
@@ -98,7 +98,7 @@ class ProdutoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\produto  $produto
+     * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
     public function destroy(produto $produto)

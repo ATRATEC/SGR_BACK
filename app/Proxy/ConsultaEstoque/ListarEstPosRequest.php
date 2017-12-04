@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Proxy\ConsultaEstoque;
+namespace SGR\Proxy\ConsultaEstoque;
 
 /**
  * Solicitação da listagem da posição do estoque.

@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/siatra/app/Http/Controllers/api/UserController.php</file>
-            <file>file:/C:/xampp/htdocs/siatra/routes/web.php</file>
-            <file>file:/C:/xampp/htdocs/siatra/routes/api.php</file>
-            <file>file:/C:/xampp/htdocs/siatra/app/Http/Controllers/ProdutoController.php</file>
+            <file>file:/C:/xampp/htdocs/SGR_BACK/resources/views/sgr.blade.php</file>
+            <file>file:/C:/xampp/htdocs/SGR_BACK/resources/views/layouts/app.blade.php</file>
+            <file>file:/C:/xampp/htdocs/SGR_BACK/resources/views/layouts/sgr.blade.php</file>
+            <file>file:/C:/xampp/htdocs/SGR_BACK/public/css/app.css</file>
         </group>
     </open-files>
 </project-private>

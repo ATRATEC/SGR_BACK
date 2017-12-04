@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Proxy;
+namespace SGR\Proxy;
 
 /**
  * Erro gerado pela aplicação.

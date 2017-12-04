@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace SGR;
 
 use Illuminate\Database\Eloquent\Model;
 use Reliese\Database\Eloquent\Model as Eloquent;

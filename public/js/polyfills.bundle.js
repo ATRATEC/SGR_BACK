@@ -70,7 +70,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
-//# sourceMappingURL=c:/xampp/htdocs/uiatra/polyfills.js.map
+//# sourceMappingURL=polyfills.js.map
 
 /***/ }),
 

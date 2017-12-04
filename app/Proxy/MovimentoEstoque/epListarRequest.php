@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Proxy\MovimentoEstoque;
+namespace SGR\Proxy\MovimentoEstoque;
 
 /**
  * Solicitação da listagem movimentos de estoque de entrada/saida de um período.
