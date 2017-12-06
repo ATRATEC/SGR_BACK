@@ -33,4 +33,14 @@ Route::group(['namespace' => 'api'], function () {
     Route::post('/login', 'UserController@login');
 });
 
+Route::post('/produtos', 'ProdutoController@store');
+
 Route::get('/produtos', 'ProdutoController@index');
+
+Route::get('/produtos/{produto}', 'ProdutoController@show');
+
+Route::put('/produtos/{produto}', 'ProdutoController@update');
+
+Route::delete('/produtos/{produto}', 'ProdutoController@destroy');
+
+

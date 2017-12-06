@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use SGR\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Validator;
 
 class ProdutoController extends Controller
 {
@@ -24,12 +25,31 @@ class ProdutoController extends Controller
        $nrcount = $request->input('nrcount',15);
        $orderkey = $request->input('orderkey','id');
        $order = $request->input('order','asc');
-       $filterkey = $request->input('filterkey');
-       $filtervalue = $request->input('filtervalue');
+              
+       $arr = array();
        
-       if((isset($filterkey))&(isset($filtervalue)))
+       if ($request->has('id'))
        {
-           $produtos = DB::table('produto')->where($filterkey,$filtervalue)->orderBy($orderkey, $order)->paginate($nrcount);
+          $desc = array('id','=',$request->input('id'));
+          array_push($arr,$desc);
+       }
+       
+       if ($request->has('descricao'))
+       {
+          $desc = array('descricao','like','%'.$request->input('descricao').'%');
+          array_push($arr,$desc);
+       }
+       
+       if ($request->has('codigo'))
+       {
+          $desc = array('codigo','like','%'.$request->input('codigo').'%');
+          array_push($arr,$desc);
+       }
+       
+       
+       if(count($arr)>0)
+       {           
+           $produtos = DB::table('produto')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
        }
        else 
        {
@@ -58,7 +78,10 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $produto = new Produto();
+        $produto->fill($request->all());
+        $produto->save();
+        return response()->json($produto,201);
     }
 
     /**
@@ -67,32 +90,23 @@ class ProdutoController extends Controller
      * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function show(produto $produto)
+    public function show(Produto $produto)
     {
-        //
+        return response()->json($produto,200);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \SGR\produto  $produto
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(produto $produto)
-    {
-        //
-    }
-
+    
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \SGR\produto  $produto
+     * @param  \SGR\Produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, produto $produto)
-    {
-        //
+    public function update(Request $request, Produto $produto)
+    {                           
+        $produto->update($request->all());
+                                
+        return response()->json($produto,200);
     }
 
     /**
@@ -101,8 +115,8 @@ class ProdutoController extends Controller
      * @param  \SGR\produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(produto $produto)
+    public function destroy(Produto $produto)
     {
-        //
+        $produto->delete();        
     }
 }
