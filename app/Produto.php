@@ -5,9 +5,9 @@
  * Date: Mon, 20 Nov 2017 02:28:49 +0000.
  */
 
-namespace SGR;
+namespace App;
 
-use SGR\BaseModel as Eloquent;
+use App\BaseModel as Eloquent;
 
 /**
  * Class Produto

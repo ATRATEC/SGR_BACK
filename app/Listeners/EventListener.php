@@ -1,8 +1,8 @@
 <?php
 
-namespace SGR\Listeners;
+namespace App\Listeners;
 
-use SGR\Events\Event;
+use App\Events\Event;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

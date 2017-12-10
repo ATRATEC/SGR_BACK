@@ -1,6 +1,6 @@
 <?php
 
-namespace SGR\Proxy\MovimentoEstoque;
+namespace App\Proxy\MovimentoEstoque;
 
 /**
  * Movimentos de entrada/saída do produto.

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace SGR\Proxy\ConsultaEstoque;
+namespace App\Proxy\ConsultaEstoque;
 
 /**
  * Registro de Consulta de Estoque

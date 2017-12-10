@@ -1,6 +1,6 @@
 <?php
 
-namespace SGR\Proxy\ConsultaEstoque;
+namespace App\Proxy\ConsultaEstoque;
 
 /**
  * Status de Resposta da Consulta de Estoque

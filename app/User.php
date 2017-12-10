@@ -1,6 +1,6 @@
 <?php
 
-namespace SGR;
+namespace App;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;

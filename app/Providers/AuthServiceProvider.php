@@ -1,6 +1,6 @@
 <?php
 
-namespace SGR\Providers;
+namespace App\Providers;
 
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'SGR\Model' => 'SGR\Policies\ModelPolicy',
+        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**

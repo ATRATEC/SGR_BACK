@@ -1,11 +1,11 @@
 <?php
 
-namespace SGR\Http\Controllers\api;
+namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
-use SGR\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use SGR\User;
+use App\User;
 use Illuminate\Http\Response;
 use Laravel\Passport\TokenRepository;
 use Laravel\Passport\ClientRepository;

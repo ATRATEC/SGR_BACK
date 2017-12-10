@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace SGR\Proxy\MovimentoEstoque;
+namespace App\Proxy\MovimentoEstoque;
 
 /**
  * Previsão de estoque do produto.

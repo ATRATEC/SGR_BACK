@@ -43,4 +43,6 @@ Route::put('/produtos/{produto}', 'ProdutoController@update');
 
 Route::delete('/produtos/{produto}', 'ProdutoController@destroy');
 
+Route::get('/cidades', 'CidadeController@index');
+
 

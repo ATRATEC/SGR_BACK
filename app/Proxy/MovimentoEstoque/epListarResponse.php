@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace SGR\Proxy\MovimentoEstoque;
+namespace App\Proxy\MovimentoEstoque;
 
 /**
  * Resposta da solicitação da listagem movimentos de estoque de entrada/saida de um período.

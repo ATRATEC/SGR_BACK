@@ -150,11 +150,11 @@ return [
         /*
          * Application Service Providers...
          */
-        SGR\Providers\AppServiceProvider::class,
-        SGR\Providers\AuthServiceProvider::class,
-        // SGR\Providers\BroadcastServiceProvider::class,
-        SGR\Providers\EventServiceProvider::class,
-        SGR\Providers\RouteServiceProvider::class,
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
     ],
     /*
       |--------------------------------------------------------------------------
