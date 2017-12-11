@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Mon, 20 Nov 2017 02:28:49 +0000.
+ * Date: Sun, 10 Dec 2017 02:07:10 +0000.
  */
 
 namespace App;
@@ -52,13 +52,16 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $alteracao
  * @property string $usuario_alteracao
  * @property string $sincronizar
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * 
+ * @property \App\FamiliaProduto $familia_produto
  *
  * @package App
  */
 class Produto extends Eloquent
 {
 	protected $table = 'produto';
-	public $timestamps = false;
 
 	protected $casts = [
 		'codigo_produto' => 'int',
@@ -123,4 +126,9 @@ class Produto extends Eloquent
 		'usuario_alteracao',
 		'sincronizar'
 	];
+
+	public function familia_produto()
+	{
+		return $this->belongsTo(\App\FamiliaProduto::class, 'id_familia');
+	}
 }
