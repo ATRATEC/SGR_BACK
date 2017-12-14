@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ClasseResiduo;
+use App\Http\Resources\ClasseResiduoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -43,13 +44,19 @@ class ClasseResiduoController extends Controller
         }
        
         if (count($arr) > 0) {
-            $classeresiduo = DB::table('classeresiduo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $classeresiduo = new ClasseResiduoCollection(ClasseResiduo::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
         } else {
-            $classeresiduo = DB::table('classeresiduo')->orderBy($orderkey, $order)->paginate($nrcount);
+            $classeresiduo = new ClasseResiduoCollection(ClasseResiduo::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return response()->json($classeresiduo,200);
+        return $classeresiduo->response()->setStatusCode(200);
+    }
+    
+    public function listClasseResiduo()
+    {
+        $classeresiduos = ClasseResiduo::all();
+        return response()->json($classeresiduos, 200);
     }
     
     /**

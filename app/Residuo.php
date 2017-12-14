@@ -10,7 +10,7 @@ namespace App;
 use App\BaseModel as Eloquent;
 
 /**
- * Class TipoResiduo
+ * Class Residuo
  * 
  * @property int $id
  * @property int $codigo
@@ -23,9 +23,9 @@ use App\BaseModel as Eloquent;
  *
  * @package App
  */
-class TipoResiduo extends Eloquent
+class Residuo extends Eloquent
 {
-	protected $table = 'tipo_residuo';
+	protected $table = 'residuo';
 
 	protected $casts = [
 		'codigo' => 'int',

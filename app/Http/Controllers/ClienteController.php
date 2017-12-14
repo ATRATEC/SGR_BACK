@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\Http\Resources\ClienteCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -43,13 +44,14 @@ class ClienteController extends Controller
         }
        
         if (count($arr) > 0) {
-            $cliente = DB::table('cliente')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $cliente = new ClienteCollection(Cliente::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
+            // $cliente = DB::table('cliente')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
-            $cliente = DB::table('cliente')->orderBy($orderkey, $order)->paginate($nrcount);
+            $cliente = new ClienteCollection(Cliente::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return response()->json($cliente,200);
+        return $cliente->response()->setStatusCode(200); //response()->json($cliente,200);
     }
     
     /**
@@ -103,7 +105,7 @@ class ClienteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\acondicionamento  $cliente
+     * @param  \App\cliente  $cliente
      * @return \Illuminate\Http\Response
      */
     public function show(Cliente $cliente)
@@ -115,7 +117,7 @@ class ClienteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\acondicionamento  $cliente
+     * @param  \App\cliente  $cliente
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cliente $cliente)
@@ -137,7 +139,7 @@ class ClienteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\acondicionamento  $cliente
+     * @param  \App\cliente  $cliente
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cliente $cliente)

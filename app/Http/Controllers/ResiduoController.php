@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\TipoResiduo;
+use App\Residuo;
+use App\Http\Resources\Residuo as ResiduoResource;
+use App\Http\Resources\ResiduoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Validator;
 
-class TipoResiduoController extends Controller {
+class ResiduoController extends Controller {
 
     function __construct() {
         $this->content = array();
@@ -41,18 +43,19 @@ class TipoResiduoController extends Controller {
             $desc = array('codigo', 'like', '%' . $request->input('codigo') . '%');
             array_push($arr, $desc);
         }
-
-
+        
         if (count($arr) > 0) {
-            $tiporesiduos = DB::table('tiporesiduo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            //$tiporesiduos = DB::table('tipo_residuo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $tiporesiduos = new ResiduoCollection(Residuo::where()->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));            
         } else {
-            $tiporesiduos = DB::table('tiporesiduo')->orderBy($orderkey, $order)->paginate($nrcount);
+            //$tiporesiduos = DB::table('tipo_residuo')->orderBy($orderkey, $order)->paginate($nrcount);
+            $tiporesiduos = new ResiduoCollection(Residuo::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return $tiporesiduos;
+        return $tiporesiduos->response()->setStatusCode(200) ; // response()->json($tiporesiduos, 200) ;
     }
-
+        
     /**
      * Show the form for creating a new resource.
      *
@@ -78,7 +81,7 @@ class TipoResiduoController extends Controller {
     }
 
     /**
-     * Valida informações de TipoResiduo
+     * Valida informações de Residuo
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -94,7 +97,7 @@ class TipoResiduoController extends Controller {
                             ], 422);
         }
 
-        $tiporesiduo = new TipoResiduo();
+        $tiporesiduo = new Residuo();
         $tiporesiduo->fill($request->all());
         $tiporesiduo->save();
         return response()->json($tiporesiduo, 201);
@@ -103,21 +106,22 @@ class TipoResiduoController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \SGR\tiporesiduo  $tiporesiduo
+     * @param  \SGR\tiporesiduo  $residuo
      * @return \Illuminate\Http\Response
      */
-    public function show(TipoResiduo $tiporesiduo) {
-        return response()->json($tiporesiduo, 200);
+    public function show(Residuo $residuo) {
+        //$retorno = new ResiduoResource($residuo);
+        return response()->json($residuo, 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \SGR\TipoResiduo  $tiporesiduo
+     * @param  \SGR\Residuo  $tiporesiduo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TipoResiduo $tiporesiduo) {
+    public function update(Request $request, Residuo $tiporesiduo) {
         
         $validator = $this->tiporesiduoValitation($request);
 
@@ -139,7 +143,7 @@ class TipoResiduoController extends Controller {
      * @param  \SGR\tiporesiduo  $tiporesiduo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TipoResiduo $tiporesiduo) {
+    public function destroy(Residuo $tiporesiduo) {
         $tiporesiduo->delete();
         return response()->json(null, 200);
     }

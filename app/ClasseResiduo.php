@@ -37,6 +37,6 @@ class ClasseResiduo extends Eloquent
 
 	public function tipo_residuos()
 	{
-		return $this->hasMany(\App\TipoResiduo::class, 'id_classe');
+		return $this->hasMany(\App\Residuo::class, 'id_classe');
 	}
 }

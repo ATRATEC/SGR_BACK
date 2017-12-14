@@ -20,10 +20,9 @@ class CidadeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
-        $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
-        $order = $request->input('order', 'asc');
+    {        
+        $orderkey = 'cCod';
+        $order = 'asc';
 
         $arr = array();
 
@@ -33,9 +32,9 @@ class CidadeController extends Controller
         }
                                
         if (count($arr) > 0) {
-            $cidade = DB::table('cidade')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $cidade = Cidade::where($arr)->orderBy($orderkey, $order)->get();
         } else {
-            $cidade = DB::table('cidade')->orderBy($orderkey, $order)->paginate($nrcount);
+            $cidade = Cidade::orderBy($orderkey, $order)->get();
         }
 
 

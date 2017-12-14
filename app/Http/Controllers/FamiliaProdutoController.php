@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\FamiliaProduto;
+use App\Http\Resources\FamiliaProdutoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -37,19 +38,19 @@ class FamiliaProdutoController extends Controller
             array_push($arr, $desc);
         }
 
-        if ($request->has('descricao')) {
-            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
+        if ($request->has('nomeFamilia')) {
+            $desc = array('nomeFamilia', 'like', '%' . $request->input('nomeFamilia') . '%');
             array_push($arr, $desc);
         }
        
         if (count($arr) > 0) {
-            $familiaproduto = DB::table('familiaproduto')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $familiaproduto = new FamiliaProdutoCollection(FamiliaProduto::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
         } else {
-            $familiaproduto = DB::table('familiaproduto')->orderBy($orderkey, $order)->paginate($nrcount);
+            $familiaproduto = new FamiliaProdutoCollection(FamiliaProduto::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return response()->json($familiaproduto,200);
+        return $familiaproduto->response()->setStatusCode(200);
     }
     
     /**

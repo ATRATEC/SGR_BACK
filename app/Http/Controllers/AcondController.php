@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Acondicionamento;
+use App\Http\Resources\AcondicionamentoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -43,13 +44,14 @@ class AcondController extends Controller
         }
        
         if (count($arr) > 0) {
-            $acondicionamento = DB::table('acondicionamento')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $acondicionamento = new AcondicionamentoCollection(Acondicionamento::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
+            // $acondicionamento = DB::table('acondicionamento')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
-            $acondicionamento = DB::table('acondicionamento')->orderBy($orderkey, $order)->paginate($nrcount);
+            $acondicionamento = new AcondicionamentoCollection(Acondicionamento::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return response()->json($acondicionamento,200);
+        return $acondicionamento->response()->setStatusCode(200); //response()->json($acondicionamento,200);
     }
     
     /**
