@@ -21,11 +21,11 @@ class EstadoController extends Controller
      */
     public function index(Request $request)
     {
-        $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
+        //$nrcount = $request->input('nrcount', 15);
+        $orderkey = $request->input('orderkey', 'uf');
         $order = $request->input('order', 'asc');
 
-        $estado = DB::table('estado')->orderBy($orderkey, $order)->paginate($nrcount);
+        $estado = DB::table('estado')->orderBy($orderkey, $order)->get();
         
         return response()->json($estado,200);
     }        

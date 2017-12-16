@@ -67,10 +67,16 @@ Route::get('/residuos/{residuo}', 'ResiduoController@show');
 Route::put('/residuos/{residuo}', 'ResiduoController@update')->middleware('auth:api');
 Route::delete('/residuos/{residuo}', 'ResiduoController@destroy')->middleware('auth:api');
 
-Route::get('/clientes', 'ClasseResiduoController@index')->middleware('auth:api');
-Route::post('/clientes', 'ClasseResiduoController@store')->middleware('auth:api');
-Route::get('/clientes/{cliente}', 'ClasseResiduoController@show')->middleware('auth:api');
-Route::put('/clientes/{cliente}', 'ClasseResiduoController@update')->middleware('auth:api');
-Route::delete('/clientes/{cliente}', 'ClasseResiduoController@destroy')->middleware('auth:api');
+Route::get('/tipotratamentos', 'TipoTratamentoController@index');
+Route::post('/tipotratamentos', 'TipoTratamentoController@store')->middleware('auth:api');
+Route::get('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@show')->middleware('auth:api');
+Route::put('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@update')->middleware('auth:api');
+Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@destroy')->middleware('auth:api');
+
+Route::get('/clientes', 'ClienteController@index');
+Route::post('/clientes', 'ClienteController@store')->middleware('auth:api');
+Route::get('/clientes/{cliente}', 'ClienteController@show')->middleware('auth:api');
+Route::put('/clientes/{cliente}', 'ClienteController@update')->middleware('auth:api');
+Route::delete('/clientes/{cliente}', 'ClienteController@destroy')->middleware('auth:api');
 
 

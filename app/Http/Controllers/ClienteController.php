@@ -33,13 +33,33 @@ class ClienteController extends Controller
             array_push($arr, $desc);
         }
         
-        if ($request->has('codigo')) {
-            $desc = array('codigo', 'like', '%' . $request->input('codigo') . '%');
+        if ($request->has('codigo_omie')) {
+            $desc = array('codigo_omie', 'like', '%' . $request->input('codigo_omie') . '%');
             array_push($arr, $desc);
         }
 
-        if ($request->has('descricao')) {
-            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
+        if ($request->has('cnpj_cpf')) {
+            $desc = array('cnpj_cpf', 'like', '%' . $request->input('cnpj_cpf') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('razao_social')) {
+            $desc = array('razao_social', 'like', '%' . $request->input('razao_social') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('contato')) {
+            $desc = array('contato', 'like', '%' . $request->input('contato') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('telefone1_numero')) {
+            $desc = array('telefone1_numero', 'like', '%' . $request->input('telefone1_numero') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('email')) {
+            $desc = array('email', 'like', '%' . $request->input('email') . '%');
             array_push($arr, $desc);
         }
        
