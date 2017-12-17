@@ -33,16 +33,16 @@ Route::group(['namespace' => 'api'], function () {
     Route::post('/login', 'UserController@login');
 });
 
-Route::post('/produtos', 'ProdutoController@store');
+Route::post('/produtos', 'ProdutoController@store')->middleware('auth:api');
 Route::get('/produtos', 'ProdutoController@index')->middleware('auth:api');
 Route::get('/produtos/{produto}', 'ProdutoController@show')->middleware('auth:api');
 Route::put('/produtos/{produto}', 'ProdutoController@update')->middleware('auth:api');
 Route::delete('/produtos/{produto}', 'ProdutoController@destroy')->middleware('auth:api');
 
-Route::get('/cidades', 'CidadeController@index');
+Route::get('/cidades', 'CidadeController@index')->middleware('auth:api');
 Route::get('/estados', 'EstadoController@index')->middleware('auth:api');
 
-Route::get('/acondicionamentos', 'AcondController@index');
+Route::get('/acondicionamentos', 'AcondController@index')->middleware('auth:api');
 Route::post('/acondicionamentos', 'AcondController@store')->middleware('auth:api');
 Route::get('/acondicionamentos/{acondicionamento}', 'AcondController@show')->middleware('auth:api');
 Route::put('/acondicionamentos/{acondicionamento}', 'AcondController@update')->middleware('auth:api');
@@ -55,28 +55,35 @@ Route::get('/classeresiduos/{classeresiduo}', 'ClasseResiduoController@show')->m
 Route::put('/classeresiduos/{classeresiduo}', 'ClasseResiduoController@update')->middleware('auth:api');
 Route::delete('/classeresiduos/{classeresiduo}', 'ClasseResiduoController@destroy')->middleware('auth:api');
 
-Route::get('/tipoatividades', 'TipoAtividadeController@index');
+Route::get('/tipoatividades', 'TipoAtividadeController@index')->middleware('auth:api');
 Route::post('/tipoatividades', 'TipoAtividadeController@store')->middleware('auth:api');
+Route::get('/listtipoatividades', 'TipoAtividadeController@listTipoAtividade')->middleware('auth:api');
 Route::get('/tipoatividades/{tipoatividade}', 'TipoAtividadeController@show')->middleware('auth:api');
 Route::put('/tipoatividades/{tipoatividade}', 'TipoAtividadeController@update')->middleware('auth:api');
 Route::delete('/tipoatividades/{tipoatividade}', 'TipoAtividadeController@destroy')->middleware('auth:api');
 
-Route::get('/residuos', 'ResiduoController@index');
+Route::get('/residuos', 'ResiduoController@index')->middleware('auth:api');
 Route::post('/residuos', 'ResiduoController@store')->middleware('auth:api');
-Route::get('/residuos/{residuo}', 'ResiduoController@show');
+Route::get('/residuos/{residuo}', 'ResiduoController@show')->middleware('auth:api');
 Route::put('/residuos/{residuo}', 'ResiduoController@update')->middleware('auth:api');
 Route::delete('/residuos/{residuo}', 'ResiduoController@destroy')->middleware('auth:api');
 
-Route::get('/tipotratamentos', 'TipoTratamentoController@index');
+Route::get('/tipotratamentos', 'TipoTratamentoController@index')->middleware('auth:api');
 Route::post('/tipotratamentos', 'TipoTratamentoController@store')->middleware('auth:api');
 Route::get('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@show')->middleware('auth:api');
 Route::put('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@update')->middleware('auth:api');
 Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@destroy')->middleware('auth:api');
 
-Route::get('/clientes', 'ClienteController@index');
+Route::get('/clientes', 'ClienteController@index')->middleware('auth:api');
 Route::post('/clientes', 'ClienteController@store')->middleware('auth:api');
 Route::get('/clientes/{cliente}', 'ClienteController@show')->middleware('auth:api');
 Route::put('/clientes/{cliente}', 'ClienteController@update')->middleware('auth:api');
 Route::delete('/clientes/{cliente}', 'ClienteController@destroy')->middleware('auth:api');
+
+Route::get('/fornecedores', 'FornecedorController@index')->middleware('auth:api');
+Route::post('/fornecedores', 'FornecedorController@store');
+Route::get('/fornecedores/{fornecedor}', 'FornecedorController@show')->middleware('auth:api');
+Route::put('/fornecedores/{fornecedor}', 'FornecedorController@update')->middleware('auth:api');
+Route::delete('/fornecedores/{fornecedor}', 'FornecedorController@destroy')->middleware('auth:api');
 
 

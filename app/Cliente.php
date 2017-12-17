@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 10 Dec 2017 02:09:56 +0000.
+ * Date: Sat, 16 Dec 2017 17:32:41 +0000.
  */
 
 namespace App;
@@ -55,8 +55,12 @@ use App\BaseModel as Eloquent;
  * @property string $sincronizar
  * @property int $id_empresa
  * @property int $id_filial
+ * @property string $nrolicenca
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $dtemissaolicenca
+ * @property int $nroanoslicenca
+ * @property \Carbon\Carbon $dtvalidadelicenca
  *
  * @package App
  */
@@ -67,13 +71,16 @@ class Cliente extends Eloquent
 	protected $casts = [
 		'codigo_omie' => 'int',
 		'id_empresa' => 'int',
-		'id_filial' => 'int'
+		'id_filial' => 'int',
+		'nroanoslicenca' => 'int'
 	];
 
 	protected $dates = [
 		'nascimento',
 		'inclusao',
-		'alteracao'
+		'alteracao',
+		'dtemissaolicenca',
+		'dtvalidadelicenca'
 	];
 
 	protected $fillable = [
@@ -118,6 +125,10 @@ class Cliente extends Eloquent
 		'usuario_alteracao',
 		'sincronizar',
 		'id_empresa',
-		'id_filial'
+		'id_filial',
+		'nrolicenca',
+		'dtemissaolicenca',
+		'nroanoslicenca',
+		'dtvalidadelicenca'
 	];
 }

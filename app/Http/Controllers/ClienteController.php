@@ -82,8 +82,8 @@ class ClienteController extends Controller
      */
     private function Valitation(Request $request) {        
         $validator = Validator::make($request->all(), [                    
-                    'codigo' => 'required|integer',
-                    'descricao' => 'required|max:50'                    
+                    'codigo_omie' => 'required|integer',
+                    'razao_social' => 'required|max:60'                    
         ], parent::$messages);
 
         return $validator;

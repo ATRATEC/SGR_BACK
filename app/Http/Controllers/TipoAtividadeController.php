@@ -54,6 +54,12 @@ class TipoAtividadeController extends Controller
         return $tipoatividade->response()->setStatusCode(200); //response()->json($tipoatividade,200);
     }
     
+    public function listTipoAtividade()
+    {
+        $tipoatividade = TipoAtividade::all();
+        return response()->json($tipoatividade, 200);
+    }
+    
     /**
      * Metodo de validação da classe.
      *
