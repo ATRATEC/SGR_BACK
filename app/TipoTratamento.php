@@ -24,12 +24,7 @@ class TipoTratamento extends Eloquent
 {
 	protected $table = 'tipo_tratamento';
 
-	protected $casts = [
-		'codigo' => 'int'
-	];
-
 	protected $fillable = [
-		'codigo',
 		'descricao'
 	];
 }

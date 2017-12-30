@@ -23,13 +23,8 @@ use App\BaseModel as Eloquent;
 class TipoAtividade extends Eloquent
 {
 	protected $table = 'tipo_atividade';
-
-	protected $casts = [
-		'codigo' => 'int'
-	];
-
+	
 	protected $fillable = [
-		'codigo',
 		'descricao'
 	];
 }

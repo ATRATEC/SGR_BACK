@@ -32,12 +32,7 @@ class AcondController extends Controller
             $desc = array('id', '=', $request->input('id'));
             array_push($arr, $desc);
         }
-        
-        if ($request->has('codigo')) {
-            $desc = array('codigo', 'like', '%' . $request->input('codigo') . '%');
-            array_push($arr, $desc);
-        }
-
+                
         if ($request->has('descricao')) {
             $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
             array_push($arr, $desc);
@@ -61,8 +56,7 @@ class AcondController extends Controller
      * @return \Illuminate\Support\Facades\Validator
      */
     private function Valitation(Request $request) {        
-        $validator = Validator::make($request->all(), [                    
-                    'codigo' => 'required|integer',
+        $validator = Validator::make($request->all(), [                                       
                     'descricao' => 'required|max:50'                    
         ], parent::$messages);
 

@@ -82,7 +82,6 @@ class FornecedorController extends Controller
      */
     private function Valitation(Request $request) {        
         $validator = Validator::make($request->all(), [                    
-                    'codigo_omie' => 'required|integer',
                     'razao_social' => 'required|max:60'                    
         ], parent::$messages);
 

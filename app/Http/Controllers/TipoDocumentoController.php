@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Cliente;
-use App\Http\Resources\ClienteCollection;
+use App\TipoDocumento;
+use App\Http\Resources\TipoDocumentoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Validator;
 
-class ClienteController extends Controller
+class TipoDocumentoController extends Controller
 {
     function __construct() {
         $this->content = array();
@@ -33,45 +33,25 @@ class ClienteController extends Controller
             array_push($arr, $desc);
         }
         
-        if ($request->has('codigo_omie')) {
-            $desc = array('codigo_omie', 'like', '%' . $request->input('codigo_omie') . '%');
-            array_push($arr, $desc);
-        }
-
-        if ($request->has('cnpj_cpf')) {
-            $desc = array('cnpj_cpf', 'like', '%' . $request->input('cnpj_cpf') . '%');
-            array_push($arr, $desc);
-        }
-        
-        if ($request->has('razao_social')) {
-            $desc = array('razao_social', 'like', '%' . $request->input('razao_social') . '%');
-            array_push($arr, $desc);
-        }
-        
-        if ($request->has('contato')) {
-            $desc = array('contato', 'like', '%' . $request->input('contato') . '%');
-            array_push($arr, $desc);
-        }
-        
-        if ($request->has('telefone1_numero')) {
-            $desc = array('telefone1_numero', 'like', '%' . $request->input('telefone1_numero') . '%');
-            array_push($arr, $desc);
-        }
-        
-        if ($request->has('email')) {
-            $desc = array('email', 'like', '%' . $request->input('email') . '%');
+        if ($request->has('descricao')) {
+            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
             array_push($arr, $desc);
         }
        
         if (count($arr) > 0) {
-            $cliente = new ClienteCollection(Cliente::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $cliente = DB::table('cliente')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $tipodocumento = new TipoDocumentoCollection(TipoDocumento::where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
         } else {
-            $cliente = new ClienteCollection(Cliente::orderBy($orderkey, $order)->paginate($nrcount));
+            $tipodocumento = new TipoDocumentoCollection(TipoDocumento::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return $cliente->response()->setStatusCode(200); //response()->json($cliente,200);
+        return $tipodocumento->response()->setStatusCode(200);
+    }
+    
+    public function listTipoDocumento()
+    {
+        $tipodocumentos = TipoDocumento::all();
+        return response()->json($tipodocumentos, 200);
     }
     
     /**
@@ -81,8 +61,8 @@ class ClienteController extends Controller
      * @return \Illuminate\Support\Facades\Validator
      */
     private function Valitation(Request $request) {        
-        $validator = Validator::make($request->all(), [                                
-                    'razao_social' => 'required|max:60'                    
+        $validator = Validator::make($request->all(), [                            
+                    'descricao' => 'required|max:50'                    
         ], parent::$messages);
 
         return $validator;
@@ -115,31 +95,31 @@ class ClienteController extends Controller
                             ], 422);
         }
 
-        $cliente = new Cliente();
-        $cliente->fill($request->all());
-        $cliente->save();
-        return response()->json($cliente, 201);
+        $tipodocumento = new TipoDocumento();
+        $tipodocumento->fill($request->all());
+        $tipodocumento->save();
+        return response()->json($tipodocumento, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\cliente  $cliente
+     * @param  \App\acondicionamento  $tipodocumento
      * @return \Illuminate\Http\Response
      */
-    public function show(Cliente $cliente)
+    public function show(TipoDocumento $tipodocumento)
     {
-        return response()->json($cliente, 200);
+        return response()->json($tipodocumento, 200);
     }
     
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\cliente  $cliente
+     * @param  \App\acondicionamento  $tipodocumento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(Request $request, TipoDocumento $tipodocumento)
     {
         $validator = $this->Valitation($request);
 
@@ -150,20 +130,20 @@ class ClienteController extends Controller
                             ], 422);
         }
         
-        $cliente->update($request->all());
+        $tipodocumento->update($request->all());
 
-        return response()->json($cliente, 200);
+        return response()->json($tipodocumento, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\cliente  $cliente
+     * @param  \App\acondicionamento  $tipodocumento
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cliente $cliente)
+    public function destroy(TipoDocumento $tipodocumento)
     {
-        $cliente->delete();
+        $tipodocumento->delete();
         return response()->json(null, 200);
     }
 }

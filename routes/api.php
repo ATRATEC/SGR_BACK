@@ -74,7 +74,7 @@ Route::get('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@show')
 Route::put('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@update')->middleware('auth:api');
 Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@destroy')->middleware('auth:api');
 
-Route::get('/clientes', 'ClienteController@index')->middleware('auth:api');
+Route::get('/clientes', 'ClienteController@index');
 Route::post('/clientes', 'ClienteController@store')->middleware('auth:api');
 Route::get('/clientes/{cliente}', 'ClienteController@show')->middleware('auth:api');
 Route::put('/clientes/{cliente}', 'ClienteController@update')->middleware('auth:api');
@@ -86,4 +86,15 @@ Route::get('/fornecedores/{fornecedor}', 'FornecedorController@show')->middlewar
 Route::put('/fornecedores/{fornecedor}', 'FornecedorController@update')->middleware('auth:api');
 Route::delete('/fornecedores/{fornecedor}', 'FornecedorController@destroy')->middleware('auth:api');
 
+Route::get('/tipodocumentos', 'TipoDocumentoController@index')->middleware('auth:api');
+Route::post('/tipodocumentos', 'TipoDocumentoController@store')->middleware('auth:api');
+Route::get('/listtipodocumentos', 'TipoDocumentoController@listTipoDocumento')->middleware('auth:api');
+Route::get('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@show')->middleware('auth:api');
+Route::put('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@update')->middleware('auth:api');
+Route::delete('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@destroy')->middleware('auth:api');
 
+Route::get('/documentos', 'DocumentoController@index')->middleware('auth:api');
+Route::post('/documentos', 'DocumentoController@store')->middleware('auth:api');
+Route::get('/documentos/{documento}', 'DocumentoController@show')->middleware('auth:api');
+Route::put('/documentos/{documento}', 'DocumentoController@update')->middleware('auth:api');
+Route::delete('/documentos/{documento}', 'DocumentoController@destroy')->middleware('auth:api');

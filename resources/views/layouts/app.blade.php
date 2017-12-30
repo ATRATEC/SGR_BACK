@@ -14,6 +14,7 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     </head>
     <body>
         <div id="app">
@@ -78,10 +79,10 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/inline.bundle.js') }}"></script>
+<!--        <script type="text/javascript" src="{{ asset('js/inline.bundle.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/polyfills.bundle.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/styles.bundle.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/vendor.bundle.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/main.bundle.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/main.bundle.js') }}"></script>-->
     </body>
 </html>

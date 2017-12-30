@@ -25,13 +25,8 @@ use App\BaseModel as Eloquent;
 class ClasseResiduo extends Eloquent
 {
 	protected $table = 'classe_residuo';
-
-	protected $casts = [
-		'codigo' => 'int'
-	];
-
-	protected $fillable = [
-		'codigo',
+	
+	protected $fillable = [		
 		'descricao'
 	];
 

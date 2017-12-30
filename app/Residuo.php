@@ -27,13 +27,11 @@ class Residuo extends Eloquent
 {
 	protected $table = 'residuo';
 
-	protected $casts = [
-		'codigo' => 'int',
+	protected $casts = [		
 		'id_classe' => 'int'
 	];
 
-	protected $fillable = [
-		'codigo',
+	protected $fillable = [		
 		'descricao',
 		'id_classe'
 	];

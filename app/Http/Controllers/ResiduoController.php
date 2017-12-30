@@ -38,12 +38,7 @@ class ResiduoController extends Controller {
             $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
             array_push($arr, $desc);
         }
-
-        if ($request->has('codigo')) {
-            $desc = array('codigo', 'like', '%' . $request->input('codigo') . '%');
-            array_push($arr, $desc);
-        }
-        
+       
         if (count($arr) > 0) {
             //$tiporesiduos = DB::table('tipo_residuo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
             $tiporesiduos = new ResiduoCollection(Residuo::where()->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));            
@@ -73,7 +68,6 @@ class ResiduoController extends Controller {
      */
     private function tiporesiduoValitation(Request $request) {        
         $validator = Validator::make($request->all(), [
-                    'codigo' => 'required|integer',
                     'descricao' => 'required|max:50'
         ], parent::$messages);
 
