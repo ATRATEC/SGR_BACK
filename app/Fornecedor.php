@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 13 Dec 2017 18:31:44 +0000.
+ * Date: Tue, 02 Jan 2018 19:26:04 +0000.
  */
 
 namespace App;
@@ -55,19 +55,10 @@ use App\BaseModel as Eloquent;
  * @property string $sincronizar
  * @property int $id_empresa
  * @property int $id_filial
- * @property int $id_tipoatividade
- * @property string $nrlicencatransp
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $dtemissaotransp
- * @property int $nranostransp
- * @property \Carbon\Carbon $dtvalidadetransp
- * @property string $nrlicencarecep
- * @property \Carbon\Carbon $dtemissaorecep
- * @property int $nranosrecep
- * @property \Carbon\Carbon $dtvalidaderecep
  * 
- * @property \App\TipoAtividade $tipo_atividade
+ * @property \Illuminate\Database\Eloquent\Collection $documentos
  *
  * @package App
  */
@@ -78,20 +69,13 @@ class Fornecedor extends Eloquent
 	protected $casts = [
 		'codigo_omie' => 'int',
 		'id_empresa' => 'int',
-		'id_filial' => 'int',
-		'id_tipoatividade' => 'int',
-		'nranostransp' => 'int',
-		'nranosrecep' => 'int'
+		'id_filial' => 'int'
 	];
 
 	protected $dates = [
 		'nascimento',
 		'inclusao',
-		'alteracao',
-		'dtemissaotransp',
-		'dtvalidadetransp',
-		'dtemissaorecep',
-		'dtvalidaderecep'
+		'alteracao'
 	];
 
 	protected $fillable = [
@@ -136,20 +120,12 @@ class Fornecedor extends Eloquent
 		'usuario_alteracao',
 		'sincronizar',
 		'id_empresa',
-		'id_filial',
-		'id_tipoatividade',
-		'nrlicencatransp',
-		'dtemissaotransp',
-		'nranostransp',
-		'dtvalidadetransp',
-		'nrlicencarecep',
-		'dtemissaorecep',
-		'nranosrecep',
-		'dtvalidaderecep'
+		'id_filial'
 	];
 
-	public function tipo_atividade()
+	public function documentos()
 	{
-		return $this->belongsTo(\App\TipoAtividade::class, 'id_tipoatividade');
+		return $this->belongsToMany(\App\Documento::class, 'fornecedor_documento', 'id_fornecedor', 'id_documento')
+					->withPivot('id');
 	}
 }
