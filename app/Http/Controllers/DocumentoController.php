@@ -449,5 +449,12 @@ class DocumentoController extends Controller {
         $documento->delete();
         return response()->json(null, 200);
     }
+    
+    public function downloadAnexo(Request $request) {
+        $file_path = public_path('documentos/'.$request->arquivo);
+        return response()->download($file_path);
+    }
+    
+    
 
 }

@@ -74,14 +74,14 @@ Route::get('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@show')
 Route::put('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@update')->middleware('auth:api');
 Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@destroy')->middleware('auth:api');
 
-Route::get('/clientes', 'ClienteController@index');
+Route::get('/clientes', 'ClienteController@index')->middleware('auth:api');
 Route::post('/clientes', 'ClienteController@store')->middleware('auth:api');
 Route::get('/clientes/{cliente}', 'ClienteController@show')->middleware('auth:api');
 Route::put('/clientes/{cliente}', 'ClienteController@update')->middleware('auth:api');
 Route::delete('/clientes/{cliente}', 'ClienteController@destroy')->middleware('auth:api');
 
 Route::get('/fornecedores', 'FornecedorController@index')->middleware('auth:api');
-Route::post('/fornecedores', 'FornecedorController@store');
+Route::post('/fornecedores', 'FornecedorController@store')->middleware('auth:api');
 Route::get('/fornecedores/{fornecedor}', 'FornecedorController@show')->middleware('auth:api');
 Route::put('/fornecedores/{fornecedor}', 'FornecedorController@update')->middleware('auth:api');
 Route::delete('/fornecedores/{fornecedor}', 'FornecedorController@destroy')->middleware('auth:api');
@@ -93,18 +93,18 @@ Route::get('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@show')->m
 Route::put('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@update')->middleware('auth:api');
 Route::delete('/tipodocumentos/{tipodocumento}', 'TipoDocumentoController@destroy')->middleware('auth:api');
 
-Route::get('/documentos/clientes', 'DocumentoController@indexCliente');
-Route::get('/documentos/fornecedores', 'DocumentoController@indexFornecedor');
-Route::post('/documentos/clientes', 'DocumentoController@storeCliente');
-Route::post('/documentos/fornecedores', 'DocumentoController@storeFornecedor');
-Route::post('/documentos/uploadcli', 'DocumentoController@uploadCliente');
-Route::post('/documentos/uploadfor', 'DocumentoController@uploadFornecedor');
-Route::get('/documentos/clientes/{documento}', 'DocumentoController@showCliente');
-Route::get('/documentos/fornecedores/{documento}', 'DocumentoController@showFornecedor');
-Route::put('/documentos/clientes/{documento}', 'DocumentoController@updateCliente');
-Route::put('/documentos/fornecedores/{documento}', 'DocumentoController@updateFornecedor');
-Route::delete('/documentos/clientes/{documento}', 'DocumentoController@destroyCliente');
-Route::delete('/documentos/fornecedores/{documento}', 'DocumentoController@destroyFornecedor');
+Route::get('/documentos/clientes', 'DocumentoController@indexCliente')->middleware('auth:api');
+Route::get('/documentos/fornecedores', 'DocumentoController@indexFornecedor')->middleware('auth:api');
+Route::post('/documentos/clientes', 'DocumentoController@storeCliente')->middleware('auth:api');
+Route::post('/documentos/fornecedores', 'DocumentoController@storeFornecedor')->middleware('auth:api');
+Route::post('/documentos/uploadcli', 'DocumentoController@uploadCliente')->middleware('auth:api');
+Route::post('/documentos/uploadfor', 'DocumentoController@uploadFornecedor')->middleware('auth:api');
+Route::get('/documentos/clientes/{documento}', 'DocumentoController@showCliente')->middleware('auth:api');
+Route::get('/documentos/fornecedores/{documento}', 'DocumentoController@showFornecedor')->middleware('auth:api');
+Route::put('/documentos/clientes/{documento}', 'DocumentoController@updateCliente')->middleware('auth:api');
+Route::put('/documentos/fornecedores/{documento}', 'DocumentoController@updateFornecedor')->middleware('auth:api');
+Route::delete('/documentos/clientes/{documento}', 'DocumentoController@destroyCliente')->middleware('auth:api');
+Route::delete('/documentos/fornecedores/{documento}', 'DocumentoController@destroyFornecedor')->middleware('auth:api');
 
 Route::get('/unidades', 'UnidadeController@index')->middleware('auth:api');
 Route::post('/unidades', 'UnidadeController@store')->middleware('auth:api');
@@ -112,3 +112,7 @@ Route::get('/listunidades', 'UnidadeController@listUnidade')->middleware('auth:a
 Route::get('/unidades/{unidade}', 'UnidadeController@show')->middleware('auth:api');
 Route::put('/unidades/{unidade}', 'UnidadeController@update')->middleware('auth:api');
 Route::delete('/unidades/{unidade}', 'UnidadeController@destroy')->middleware('auth:api');
+
+
+Route::get('/documentos/downloadanexo', 'DocumentoController@downloadAnexo');
+

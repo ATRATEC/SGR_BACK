@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 02 Jan 2018 19:26:30 +0000.
+ * Date: Fri, 05 Jan 2018 19:40:15 +0000.
  */
 
 namespace App;
@@ -15,6 +15,8 @@ use App\BaseModel as Eloquent;
  * @property int $id
  * @property int $id_cliente
  * @property int $id_documento
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  * 
  * @property \App\Cliente $cliente
  * @property \App\Documento $documento
@@ -24,7 +26,6 @@ use App\BaseModel as Eloquent;
 class ClienteDocumento extends Eloquent
 {
 	protected $table = 'cliente_documento';
-	public $timestamps = false;
 
 	protected $casts = [
 		'id_cliente' => 'int',
