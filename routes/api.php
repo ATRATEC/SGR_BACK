@@ -106,6 +106,9 @@ Route::put('/documentos/fornecedores/{documento}', 'DocumentoController@updateFo
 Route::delete('/documentos/clientes/{documento}', 'DocumentoController@destroyCliente')->middleware('auth:api');
 Route::delete('/documentos/fornecedores/{documento}', 'DocumentoController@destroyFornecedor')->middleware('auth:api');
 
+Route::get('/documentos/downloadanexo', 'DocumentoController@downloadAnexo');
+
+
 Route::get('/unidades', 'UnidadeController@index')->middleware('auth:api');
 Route::post('/unidades', 'UnidadeController@store')->middleware('auth:api');
 Route::get('/listunidades', 'UnidadeController@listUnidade')->middleware('auth:api');
@@ -113,6 +116,9 @@ Route::get('/unidades/{unidade}', 'UnidadeController@show')->middleware('auth:ap
 Route::put('/unidades/{unidade}', 'UnidadeController@update')->middleware('auth:api');
 Route::delete('/unidades/{unidade}', 'UnidadeController@destroy')->middleware('auth:api');
 
-
-Route::get('/documentos/downloadanexo', 'DocumentoController@downloadAnexo');
-
+Route::get('/servicos', 'ServicoController@index')->middleware('auth:api');
+Route::post('/servicos', 'ServicoController@store')->middleware('auth:api');
+Route::get('/listservicos', 'ServicoController@listServico')->middleware('auth:api');
+Route::get('/servicos/{servico}', 'ServicoController@show')->middleware('auth:api');
+Route::put('/servicos/{servico}', 'ServicoController@update')->middleware('auth:api');
+Route::delete('/servicos/{servico}', 'ServicoController@destroy')->middleware('auth:api');

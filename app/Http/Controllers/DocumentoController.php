@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Documento;
 use App\ClienteDocumento;
 use App\FornecedorDocumento;
+use App\Exceptions\APIException;
 use App\Http\Resources\DocumentoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\File;
@@ -159,6 +160,48 @@ class DocumentoController extends Controller {
     public function create() {
         //
     }
+    
+    public function validaClienteDocumento($id_cliente, $id_tipo_documento, $id)
+    {
+        $arr = array();
+        
+        $condcli = array('id_cliente', '=', $id_cliente);
+        array_push($arr, $condcli);
+        
+        $condtipo = array('id_tipo_documento', '=', $id_tipo_documento);
+        array_push($arr, $condtipo);
+        
+        if (isset($id))
+        {
+            $condid = array('id', '<>', $id);
+            array_push($arr, $condid);
+        }
+        
+        $clientedocumento = ClienteDocumento::where($arr)->get();
+        
+        return $clientedocumento->count() > 0;                
+    }
+    
+    public function validaFornecedorDocumento($id_fornecedor, $id_tipo_documento, $id)
+    {
+        $arr = array();
+        
+        $condfor = array('id_fornecedor', '=', $id_fornecedor);
+        array_push($arr, $condfor);
+        
+        $condtipo = array('id_tipo_documento', '=', $id_tipo_documento);
+        array_push($arr, $condtipo);
+        
+        if (isset($id))
+        {
+            $condid = array('id', '<>', $id);
+            array_push($arr, $condid);
+        }
+        
+        $fornecedordocumento = FornecedorDocumento::where($arr)->get();
+        
+        return $fornecedordocumento->count() > 0;                
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -175,6 +218,11 @@ class DocumentoController extends Controller {
                         'errors' => $validator->errors()
                             ], 422);
         }
+        
+        if ($this->validaClienteDocumento($request->id_cliente, $request->id_tipo_documento, null))
+        {
+            throw new APIException('Tipo de documento já informado para o cliente');
+        }
 
         $documento = new Documento();
         $documento->fill($request->all());
@@ -183,6 +231,7 @@ class DocumentoController extends Controller {
         $clienteDocumento = new ClienteDocumento();
         $clienteDocumento->id_cliente = $request->id_cliente;
         $clienteDocumento->id_documento = $documento->id;
+        $clienteDocumento->id_tipo_documento = $request->id_tipo_documento;
         $clienteDocumento->save();
 
         $doc = DB::table('documento')
@@ -210,6 +259,11 @@ class DocumentoController extends Controller {
                         'errors' => $validator->errors()
                             ], 422);
         }
+        
+        if ($this->validaFornecedorDocumento($request->id_fornecedor, $request->id_tipo_documento, null))
+        {
+            throw new APIException('Tipo de documento já informado para o fornecedor');
+        }
 
         $documento = new Documento();
         $documento->fill($request->all());
@@ -218,6 +272,7 @@ class DocumentoController extends Controller {
         $fornecedorDocumento = new FornecedorDocumento();
         $fornecedorDocumento->id_fornecedor = $request->id_fornecedor;
         $fornecedorDocumento->id_documento = $documento->id;
+        $fornecedorDocumento->id_tipo_documento = $request->id_tipo_documento;
         $fornecedorDocumento->save();
 
         $doc = DB::table('documento')
@@ -256,7 +311,8 @@ class DocumentoController extends Controller {
             if (!empty($documento->caminho)) {
                 $arquivoexclui = 'CLI_' . $id_cliente . '_DOC_' . $id_documento . '_' . $documento->caminho;
                 $exists = Storage::disk('documentos')->exists($arquivoexclui);
-                if ($exists) {
+                if ($exists) 
+                {
                     Storage::disk('documentos')->delete($arquivoexclui);
                 }
             }
@@ -362,6 +418,17 @@ class DocumentoController extends Controller {
                         'errors' => $validator->errors() . ' variavel ' . $request->numero
                             ], 422);
         }
+        
+        $clientedocumento = ClienteDocumento::where('id_documento',$documento->id)->first();
+        
+        if ($this->validaClienteDocumento($request->id_cliente, $request->id_tipo_documento, $clientedocumento->id))
+        {
+            throw new APIException('Tipo de documento já informado para o cliente');
+        }
+        
+        $clientedocumento->id_tipo_documento = $request->id_tipo_documento;
+        $clientedocumento->save();
+        
 
         $documento->update($request->all());
 
@@ -391,6 +458,16 @@ class DocumentoController extends Controller {
                         'errors' => $validator->errors() . ' variavel ' . $request->numero
                             ], 422);
         }
+        
+        $fornecedordocumento = FornecedorDocumento::where('id_documento',$documento->id)->first();
+        
+        if ($this->validaFornecedorDocumento($request->id_fornecedor, $request->id_tipo_documento, $fornecedordocumento->id))
+        {
+            throw new APIException('Tipo de documento já informado para o fornecedor');
+        }
+        
+        $fornecedordocumento->id_tipo_documento = $request->id_tipo_documento;
+        $fornecedordocumento->save();
 
         $documento->update($request->all());
 

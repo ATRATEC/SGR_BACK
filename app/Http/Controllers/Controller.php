@@ -13,6 +13,7 @@ class Controller extends BaseController
 	
 	public static $messages = [
                                 'required' => 'Campo :attribute obrigatório.',
+                                'unique' => 'Informação do Campo :attribute já existe na base.',
                                 'numeric' => 'Campo :attribute deve ser do tipo numerico.',
                                 'max' => 'Campo :attribute não pode ser maior que :max caracteres.',
                               ];

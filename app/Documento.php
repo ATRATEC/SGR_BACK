@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 26 Dec 2017 16:13:04 +0000.
+ * Date: Sun, 07 Jan 2018 19:44:33 +0000.
  */
 
 namespace App;
@@ -56,12 +56,14 @@ class Documento extends Eloquent
 	public function clientes()
 	{
 		return $this->belongsToMany(\App\Cliente::class, 'cliente_documento', 'id_documento', 'id_cliente')
-					->withPivot('id');
+					->withPivot('id', 'id_tipo_documento')
+					->withTimestamps();
 	}
 
-	public function fornecedores()
+	public function fornecedors()
 	{
 		return $this->belongsToMany(\App\Fornecedor::class, 'fornecedor_documento', 'id_documento', 'id_fornecedor')
-					->withPivot('id');
+					->withPivot('id', 'id_tipo_documento')
+					->withTimestamps();
 	}
 }

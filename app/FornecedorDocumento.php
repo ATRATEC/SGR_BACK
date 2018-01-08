@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 05 Jan 2018 19:42:47 +0000.
+ * Date: Sun, 07 Jan 2018 19:45:03 +0000.
  */
 
 namespace App;
@@ -15,11 +15,13 @@ use App\BaseModel as Eloquent;
  * @property int $id
  * @property int $id_fornecedor
  * @property int $id_documento
+ * @property int $id_tipo_documento
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \App\Documento $documento
  * @property \App\Fornecedor $fornecedor
+ * @property \App\TipoDocumento $tipo_documento
  *
  * @package App
  */
@@ -29,12 +31,14 @@ class FornecedorDocumento extends Eloquent
 
 	protected $casts = [
 		'id_fornecedor' => 'int',
-		'id_documento' => 'int'
+		'id_documento' => 'int',
+		'id_tipo_documento' => 'int'
 	];
 
 	protected $fillable = [
 		'id_fornecedor',
-		'id_documento'
+		'id_documento',
+		'id_tipo_documento'
 	];
 
 	public function documento()
@@ -45,5 +49,10 @@ class FornecedorDocumento extends Eloquent
 	public function fornecedor()
 	{
 		return $this->belongsTo(\App\Fornecedor::class, 'id_fornecedor');
+	}
+
+	public function tipo_documento()
+	{
+		return $this->belongsTo(\App\TipoDocumento::class, 'id_tipo_documento');
 	}
 }

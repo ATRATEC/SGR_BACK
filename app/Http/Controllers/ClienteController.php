@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class ClienteController extends Controller
@@ -80,9 +81,27 @@ class ClienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function Valitation(Request $request) {        
+    private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [                                
-                    'razao_social' => 'required|max:60'                    
+                    'razao_social' => 'required|max:60',
+                    'cnpj_cpf' => 'required|unique:cliente|max:20',
+        ], parent::$messages);
+
+        return $validator;
+    }
+    
+    /**
+     * Metodo de validação da classe.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Validator
+     */
+    private function ValitationUpdate(Request $request, Cliente $cliente) {        
+        $validator = Validator::make($request->all(), [                                
+                    'razao_social' => 'required|max:60',
+                    'cnpj_cpf' => ['required',
+                                    Rule::unique('cliente')->ignore($cliente->id),
+                                    'max:20'],
         ], parent::$messages);
 
         return $validator;
@@ -106,12 +125,12 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->Valitation($request);
+        $validator = $this->ValitationStore($request);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -141,12 +160,12 @@ class ClienteController extends Controller
      */
     public function update(Request $request, Cliente $cliente)
     {
-        $validator = $this->Valitation($request);
+        $validator = $this->ValitationUpdate($request, $cliente);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
