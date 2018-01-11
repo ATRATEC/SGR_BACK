@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 02 Jan 2018 19:26:04 +0000.
+ * Date: Wed, 10 Jan 2018 19:05:01 +0000.
  */
 
 namespace App;
@@ -58,7 +58,11 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
+ * @property \Illuminate\Database\Eloquent\Collection $contrato_fornecedors
+ * @property \Illuminate\Database\Eloquent\Collection $servicos
  * @property \Illuminate\Database\Eloquent\Collection $documentos
+ * @property \Illuminate\Database\Eloquent\Collection $manifestos
+ * @property \Illuminate\Database\Eloquent\Collection $precos
  *
  * @package App
  */
@@ -123,9 +127,32 @@ class Fornecedor extends Eloquent
 		'id_filial'
 	];
 
+	public function contrato_fornecedores()
+	{
+		return $this->hasMany(\App\ContratoFornecedor::class, 'id_fornecedor');
+	}
+
+	public function servicos()
+	{
+		return $this->belongsToMany(\App\Servico::class, 'contrato_fornecedor_servico', 'id_fornecedor', 'id_servico')
+					->withPivot('id', 'id_contrato', 'preco', 'selecionado')
+					->withTimestamps();
+	}
+
 	public function documentos()
 	{
 		return $this->belongsToMany(\App\Documento::class, 'fornecedor_documento', 'id_fornecedor', 'id_documento')
-					->withPivot('id');
+					->withPivot('id', 'id_tipo_documento')
+					->withTimestamps();
+	}
+
+	public function manifestos()
+	{
+		return $this->hasMany(\App\Manifesto::class, 'id_fornecedor_transportador');
+	}
+
+	public function precos()
+	{
+		return $this->hasMany(\App\Preco::class, 'id_fornecedor_transportador');
 	}
 }

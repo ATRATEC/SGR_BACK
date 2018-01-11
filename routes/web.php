@@ -22,7 +22,7 @@ Route::get('/sgr', function () {
 
 Auth::routes();
 
-//Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 //
 //Route::get('/movimentos', 'HomeController@movimentos');
 //

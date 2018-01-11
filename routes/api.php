@@ -122,3 +122,17 @@ Route::get('/listservicos', 'ServicoController@listServico')->middleware('auth:a
 Route::get('/servicos/{servico}', 'ServicoController@show')->middleware('auth:api');
 Route::put('/servicos/{servico}', 'ServicoController@update')->middleware('auth:api');
 Route::delete('/servicos/{servico}', 'ServicoController@destroy')->middleware('auth:api');
+
+Route::get('/contratofornecedores', 'ContratoFornecedorController@index');
+Route::post('/contratofornecedores', 'ContratoFornecedorController@store');
+Route::get('/listcontratofornecedores', 'ContratoFornecedorController@listContratoFornecedor');
+Route::get('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@show');
+Route::put('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@update');
+Route::delete('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@destroy');
+
+Route::get('/contratofornecedorservicos', 'ContratoFornecedorServicoController@index');
+Route::post('/contratofornecedorservicos', 'ContratoFornecedorServicoController@store');
+Route::get('/listcontratofornecedorservicos', 'ContratoFornecedorServicoController@listContratoFornecedorServico');
+Route::get('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@show');
+Route::put('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@update');
+Route::delete('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@destroy');
