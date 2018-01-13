@@ -5,10 +5,7 @@
         <group>
             <file>file:/C:/xampp/htdocs/SGR_BACK/app/Http/Controllers/ContratoFornecedorController.php</file>
             <file>file:/C:/xampp/htdocs/SGR_BACK/routes/api.php</file>
-            <file>file:/C:/xampp/htdocs/SGR_BACK/app/ContratoFornecedor.php</file>
             <file>file:/C:/xampp/htdocs/SGR_BACK/app/Http/Controllers/ContratoFornecedorServicoController.php</file>
-            <file>file:/C:/xampp/htdocs/SGR_BACK/app/Fornecedor.php</file>
-            <file>file:/C:/xampp/htdocs/SGR_BACK/app/ContratoFornecedorServico.php</file>
         </group>
     </open-files>
 </project-private>

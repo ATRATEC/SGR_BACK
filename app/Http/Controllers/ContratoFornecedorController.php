@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Em classes onde existe a necessidade de informe de datas deve ser usado o DB::table no lugar 
+ * da entidade.
+ * Usando a entidade as data acabam vindo no formato yyyy-mm-dd hh:mm:ss isso faz com que o 
+ * componente de exibição de data no html5 informe um erro de formato de data.
+ */
+
 namespace App\Http\Controllers;
 
 use App\ContratoFornecedor;
@@ -51,80 +58,36 @@ class ContratoFornecedorController extends Controller
             array_push($arr, $desc);
         }
         
-        $array_for = array();
         if ($request->has('fornecedor')) {
-            $col = array();
-            $desc = array('razao_social', 'like', '%' . $request->input('fornecedor') . '%');
-            array_push($col, $desc);
-            $listafor = Fornecedor::where($col)->get();
-            foreach ($listafor as $item) {
-                array_push($array_for, $item->id);
-            }            
+            $desc = array('fornecedor.razao_social', 'like', '%' . $request->input('fornecedor') . '%');
+            array_push($arr, $desc);
         }
         
-        $array_cli = array();
         if ($request->has('cliente')) {
-            $col = array();
-            $desc = array('razao_social', 'like', '%' . $request->input('cliente') . '%');
-            array_push($col, $desc);
-            $listacli = Cliente::where($col)->get();
-            foreach ($listacli as $item) {
-                array_push($array_cli, $item->id);
-            }            
+            $desc = array('cliente.razao_social', 'like', '%' . $request->input('cliente') . '%');
+            array_push($arr, $desc);
         }
-        
-        //CONTRATO - FORNECEDOR - CLIENTE
-        if ((count($arr) > 0)&&((count($array_for) > 0))&&(count($array_cli) > 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->whereIn('id_cliente',$array_cli)->orderBy($orderkey, $order)->paginate($nrcount));
+                                      
+        if (count($arr) > 0) {            
+            $contratofornecedor = DB::table('contrato_fornecedor')
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+                ->where($arr)
+                ->orderBy($orderkey, $order)->paginate($nrcount);
+            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
             // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+        } else {
+            $contratofornecedor = DB::table('contrato_fornecedor')
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')                
+                ->orderBy($orderkey, $order)->paginate($nrcount);
+            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
-        
-        //CONTRATO - FORNECEDOR
-        if ((count($arr) > 0)&&((count($array_for) > 0))&&(count($array_cli) == 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-        //CONTRATO - CLIENTE
-        if ((count($arr) > 0)&&((count($array_for) == 0))&&(count($array_cli) > 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_cliente',$array_cli)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-        //CLIENTE
-        if ((count($arr) == 0)&&((count($array_for) == 0))&&(count($array_cli) > 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->whereIn('id_cliente',$array_cli)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-        //CONTRATO
-        if ((count($arr) > 0)&&((count($array_for) == 0))&&(count($array_cli) == 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-        //FORNECEDOR
-        if ((count($arr) == 0)&&((count($array_for) > 0))&&(count($array_cli) == 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-        //DEFAULT
-        if ((count($arr) == 0)&&((count($array_for) == 0))&&(count($array_cli) == 0)) {            
-            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        }
-        
-              
-//        if (count($arr) > 0) {            
-//            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
-//            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-//        } else {
-//            $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
-//        }
 
 
-        return $contratofornecedor->response()->setStatusCode(200); //response()->json($contratofornecedor,200);
+        return response()->json($contratofornecedor,200);
     }
     
     public function listContratoFornecedor()
@@ -195,17 +158,32 @@ class ContratoFornecedorController extends Controller
         $contratofornecedor = new ContratoFornecedor();
         $contratofornecedor->fill($request->all());
         $contratofornecedor->save();
-        return response()->json($contratofornecedor, 201);
+        
+        $ctrfor = DB::table('contrato_fornecedor')
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+                ->where('contrato_fornecedor.id', '=', $contratofornecedor->id)
+                ->first();
+        
+        
+        return response()->json($ctrfor, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\contratofornecedor  $contratofornecedor
+     * @param  \App\contratofornecedor  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(ContratoFornecedor $contratofornecedor)
+    public function show($id)
     {
+        $contratofornecedor = DB::table('contrato_fornecedor')
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+                ->where('contrato_fornecedor.id', '=', $id)
+                ->first();
         return response()->json($contratofornecedor, 200);
     }
     
@@ -228,8 +206,15 @@ class ContratoFornecedorController extends Controller
         }
         
         $contratofornecedor->update($request->all());
+        
+        $ctrfor = DB::table('contrato_fornecedor')
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+                ->where('contrato_fornecedor.id', '=', $contratofornecedor->id)
+                ->first();
 
-        return response()->json($contratofornecedor, 200);
+        return response()->json($ctrfor, 200);
     }
 
     /**
