@@ -10,11 +10,15 @@
 namespace App\Http\Controllers;
 
 use App\ContratoFornecedor;
+use App\ContratoFornecedorServico;
+use App\Exceptions\APIException;
 use App\Fornecedor;
 use App\Cliente;
 use App\Http\Resources\ContratoFornecedorCollection;
 use Illuminate\Http\Request;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -216,6 +220,52 @@ class ContratoFornecedorController extends Controller
 
         return response()->json($ctrfor, 200);
     }
+    
+    public function upload(Request $request) {
+        $validator = Validator::make($request->all(), [
+                    'id_fornecedor' => 'required',
+                    'id_contrato' => 'required'
+                        ], parent::$messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                        'message' => 'Validação falhou',
+                        'errors' => $validator->errors()
+                            ], 422);
+        }
+
+
+        $file = $request->arquivo;
+        if (!is_null($file)) {
+            $filename = $file->getClientOriginalName(); //getBasename();
+
+            $id_fornecedor = $request->id_fornecedor;
+            $id_contrato = $request->id_contrato;
+
+            $contrato = ContratoFornecedor::find($id_contrato);
+
+            if (!empty($contrato->caminho)) {
+                $arquivoexclui = 'FOR_' . $id_fornecedor . '_DOC_' . $id_contrato . '_' . $contrato->caminho;
+                $exists = Storage::disk('contratos')->exists($arquivoexclui);
+                if ($exists) {
+                    Storage::disk('contratos')->delete($arquivoexclui);
+                }
+            }
+
+            $nomeArq = 'FOR_' . $id_fornecedor . '_CTR_' . $id_contrato . '_' . $filename;
+
+            $exists = Storage::disk('contratos')->exists($nomeArq);
+            if (!$exists) {
+                Storage::disk('contratos')->putFileAs('', $request->file('arquivo'), $nomeArq);
+            }
+
+            $contrato->caminho = $filename;
+            $contrato->save();
+        }
+
+        return response()->json(['anexo' => $filename], 200);
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -225,7 +275,13 @@ class ContratoFornecedorController extends Controller
      */
     public function destroy(ContratoFornecedor $contratofornecedor)
     {
+        $contratofornecedorservico = ContratoFornecedorServico::where('id_contrato', $contratofornecedor->id)->delete();
         $contratofornecedor->delete();
         return response()->json(null, 200);
+    }
+    
+    public function downloadAnexo(Request $request) {
+        $file_path = public_path('contratos/'.$request->arquivo);
+        return response()->download($file_path);
     }
 }

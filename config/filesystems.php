@@ -61,6 +61,13 @@ return [
             'url' => env('APP_URL').'/documentos',
             'visibility' => 'public',
         ],
+        
+        'contratos' =>[
+            'driver' => 'local',
+            'root' => public_path('contratos'),
+            'url' => env('APP_URL').'/contratos',
+            'visibility' => 'public',
+        ],
 
         's3' => [
             'driver' => 's3',

@@ -47,7 +47,8 @@ class UserController extends Controller {
             $this->content['token'] = $user->createToken('app_uiatra')->accessToken;
             $status = 200;
         } else {
-            $this->content['error'] = "Login não autorizado. E-mail ou senha informado inválido.";
+            $this->content['error'] = "Login não autorizado.";
+            $this->content['message'] = "E-mail ou senha informado inválido.";
             $status = 401;
         }
         return response()->json($this->content, $status);

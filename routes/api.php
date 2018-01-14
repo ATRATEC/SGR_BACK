@@ -129,6 +129,8 @@ Route::get('/listcontratofornecedores', 'ContratoFornecedorController@listContra
 Route::get('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@show');
 Route::put('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@update');
 Route::delete('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@destroy');
+Route::post('/contratofornecedores/upload', 'ContratoFornecedorController@upload');
+Route::get('/contratos/downloadanexo', 'ContratoFornecedorController@downloadAnexo');
 
 Route::get('/contratofornecedorservicos', 'ContratoFornecedorServicoController@index');
 Route::post('/contratofornecedorservicos', 'ContratoFornecedorServicoController@store');
