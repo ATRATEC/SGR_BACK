@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 12 Jan 2018 07:08:34 +0000.
+ * Date: Mon, 15 Jan 2018 04:42:31 +0000.
  */
 
 namespace App;
@@ -75,7 +75,7 @@ class ContratoFornecedor extends Eloquent
 	public function servicos()
 	{
 		return $this->belongsToMany(\App\Servico::class, 'contrato_fornecedor_servico', 'id_contrato', 'id_servico')
-					->withPivot('id', 'id_fornecedor', 'preco', 'selecionado')
+					->withPivot('id', 'id_fornecedor', 'preco_compra', 'preco_servico', 'selecionado')
 					->withTimestamps();
 	}
 }

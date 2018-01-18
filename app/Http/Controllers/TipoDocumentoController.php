@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\TipoDocumento;
 use App\Http\Resources\TipoDocumentoCollection;
+use App\Exceptions\APIException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -142,7 +143,10 @@ class TipoDocumentoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(TipoDocumento $tipodocumento)
-    {
+    {        
+        if (count($tipodocumento->documentos()->get()) > 0){
+            throw new APIException('Tipo de documento não pode ser excluído. Pois esta sendo utilizado em um ou mais documentos');
+        }
         $tipodocumento->delete();
         return response()->json(null, 200);
     }

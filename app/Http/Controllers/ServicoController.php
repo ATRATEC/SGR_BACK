@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Servico;
 use App\Http\Resources\ServicoCollection;
+use App\Exceptions\APIException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -161,6 +162,13 @@ class ServicoController extends Controller
      */
     public function destroy(Servico $servico)
     {
+        if (count($servico->contrato_fornecedores()->get())){
+            throw new APIException('Serviço não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos');
+        }
+        
+        if (count($servico->contrato_clientes()->get())){
+            throw new APIException('Serviço não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos');
+        }
         $servico->delete();
         return response()->json(null, 200);
     }

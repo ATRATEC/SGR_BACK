@@ -9,12 +9,11 @@
 
 namespace App\Http\Controllers;
 
-use App\ContratoFornecedor;
-use App\ContratoFornecedorServico;
+use App\ContratoCliente;
+use App\ContratoCliContratoFor;
 use App\Exceptions\APIException;
-use App\Fornecedor;
 use App\Cliente;
-use App\Http\Resources\ContratoFornecedorCollection;
+use App\Http\Resources\ContratoClienteCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +23,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
 
-class ContratoFornecedorController extends Controller
+class ContratoClienteController extends Controller
 {
     function __construct() {
         $this->content = array();
@@ -62,42 +61,35 @@ class ContratoFornecedorController extends Controller
             array_push($arr, $desc);
         }
         
-        if ($request->has('fornecedor')) {
-            $desc = array('fornecedor.razao_social', 'like', '%' . $request->input('fornecedor') . '%');
-            array_push($arr, $desc);
-        }
-        
         if ($request->has('cliente')) {
             $desc = array('cliente.razao_social', 'like', '%' . $request->input('cliente') . '%');
             array_push($arr, $desc);
         }
-                                      
+                                                      
         if (count($arr) > 0) {            
-            $contratofornecedor = DB::table('contrato_fornecedor')
-                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+            $contratocliente = DB::table('contrato_cliente')
+                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->select('contrato_cliente.*','cliente.razao_social as cliente')
                 ->where($arr)
                 ->orderBy($orderkey, $order)->paginate($nrcount);
-            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            // $contratocliente = new ContratoClienteCollection(ContratoCliente::with(['cliente','cliente','servicos'])->where($arr)->whereIn('id_cliente',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
+            // $contratocliente = DB::table('contratocliente')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
-            $contratofornecedor = DB::table('contrato_fornecedor')
-                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')                
+            $contratocliente = DB::table('contrato_cliente')
+                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->select('contrato_cliente.*','cliente.razao_social as cliente')                
                 ->orderBy($orderkey, $order)->paginate($nrcount);
-            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
+            // $contratocliente = new ContratoClienteCollection(ContratoCliente::with(['cliente','cliente','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return response()->json($contratofornecedor,200);
+        return response()->json($contratocliente,200);
     }
     
-    public function listContratoFornecedor()
+    public function listContratoCliente()
     {
-        $contratofornecedor = ContratoFornecedor::all();
-        return response()->json($contratofornecedor, 200);
+        $contratocliente = ContratoCliente::all();
+        return response()->json($contratocliente, 200);
     }
     
     /**
@@ -108,6 +100,7 @@ class ContratoFornecedorController extends Controller
      */
     private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [                            
+                    'id_cliente' => 'required',
                     'vigencia_inicio' => 'required',
                     'vigencia_final' => 'required',
                     'exclusivo' => 'required',
@@ -122,8 +115,9 @@ class ContratoFornecedorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationUpdate(Request $request, ContratoFornecedor $contratofornecedor) {        
+    private function ValitationUpdate(Request $request, ContratoCliente $contratocliente) {        
         $validator = Validator::make($request->all(), [                            
+                    'id_cliente' => 'required',
                     'vigencia_inicio' => 'required|date',
                     'vigencia_final' => 'required|date',
                     'exclusivo' => 'required',
@@ -159,15 +153,14 @@ class ContratoFornecedorController extends Controller
                             ], 422);
         }
 
-        $contratofornecedor = new ContratoFornecedor();
-        $contratofornecedor->fill($request->all());
-        $contratofornecedor->save();
+        $contratocliente = new ContratoCliente();
+        $contratocliente->fill($request->all());
+        $contratocliente->save();
         
-        $ctrfor = DB::table('contrato_fornecedor')
-                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
-                ->where('contrato_fornecedor.id', '=', $contratofornecedor->id)
+        $ctrfor = DB::table('contrato_cliente')
+                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->select('contrato_cliente.*','cliente.razao_social as cliente')
+                ->where('contrato_cliente.id', '=', $contratocliente->id)
                 ->first();
         
         
@@ -177,30 +170,29 @@ class ContratoFornecedorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\contratofornecedor  $id
+     * @param  \App\contratocliente  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $contratofornecedor = DB::table('contrato_fornecedor')
-                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
-                ->where('contrato_fornecedor.id', '=', $id)
+        $contratocliente = DB::table('contrato_cliente')
+                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->select('contrato_cliente.*','cliente.razao_social as cliente')
+                ->where('contrato_cliente.id', '=', $id)
                 ->first();
-        return response()->json($contratofornecedor, 200);
+        return response()->json($contratocliente, 200);
     }
     
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\contratofornecedor  $contratofornecedor
+     * @param  \App\contratocliente  $contratocliente
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ContratoFornecedor $contratofornecedor)
+    public function update(Request $request, ContratoCliente $contratocliente)
     {
-        $validator = $this->ValitationUpdate($request,$contratofornecedor);
+        $validator = $this->ValitationUpdate($request,$contratocliente);
 
         if ($validator->fails()) {
             return response()->json([
@@ -209,13 +201,12 @@ class ContratoFornecedorController extends Controller
                             ], 422);
         }
         
-        $contratofornecedor->update($request->all());
+        $contratocliente->update($request->all());
         
-        $ctrfor = DB::table('contrato_fornecedor')
-                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
-                ->where('contrato_fornecedor.id', '=', $contratofornecedor->id)
+        $ctrfor = DB::table('contrato_cliente')
+                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->select('contrato_cliente.*','cliente.razao_social as cliente')
+                ->where('contrato_cliente.id', '=', $contratocliente->id)
                 ->first();
 
         return response()->json($ctrfor, 200);
@@ -223,7 +214,7 @@ class ContratoFornecedorController extends Controller
     
     public function upload(Request $request) {
         $validator = Validator::make($request->all(), [
-                    'id_fornecedor' => 'required',
+                    'id_cliente' => 'required',
                     'id_contrato' => 'required'
                         ], parent::$messages);
 
@@ -239,20 +230,20 @@ class ContratoFornecedorController extends Controller
         if (!is_null($file)) {
             $filename = $file->getClientOriginalName(); //getBasename();
 
-            $id_fornecedor = $request->id_fornecedor;
+            $id_cliente = $request->id_cliente;
             $id_contrato = $request->id_contrato;
 
-            $contrato = ContratoFornecedor::find($id_contrato);
+            $contrato = ContratoCliente::find($id_contrato);
 
             if (!empty($contrato->caminho)) {
-                $arquivoexclui = 'FOR_' . $id_fornecedor . '_CTR_' . $id_contrato . '_' . $contrato->caminho;
+                $arquivoexclui = 'CLI_' . $id_cliente . '_CTR_' . $id_contrato . '_' . $contrato->caminho;
                 $exists = Storage::disk('contratos')->exists($arquivoexclui);
                 if ($exists) {
                     Storage::disk('contratos')->delete($arquivoexclui);
                 }
             }
 
-            $nomeArq = 'FOR_' . $id_fornecedor . '_CTR_' . $id_contrato . '_' . $filename;
+            $nomeArq = 'CLI_' . $id_cliente . '_CTR_' . $id_contrato . '_' . $filename;
 
             $exists = Storage::disk('contratos')->exists($nomeArq);
             if (!$exists) {
@@ -270,13 +261,14 @@ class ContratoFornecedorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\contratofornecedor  $contratofornecedor
+     * @param  \App\contratocliente  $contratocliente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContratoFornecedor $contratofornecedor)
+    public function destroy(ContratoCliente $contratocliente)
     {
-        $contratofornecedorservico = ContratoFornecedorServico::where('id_contrato', $contratofornecedor->id)->delete();
-        $contratofornecedor->delete();
+        // $contratoclienteservico = ContratoClienteServico::where('id_contrato', $contratocliente->id)->delete();
+        ContratoCliContratoFor::where('id_contrato_cliente', $contratocliente->id)->delete();
+        $contratocliente->delete();
         return response()->json(null, 200);
     }
     

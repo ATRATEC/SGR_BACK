@@ -55,7 +55,17 @@ class ContratoFornecedorServicoController extends Controller {
     public function listContratoFornecedorServico() {
         $lista = DB::table('contrato_fornecedor_servico')
                 ->rightJoin('servico', 'id_servico', 'servico.id')
-                ->select('contrato_fornecedor_servico.id', 'contrato_fornecedor_servico.id_contrato', 'contrato_fornecedor_servico.id_fornecedor', 'servico.id as id_servico', 'contrato_fornecedor_servico.preco', 'contrato_fornecedor_servico.selecionado', 'contrato_fornecedor_servico.created_at', 'contrato_fornecedor_servico.updated_at', 'servico.descricao')
+                ->select('contrato_fornecedor_servico.id', 
+                        'contrato_fornecedor_servico.id_contrato', 
+                        'contrato_fornecedor_servico.id_fornecedor', 
+                        'servico.id as id_servico', 
+                        'contrato_fornecedor_servico.unidade', 
+                        'contrato_fornecedor_servico.preco_compra', 
+                        'contrato_fornecedor_servico.preco_servico', 
+                        'contrato_fornecedor_servico.selecionado', 
+                        'contrato_fornecedor_servico.created_at', 
+                        'contrato_fornecedor_servico.updated_at', 
+                        'servico.descricao')
                 ->get();
 //        $contratofornecedorservico = ContratoFornecedorServico::all();
 //        return response()->json($contratofornecedorservico, 200);
@@ -72,7 +82,8 @@ class ContratoFornecedorServicoController extends Controller {
         $validator = Validator::make($contratofornecedorservico->toArray(), [
                     'id_fornecedor' => 'required',
                     'id_servico' => 'required',
-                    'preco' => 'required',
+                    'preco_compra' => 'required',
+                    'preco_servico' => 'required',
                         ], parent::$messages);
 
         return $validator;
@@ -153,7 +164,17 @@ class ContratoFornecedorServicoController extends Controller {
 
             $lista = DB::table('contrato_fornecedor_servico')
                     ->rightJoin('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_fornecedor_servico.id', 'contrato_fornecedor_servico.id_contrato', 'contrato_fornecedor_servico.id_fornecedor', 'servico.id as id_servico', 'contrato_fornecedor_servico.preco', 'contrato_fornecedor_servico.selecionado', 'contrato_fornecedor_servico.created_at', 'contrato_fornecedor_servico.updated_at', 'servico.descricao')
+                    ->select('contrato_fornecedor_servico.id', 
+                            'contrato_fornecedor_servico.id_contrato', 
+                            'contrato_fornecedor_servico.id_fornecedor', 
+                            'servico.id as id_servico', 
+                            'contrato_fornecedor_servico.unidade', 
+                            'contrato_fornecedor_servico.preco_compra', 
+                            'contrato_fornecedor_servico.preco_servico', 
+                            'contrato_fornecedor_servico.selecionado', 
+                            'contrato_fornecedor_servico.created_at', 
+                            'contrato_fornecedor_servico.updated_at', 
+                            'servico.descricao')
                     ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                     ->orWhereNull('contrato_fornecedor_servico.id')
                     ->get();
@@ -174,7 +195,17 @@ class ContratoFornecedorServicoController extends Controller {
     public function show($id) {
         $lista = DB::table('contrato_fornecedor_servico')
                 ->rightJoin('servico', 'id_servico', 'servico.id')
-                ->select('contrato_fornecedor_servico.id', 'contrato_fornecedor_servico.id_contrato', 'contrato_fornecedor_servico.id_fornecedor', 'servico.id as id_servico', 'contrato_fornecedor_servico.preco', 'contrato_fornecedor_servico.selecionado', 'contrato_fornecedor_servico.created_at', 'contrato_fornecedor_servico.updated_at', 'servico.descricao')
+                ->select('contrato_fornecedor_servico.id', 
+                        'contrato_fornecedor_servico.id_contrato', 
+                        'contrato_fornecedor_servico.id_fornecedor', 
+                        'servico.id as id_servico', 
+                        'contrato_fornecedor_servico.unidade', 
+                        'contrato_fornecedor_servico.preco_compra', 
+                        'contrato_fornecedor_servico.preco_servico', 
+                        'contrato_fornecedor_servico.selecionado', 
+                        'contrato_fornecedor_servico.created_at', 
+                        'contrato_fornecedor_servico.updated_at', 
+                        'servico.descricao')
                 ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                 ->orWhereNull('contrato_fornecedor_servico.id')
                 ->get();
@@ -227,7 +258,17 @@ class ContratoFornecedorServicoController extends Controller {
 //            return response()->json($contratofornecedorservico, 200); 
             $lista = DB::table('contrato_fornecedor_servico')
                     ->rightJoin('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_fornecedor_servico.id', 'contrato_fornecedor_servico.id_contrato', 'contrato_fornecedor_servico.id_fornecedor', 'servico.id as id_servico', 'contrato_fornecedor_servico.preco', 'contrato_fornecedor_servico.selecionado', 'contrato_fornecedor_servico.created_at', 'contrato_fornecedor_servico.updated_at', 'servico.descricao')
+                    ->select('contrato_fornecedor_servico.id', 
+                            'contrato_fornecedor_servico.id_contrato', 
+                            'contrato_fornecedor_servico.id_fornecedor', 
+                            'servico.id as id_servico',
+                            'contrato_fornecedor_servico.unidade', 
+                            'contrato_fornecedor_servico.preco_compra', 
+                            'contrato_fornecedor_servico.preco_servico', 
+                            'contrato_fornecedor_servico.selecionado', 
+                            'contrato_fornecedor_servico.created_at', 
+                            'contrato_fornecedor_servico.updated_at', 
+                            'servico.descricao')
                     ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                     ->orWhereNull('contrato_fornecedor_servico.id')
                     ->get();

@@ -130,6 +130,7 @@ Route::get('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorCont
 Route::put('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@update');
 Route::delete('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@destroy');
 Route::post('/contratofornecedores/upload', 'ContratoFornecedorController@upload');
+
 Route::get('/contratos/downloadanexo', 'ContratoFornecedorController@downloadAnexo');
 
 Route::get('/contratofornecedorservicos', 'ContratoFornecedorServicoController@index');
@@ -138,3 +139,11 @@ Route::get('/listcontratofornecedorservicos', 'ContratoFornecedorServicoControll
 Route::get('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@show');
 Route::put('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@update');
 Route::delete('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@destroy');
+
+Route::get('/contratoclientes', 'ContratoClienteController@index');
+Route::post('/contratoclientes', 'ContratoClienteController@store');
+Route::get('/listcontratoclientes', 'ContratoClienteController@listContratoCliente');
+Route::get('/contratoclientes/{contratocliente}', 'ContratoClienteController@show');
+Route::put('/contratoclientes/{contratocliente}', 'ContratoClienteController@update');
+Route::delete('/contratoclientes/{contratocliente}', 'ContratoClienteController@destroy');
+Route::post('/contratoclientes/upload', 'ContratoClienteController@upload');

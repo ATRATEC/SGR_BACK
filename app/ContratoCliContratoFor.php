@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 09 Jan 2018 18:52:37 +0000.
+ * Date: Wed, 17 Jan 2018 13:04:46 +0000.
  */
 
 namespace App;
@@ -18,7 +18,8 @@ use App\BaseModel as Eloquent;
  * @property int $id_servico
  * @property int $id_residuo
  * @property string $unidade
- * @property float $preco
+ * @property float $preco_compra
+ * @property float $preco_servico
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -38,7 +39,8 @@ class ContratoCliContratoFor extends Eloquent
 		'id_contrato_fornecedor' => 'int',
 		'id_servico' => 'int',
 		'id_residuo' => 'int',
-		'preco' => 'float'
+		'preco_compra' => 'float',
+		'preco_servico' => 'float'
 	];
 
 	protected $fillable = [
@@ -47,7 +49,8 @@ class ContratoCliContratoFor extends Eloquent
 		'id_servico',
 		'id_residuo',
 		'unidade',
-		'preco'
+		'preco_compra',
+		'preco_servico'
 	];
 
 	public function contrato_cliente()
@@ -68,5 +71,10 @@ class ContratoCliContratoFor extends Eloquent
 	public function servico()
 	{
 		return $this->belongsTo(\App\Servico::class, 'id_servico');
+	}
+
+	public function unidade()
+	{
+		return $this->belongsTo(\App\Unidade::class, 'unidade', 'codigo');
 	}
 }

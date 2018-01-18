@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 10 Jan 2018 14:32:37 +0000.
+ * Date: Tue, 16 Jan 2018 19:23:47 +0000.
  */
 
 namespace App;
@@ -16,7 +16,9 @@ use App\BaseModel as Eloquent;
  * @property int $id_contrato
  * @property int $id_fornecedor
  * @property int $id_servico
- * @property float $preco
+ * @property string $unidade
+ * @property float $preco_compra
+ * @property float $preco_servico
  * @property bool $selecionado
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -35,7 +37,8 @@ class ContratoFornecedorServico extends Eloquent
 		'id_contrato' => 'int',
 		'id_fornecedor' => 'int',
 		'id_servico' => 'int',
-		'preco' => 'float',
+		'preco_compra' => 'float',
+		'preco_servico' => 'float',
 		'selecionado' => 'bool'
 	];
 
@@ -43,7 +46,9 @@ class ContratoFornecedorServico extends Eloquent
 		'id_contrato',
 		'id_fornecedor',
 		'id_servico',
-		'preco',
+		'unidade',
+		'preco_compra',
+		'preco_servico',
 		'selecionado'
 	];
 
@@ -60,5 +65,10 @@ class ContratoFornecedorServico extends Eloquent
 	public function servico()
 	{
 		return $this->belongsTo(\App\Servico::class, 'id_servico');
+	}
+
+	public function unidade()
+	{
+		return $this->belongsTo(\App\Unidade::class, 'unidade', 'codigo');
 	}
 }
