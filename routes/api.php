@@ -64,6 +64,7 @@ Route::delete('/tipoatividades/{tipoatividade}', 'TipoAtividadeController@destro
 
 Route::get('/residuos', 'ResiduoController@index')->middleware('auth:api');
 Route::post('/residuos', 'ResiduoController@store')->middleware('auth:api');
+Route::get('/listresiduos', 'ResiduoController@listResiduo')->middleware('auth:api');
 Route::get('/residuos/{residuo}', 'ResiduoController@show')->middleware('auth:api');
 Route::put('/residuos/{residuo}', 'ResiduoController@update')->middleware('auth:api');
 Route::delete('/residuos/{residuo}', 'ResiduoController@destroy')->middleware('auth:api');
@@ -123,27 +124,34 @@ Route::get('/servicos/{servico}', 'ServicoController@show')->middleware('auth:ap
 Route::put('/servicos/{servico}', 'ServicoController@update')->middleware('auth:api');
 Route::delete('/servicos/{servico}', 'ServicoController@destroy')->middleware('auth:api');
 
-Route::get('/contratofornecedores', 'ContratoFornecedorController@index');
-Route::post('/contratofornecedores', 'ContratoFornecedorController@store');
-Route::get('/listcontratofornecedores', 'ContratoFornecedorController@listContratoFornecedor');
-Route::get('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@show');
-Route::put('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@update');
-Route::delete('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@destroy');
-Route::post('/contratofornecedores/upload', 'ContratoFornecedorController@upload');
+Route::get('/contratofornecedores', 'ContratoFornecedorController@index')->middleware('auth:api');
+Route::post('/contratofornecedores', 'ContratoFornecedorController@store')->middleware('auth:api');
+Route::get('/listcontratofornecedores', 'ContratoFornecedorController@listContratoFornecedor')->middleware('auth:api');
+Route::get('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@show')->middleware('auth:api');
+Route::put('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@update')->middleware('auth:api');
+Route::delete('/contratofornecedores/{contratofornecedor}', 'ContratoFornecedorController@destroy')->middleware('auth:api');
+Route::post('/contratofornecedores/upload', 'ContratoFornecedorController@upload')->middleware('auth:api');
 
 Route::get('/contratos/downloadanexo', 'ContratoFornecedorController@downloadAnexo');
 
-Route::get('/contratofornecedorservicos', 'ContratoFornecedorServicoController@index');
-Route::post('/contratofornecedorservicos', 'ContratoFornecedorServicoController@store');
-Route::get('/listcontratofornecedorservicos', 'ContratoFornecedorServicoController@listContratoFornecedorServico');
-Route::get('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@show');
-Route::put('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@update');
-Route::delete('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@destroy');
+Route::get('/contratofornecedorservicos', 'ContratoFornecedorServicoController@index')->middleware('auth:api');
+Route::post('/contratofornecedorservicos', 'ContratoFornecedorServicoController@store')->middleware('auth:api');
+Route::get('/listcontratofornecedorservicos', 'ContratoFornecedorServicoController@listContratoFornecedorServico')->middleware('auth:api');
+Route::get('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@show')->middleware('auth:api');
+Route::put('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@update')->middleware('auth:api');
+Route::delete('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@destroy')->middleware('auth:api');
 
-Route::get('/contratoclientes', 'ContratoClienteController@index');
-Route::post('/contratoclientes', 'ContratoClienteController@store');
-Route::get('/listcontratoclientes', 'ContratoClienteController@listContratoCliente');
-Route::get('/contratoclientes/{contratocliente}', 'ContratoClienteController@show');
-Route::put('/contratoclientes/{contratocliente}', 'ContratoClienteController@update');
-Route::delete('/contratoclientes/{contratocliente}', 'ContratoClienteController@destroy');
-Route::post('/contratoclientes/upload', 'ContratoClienteController@upload');
+Route::get('/contratoclientes', 'ContratoClienteController@index')->middleware('auth:api');
+Route::post('/contratoclientes', 'ContratoClienteController@store')->middleware('auth:api');
+Route::get('/listcontratoclientes', 'ContratoClienteController@listContratoCliente')->middleware('auth:api');
+Route::get('/contratoclientes/{contratocliente}', 'ContratoClienteController@show')->middleware('auth:api');
+Route::put('/contratoclientes/{contratocliente}', 'ContratoClienteController@update')->middleware('auth:api');
+Route::delete('/contratoclientes/{contratocliente}', 'ContratoClienteController@destroy')->middleware('auth:api');
+Route::post('/contratoclientes/upload', 'ContratoClienteController@upload')->middleware('auth:api');
+
+Route::get('/contratoclienteservicos', 'ContratoClienteServicoController@index')->middleware('auth:api');
+Route::post('/contratoclienteservicos', 'ContratoClienteServicoController@store')->middleware('auth:api');
+Route::get('/listcontratoclienteservicos', 'ContratoClienteServicoController@listContratoClienteServico')->middleware('auth:api');
+Route::get('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@show')->middleware('auth:api');
+Route::put('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@update')->middleware('auth:api');
+Route::delete('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@destroy')->middleware('auth:api');

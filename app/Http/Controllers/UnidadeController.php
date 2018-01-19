@@ -55,7 +55,7 @@ class UnidadeController extends Controller
     
     public function listUnidade()
     {
-        $unidades = Unidade::all();
+        $unidades = Unidade::orderBy('codigo', 'asc')->get();
         return response()->json($unidades, 200);
     }
     

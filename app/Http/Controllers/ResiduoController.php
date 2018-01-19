@@ -50,6 +50,12 @@ class ResiduoController extends Controller {
 
         return $tiporesiduos->response()->setStatusCode(200) ; // response()->json($tiporesiduos, 200) ;
     }
+    
+    public function listResiduo()
+    {
+        $residuo = Residuo::all();
+        return response()->json($residuo, 200);
+    }
         
     /**
      * Show the form for creating a new resource.

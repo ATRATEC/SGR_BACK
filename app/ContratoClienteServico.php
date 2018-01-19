@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 17 Jan 2018 13:04:46 +0000.
+ * Date: Fri, 19 Jan 2018 04:56:11 +0000.
  */
 
 namespace App;
@@ -10,7 +10,7 @@ namespace App;
 use App\BaseModel as Eloquent;
 
 /**
- * Class ContratoCliContratoFor
+ * Class ContratoClienteServico
  * 
  * @property int $id
  * @property int $id_contrato_cliente
@@ -30,9 +30,9 @@ use App\BaseModel as Eloquent;
  *
  * @package App
  */
-class ContratoCliContratoFor extends Eloquent
+class ContratoClienteServico extends Eloquent
 {
-	protected $table = 'contrato_cli_contrato_for';
+	protected $table = 'contrato_cliente_servico';
 
 	protected $casts = [
 		'id_contrato_cliente' => 'int',

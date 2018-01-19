@@ -25,10 +25,6 @@ class ContratoFornecedorServicoController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
-        $order = $request->input('order', 'asc');
-
         $arr = array();
 
         if ($request->has('id')) {
@@ -40,21 +36,27 @@ class ContratoFornecedorServicoController extends Controller {
             $desc = array('id_contrato', '=', $request->input('id_contrato'));
             array_push($arr, $desc);
         }
-
-        if (count($arr) > 0) {
-            $contratofornecedorservico = new ContratoFornecedorServicoCollection(ContratoFornecedorServico::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratofornecedorservico = DB::table('contratofornecedorservico')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-        } else {
-            $contratofornecedorservico = new ContratoFornecedorServicoCollection(ContratoFornecedorServico::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+        
+//        if ($request->has('id_cliente')) {
+//            $desc = array('contrato_fornecedor.id_cliente', '=', $request->input('id_cliente'));
+//            array_push($arr, $desc);
+//        }
+        
+        if ($request->has('unidade')) {
+            $desc = array('unidade', '=', $request->input('unidade'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('id_servico')) {
+            $desc = array('id_servico', '=', $request->input('id_servico'));
+            array_push($arr, $desc);
         }
 
-
-        return $contratofornecedorservico->response()->setStatusCode(200); //response()->json($contratofornecedorservico,200);
-    }
-
-    public function listContratoFornecedorServico() {
-        $lista = DB::table('contrato_fornecedor_servico')
+        if (count($arr) > 0) {
+            $lista = DB::table('contrato_fornecedor_servico')
+                ->join('contrato_fornecedor', 'id_contrato', 'contrato_fornecedor.id')
                 ->rightJoin('servico', 'id_servico', 'servico.id')
+                ->leftJoin('fornecedor', 'contrato_fornecedor_servico.id_fornecedor', 'fornecedor.id')
                 ->select('contrato_fornecedor_servico.id', 
                         'contrato_fornecedor_servico.id_contrato', 
                         'contrato_fornecedor_servico.id_fornecedor', 
@@ -65,7 +67,75 @@ class ContratoFornecedorServicoController extends Controller {
                         'contrato_fornecedor_servico.selecionado', 
                         'contrato_fornecedor_servico.created_at', 
                         'contrato_fornecedor_servico.updated_at', 
-                        'servico.descricao')
+                        'servico.descricao as servico',
+                        'fornecedor.razao_social as fornecedor')
+                ->where($arr)                
+                ->get();
+        } 
+        else {
+            $lista = DB::table('contrato_fornecedor_servico')
+                ->rightJoin('servico', 'id_servico', 'servico.id')
+                ->leftJoin('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->select('contrato_fornecedor_servico.id', 
+                        'contrato_fornecedor_servico.id_contrato', 
+                        'contrato_fornecedor_servico.id_fornecedor', 
+                        'servico.id as id_servico', 
+                        'contrato_fornecedor_servico.unidade', 
+                        'contrato_fornecedor_servico.preco_compra', 
+                        'contrato_fornecedor_servico.preco_servico', 
+                        'contrato_fornecedor_servico.selecionado', 
+                        'contrato_fornecedor_servico.created_at', 
+                        'contrato_fornecedor_servico.updated_at', 
+                        'servico.descricao as servico',
+                        'fornecedor.razao_social as fornecedor')                
+                ->get();            
+        } 
+        
+//        $contratofornecedorservico = ContratoFornecedorServico::all();
+//        return response()->json($contratofornecedorservico, 200);
+        return response()->json($lista, 200);
+//        $nrcount = $request->input('nrcount', 15);
+//        $orderkey = $request->input('orderkey', 'id');
+//        $order = $request->input('order', 'asc');
+//
+//        $arr = array();
+//
+//        if ($request->has('id')) {
+//            $desc = array('id', '=', $request->input('id'));
+//            array_push($arr, $desc);
+//        }
+//
+//        if ($request->has('id_contrato')) {
+//            $desc = array('id_contrato', '=', $request->input('id_contrato'));
+//            array_push($arr, $desc);
+//        }
+//
+//        if (count($arr) > 0) {
+//            $contratofornecedorservico = new ContratoFornecedorServicoCollection(ContratoFornecedorServico::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));        
+//        } else {
+//            $contratofornecedorservico = new ContratoFornecedorServicoCollection(ContratoFornecedorServico::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+//        }
+//
+//
+//        return $contratofornecedorservico->response()->setStatusCode(200); //response()->json($contratofornecedorservico,200);
+    }
+
+    public function listContratoFornecedorServico() {
+        $lista = DB::table('contrato_fornecedor_servico')
+                ->rightJoin('servico', 'id_servico', 'servico.id')
+                ->leftJoin('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->select('contrato_fornecedor_servico.id', 
+                        'contrato_fornecedor_servico.id_contrato', 
+                        'contrato_fornecedor_servico.id_fornecedor', 
+                        'servico.id as id_servico', 
+                        'contrato_fornecedor_servico.unidade', 
+                        'contrato_fornecedor_servico.preco_compra', 
+                        'contrato_fornecedor_servico.preco_servico', 
+                        'contrato_fornecedor_servico.selecionado', 
+                        'contrato_fornecedor_servico.created_at', 
+                        'contrato_fornecedor_servico.updated_at', 
+                        'servico.descricao as servico',
+                        'fornecedor.razao_social as fornecedor')
                 ->get();
 //        $contratofornecedorservico = ContratoFornecedorServico::all();
 //        return response()->json($contratofornecedorservico, 200);
@@ -164,6 +234,7 @@ class ContratoFornecedorServicoController extends Controller {
 
             $lista = DB::table('contrato_fornecedor_servico')
                     ->rightJoin('servico', 'id_servico', 'servico.id')
+                    ->leftJoin('fornecedor', 'id_fornecedor', 'fornecedor.id')
                     ->select('contrato_fornecedor_servico.id', 
                             'contrato_fornecedor_servico.id_contrato', 
                             'contrato_fornecedor_servico.id_fornecedor', 
@@ -174,7 +245,8 @@ class ContratoFornecedorServicoController extends Controller {
                             'contrato_fornecedor_servico.selecionado', 
                             'contrato_fornecedor_servico.created_at', 
                             'contrato_fornecedor_servico.updated_at', 
-                            'servico.descricao')
+                            'servico.descricao as servico',
+                            'fornecedor.razao_social as fornecedor')
                     ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                     ->orWhereNull('contrato_fornecedor_servico.id')
                     ->get();
@@ -195,6 +267,7 @@ class ContratoFornecedorServicoController extends Controller {
     public function show($id) {
         $lista = DB::table('contrato_fornecedor_servico')
                 ->rightJoin('servico', 'id_servico', 'servico.id')
+                ->leftJoin('fornecedor', 'id_fornecedor', 'fornecedor.id')
                 ->select('contrato_fornecedor_servico.id', 
                         'contrato_fornecedor_servico.id_contrato', 
                         'contrato_fornecedor_servico.id_fornecedor', 
@@ -205,7 +278,8 @@ class ContratoFornecedorServicoController extends Controller {
                         'contrato_fornecedor_servico.selecionado', 
                         'contrato_fornecedor_servico.created_at', 
                         'contrato_fornecedor_servico.updated_at', 
-                        'servico.descricao')
+                        'servico.descricao as servico',
+                        'fornecedor.razao_social as fornecedor')
                 ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                 ->orWhereNull('contrato_fornecedor_servico.id')
                 ->get();
@@ -258,17 +332,19 @@ class ContratoFornecedorServicoController extends Controller {
 //            return response()->json($contratofornecedorservico, 200); 
             $lista = DB::table('contrato_fornecedor_servico')
                     ->rightJoin('servico', 'id_servico', 'servico.id')
+                    ->leftJoin('fornecedor', 'id_fornecedor', 'fornecedor.id')
                     ->select('contrato_fornecedor_servico.id', 
                             'contrato_fornecedor_servico.id_contrato', 
                             'contrato_fornecedor_servico.id_fornecedor', 
-                            'servico.id as id_servico',
+                            'servico.id as id_servico', 
                             'contrato_fornecedor_servico.unidade', 
                             'contrato_fornecedor_servico.preco_compra', 
                             'contrato_fornecedor_servico.preco_servico', 
                             'contrato_fornecedor_servico.selecionado', 
                             'contrato_fornecedor_servico.created_at', 
                             'contrato_fornecedor_servico.updated_at', 
-                            'servico.descricao')
+                            'servico.descricao as servico',
+                            'fornecedor.razao_social as fornecedor')
                     ->where('contrato_fornecedor_servico.id_contrato', '=', $id)
                     ->orWhereNull('contrato_fornecedor_servico.id')
                     ->get();

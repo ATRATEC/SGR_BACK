@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ContratoCliContratoFor;
+use App\ContratoClienteServico;
 use App\Servico;
 use App\ContratoCliente;
-use App\Http\Resources\ContratoCliContratoForCollection;
+use App\Http\Resources\ContratoClienteServicoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
 
-class ContratoCliContratoForController extends Controller {
+class ContratoClienteServicoController extends Controller {
 
     function __construct() {
         $this->content = array();
@@ -42,29 +42,29 @@ class ContratoCliContratoForController extends Controller {
         }
 
         if (count($arr) > 0) {
-            $contratoclicontratofor = new ContratoCliContratoForCollection(ContratoCliContratoFor::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
-            // $contratoclicontratofor = DB::table('contratoclicontratofor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+            // $contratoclienteservico = DB::table('contratoclienteservico')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
-            $contratoclicontratofor = new ContratoCliContratoForCollection(ContratoCliContratoFor::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+            $contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
 
 
-        return $contratoclicontratofor->response()->setStatusCode(200); //response()->json($contratoclicontratofor,200);
+        return $contratoclienteservico->response()->setStatusCode(200); //response()->json($contratoclienteservico,200);
     }
 
-    public function listContratoCliContratoFor() {        
-        $contratoclicontratofor = ContratoCliContratoFor::all();
-        return response()->json($contratoclicontratofor, 200);        
+    public function listContratoClienteServico() {
+        $contratoclienteservico = ContratoClienteServico::all();
+        return response()->json($contratoclienteservico, 200);
     }
 
     /**
      * Metodo de validação da classe.
      *
-     * @param  \App\ContratoCliContratoFor  $contratoclicontratofor
+     * @param  \App\ContratoClienteServico  $contratoclienteservico
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function Valitation(ContratoCliContratoFor $contratoclicontratofor) {
-        $validator = Validator::make($contratoclicontratofor->toArray(), [
+    private function Valitation(ContratoClienteServico $contratoclienteservico) {
+        $validator = Validator::make($contratoclienteservico->toArray(), [
                     'id_contrato_cliente' => 'required',
                     'id_contrato_fornecedor' => 'required',
                     'id_servico' => 'required',
@@ -76,7 +76,7 @@ class ContratoCliContratoForController extends Controller {
 
         return $validator;
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -100,50 +100,40 @@ class ContratoCliContratoForController extends Controller {
             foreach ($data as $item) {
                 if (isset($item['id'])) {
                     //Fluxo de atualização / deleção                    
-                    $contratoservico = ContratoCliContratoFor::find($item['id']);
-                    if ($item['selecionado'] == false) {
-                        $contratoservico->delete();
-                    } else {
-                        $contratoservico->fill($item);
-                        $validator = $this->Valitation($contratoservico);
+                    $contratoservico = ContratoClienteServico::find($item['id']);
+                    $contratoservico->fill($item);
+                    $validator = $this->Valitation($contratoservico);
 
-                        if ($validator->fails()) {
-                            return response()->json([
-                                        'error' => 'Validação falhou',
-                                        'message' => $validator->errors()->all(),
-                                            ], 422);
-                        }
-                        $contratoservico->save();
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
                     }
+                    $contratoservico->save();
                 } else {
                     //fluxo de criação
-                    if ($item['selecionado'] == true) {
-                        $contratoservico = new ContratoCliContratoFor();
-                        $contratoservico->fill($item);
-                        $validator = $this->Valitation($contratoservico);
+                    $contratoservico = new ContratoClienteServico();
+                    $contratoservico->fill($item);
+                    $validator = $this->Valitation($contratoservico);
 
-                        if ($validator->fails()) {
-                            return response()->json([
-                                        'error' => 'Validação falhou',
-                                        'message' => $validator->errors()->all(),
-                                            ], 422);
-                        }
-                        $contratoservico->save();
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
                     }
-                    
+                    $contratoservico->save();
                 }
             }
 
-            $lista = DB::table('contrato_cli_contrato_for')
+            $lista = DB::table('contrato_cliente_servico')
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
-                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor','fornecedor.id')
-                    ->join('residuo','id_residuo','residuo.id')
+                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
                     ->join('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_cli_contrato_for.*', 
-                            'fornecedor.razao_social as fornecedor', 
-                            'residuo.descricao as residuo',                             
-                            'servico.descricao as servico')
-                    ->where('contrato_cli_contrato_for.id_contrato_cliente', '=', $id)                    
+                    ->select('contrato_cliente_servico.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->where('contrato_cliente_servico.id_contrato_cliente', '=', $id)
                     ->get();
             return response()->json($lista, 201);
         }
@@ -156,12 +146,21 @@ class ContratoCliContratoForController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\contratoclicontratofor  $id
+     * @param  \App\contratoclienteservico  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {        
-         $contratoclicontratofor = ContratoCliContratoFor::where('id_contrato_cliente', $id)->get();
-         return response()->json($contratoclicontratofor, 200);        
+    public function show($id) {
+        // $contratoclienteservico = ContratoClienteServico::where('id_contrato_cliente', $id)->get();
+        $lista = DB::table('contrato_cliente_servico')
+                    ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
+                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_servico.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->where('contrato_cliente_servico.id_contrato_cliente', '=', $id)
+                    ->get();
+        //return response()->json($contratoclienteservico, 200);
+        return response()->json($lista, 200);
     }
 
     /**
@@ -175,9 +174,9 @@ class ContratoCliContratoForController extends Controller {
         if ($request->has('data')) {
             $data = $request->data;
             $id = $data[0]['id_contrato'];
-            
+
             foreach ($data as $item) {
-                $contratoservico = ContratoCliContratoFor::find($item['id']);
+                $contratoservico = ContratoClienteServico::find($item['id']);
                 $contratoservico->fill($item);
                 $validator = $this->Valitation($contratoservico);
 
@@ -187,20 +186,17 @@ class ContratoCliContratoForController extends Controller {
                                 'message' => $validator->errors()->all(),
                                     ], 422);
                 }
-                
+
                 $contratoservico->save();
             }
 
             $lista = DB::table('contrato_cli_contrato_for')
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
-                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor','fornecedor.id')
-                    ->join('residuo','id_residuo','residuo.id')
+                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
                     ->join('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_cli_contrato_for.*', 
-                            'fornecedor.razao_social as fornecedor', 
-                            'residuo.descricao as residuo',                             
-                            'servico.descricao as servico')
-                    ->where('contrato_cli_contrato_for.id_contrato_cliente', '=', $id)                    
+                    ->select('contrato_cli_contrato_for.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->where('contrato_cli_contrato_for.id_contrato_cliente', '=', $id)
                     ->get();
             return response()->json($lista, 201);
         }
@@ -213,11 +209,11 @@ class ContratoCliContratoForController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\contratoclicontratofor  $contratoclicontratofor
+     * @param  \App\contratoclienteservico  $contratoclienteservico
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContratoCliContratoFor $contratoclicontratofor) {
-        $contratoclicontratofor->delete();
+    public function destroy(ContratoClienteServico $contratoclienteservico) {
+        $contratoclienteservico->delete();
         return response()->json(null, 200);
     }
 
