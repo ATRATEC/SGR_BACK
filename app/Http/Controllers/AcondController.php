@@ -49,6 +49,11 @@ class AcondController extends Controller
         return $acondicionamento->response()->setStatusCode(200); //response()->json($acondicionamento,200);
     }
     
+    public function listAcondicionamento() {
+        $acondicionamento = Acondicionamento::all();
+        return response()->json($acondicionamento, 200);
+    }
+    
     /**
      * Metodo de validação da classe.
      *

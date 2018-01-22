@@ -69,7 +69,8 @@ class ContratoFornecedorServicoController extends Controller {
                         'contrato_fornecedor_servico.updated_at', 
                         'servico.descricao as servico',
                         'fornecedor.razao_social as fornecedor')
-                ->where($arr)                
+                ->where($arr)   
+                ->whereRaw('(contrato_fornecedor.id_cliente = '.$request->input('id_cliente').' or contrato_fornecedor.id_cliente is null)')
                 ->get();
         } 
         else {
@@ -118,6 +119,11 @@ class ContratoFornecedorServicoController extends Controller {
 //
 //
 //        return $contratofornecedorservico->response()->setStatusCode(200); //response()->json($contratofornecedorservico,200);
+    }
+    
+    private function  consulta($query, $param)
+    {
+        $query = \Doctrine\DBAL\Query\QueryBuilder::where('1','=','1');
     }
 
     public function listContratoFornecedorServico() {

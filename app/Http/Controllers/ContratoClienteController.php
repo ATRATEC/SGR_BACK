@@ -65,6 +65,11 @@ class ContratoClienteController extends Controller {
             $desc = array('cliente.razao_social', 'like', '%' . $request->input('cliente') . '%');
             array_push($arr, $desc);
         }
+        
+        if ($request->has('id_cliente')) {
+            $desc = array('id_cliente', '=', $request->input('id_cliente'));
+            array_push($arr, $desc);
+        }
 
         if (count($arr) > 0) {
             $contratocliente = DB::table('contrato_cliente')
@@ -101,8 +106,7 @@ class ContratoClienteController extends Controller {
         $validator = Validator::make($request->all(), [
                     'id_cliente' => 'required',
                     'vigencia_inicio' => 'required',
-                    'vigencia_final' => 'required',
-                    'exclusivo' => 'required',
+                    'vigencia_final' => 'required',                    
                         ], parent::$messages);
 
         return $validator;
@@ -118,8 +122,7 @@ class ContratoClienteController extends Controller {
         $validator = Validator::make($request->all(), [
                     'id_cliente' => 'required',
                     'vigencia_inicio' => 'required|date',
-                    'vigencia_final' => 'required|date',
-                    'exclusivo' => 'required',
+                    'vigencia_final' => 'required|date',                    
                         ], parent::$messages);
 
         return $validator;

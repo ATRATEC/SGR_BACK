@@ -37,19 +37,36 @@ class ContratoClienteServicoController extends Controller {
         }
 
         if ($request->has('id_contrato')) {
-            $desc = array('id_contrato', '=', $request->input('id_contrato'));
+            $desc = array('contrato_cliente_servico.id_contrato_cliente', '=', $request->input('id_contrato'));
             array_push($arr, $desc);
         }
 
         if (count($arr) > 0) {
-            $contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+            //$contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
             // $contratoclienteservico = DB::table('contratoclienteservico')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            $contratoclienteservico = DB::table('contrato_cliente_servico')
+                    ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
+                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_servico.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->where($arr)
+                    ->get();
         } else {
-            $contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
+            $contratoclienteservico = DB::table('contrato_cliente_servico')
+                    ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
+                    ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_servico.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->where('contrato_cliente_servico.id_contrato_cliente', '=', $id)
+                    ->get();
+           // $contratoclienteservico = new ContratoClienteServicoCollection(ContratoClienteServico::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
+        
+        response()->json($contratoclienteservico,200);
 
-
-        return $contratoclienteservico->response()->setStatusCode(200); //response()->json($contratoclienteservico,200);
+        //return $contratoclienteservico->response()->setStatusCode(200); //response()->json($contratoclienteservico,200);
     }
 
     public function listContratoClienteServico() {

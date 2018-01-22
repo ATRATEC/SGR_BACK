@@ -43,6 +43,7 @@ Route::get('/cidades', 'CidadeController@index')->middleware('auth:api');
 Route::get('/estados', 'EstadoController@index')->middleware('auth:api');
 
 Route::get('/acondicionamentos', 'AcondController@index')->middleware('auth:api');
+Route::get('/listacondicionamentos', 'AcondController@listAcondicionamento')->middleware('auth:api');
 Route::post('/acondicionamentos', 'AcondController@store')->middleware('auth:api');
 Route::get('/acondicionamentos/{acondicionamento}', 'AcondController@show')->middleware('auth:api');
 Route::put('/acondicionamentos/{acondicionamento}', 'AcondController@update')->middleware('auth:api');
@@ -71,6 +72,7 @@ Route::delete('/residuos/{residuo}', 'ResiduoController@destroy')->middleware('a
 
 Route::get('/tipotratamentos', 'TipoTratamentoController@index')->middleware('auth:api');
 Route::post('/tipotratamentos', 'TipoTratamentoController@store')->middleware('auth:api');
+Route::get('/listtipotratamentos', 'TipoTratamentoController@listTipoTratamento');
 Route::get('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@show')->middleware('auth:api');
 Route::put('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@update')->middleware('auth:api');
 Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@destroy')->middleware('auth:api');
@@ -149,9 +151,28 @@ Route::put('/contratoclientes/{contratocliente}', 'ContratoClienteController@upd
 Route::delete('/contratoclientes/{contratocliente}', 'ContratoClienteController@destroy')->middleware('auth:api');
 Route::post('/contratoclientes/upload', 'ContratoClienteController@upload')->middleware('auth:api');
 
-Route::get('/contratoclienteservicos', 'ContratoClienteServicoController@index')->middleware('auth:api');
-Route::post('/contratoclienteservicos', 'ContratoClienteServicoController@store')->middleware('auth:api');
+Route::get('/contratoclienteservicos', 'ContratoClienteServicoController@index')->middleware('auth:api')->middleware('auth:api');
+Route::post('/contratoclienteservicos', 'ContratoClienteServicoController@store')->middleware('auth:api')->middleware('auth:api');
 Route::get('/listcontratoclienteservicos', 'ContratoClienteServicoController@listContratoClienteServico')->middleware('auth:api');
 Route::get('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@show')->middleware('auth:api');
 Route::put('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@update')->middleware('auth:api');
 Route::delete('/contratoclienteservicos/{contratoclienteservico}', 'ContratoClienteServicoController@destroy')->middleware('auth:api');
+
+Route::get('/manifestos', 'ManifestoController@index')->middleware('auth:api');
+Route::post('/manifestos', 'ManifestoController@store')->middleware('auth:api');
+Route::get('/listmanifestos', 'ManifestoController@listManifesto')->middleware('auth:api');
+Route::get('/manifestos/{manifesto}', 'ManifestoController@show')->middleware('auth:api');
+Route::put('/manifestos/{manifesto}', 'ManifestoController@update')->middleware('auth:api');
+Route::delete('/manifestos/{manifesto}', 'ManifestoController@destroy')->middleware('auth:api');
+Route::post('/manifestos/upload', 'ManifestoController@upload')->middleware('auth:api');
+
+Route::get('/manifestos_anexo/downloadanexo', 'ManifestoController@downloadAnexo');
+
+Route::get('/manifestoservicos', 'ManifestoServicoController@index')->middleware('auth:api');
+Route::post('/manifestoservicos', 'ManifestoServicoController@store')->middleware('auth:api');
+Route::get('/listmanifestoservicos', 'ManifestoServicoController@listManifestoServico')->middleware('auth:api');
+Route::get('/manifestoservicos/{manifestoservico}', 'ManifestoServicoController@show')->middleware('auth:api');
+Route::put('/manifestoservicos/{manifestoservico}', 'ManifestoServicoController@update')->middleware('auth:api');
+Route::delete('/manifestoservicos/{manifestoservico}', 'ManifestoServicoController@destroy')->middleware('auth:api');
+
+

@@ -61,14 +61,19 @@ return [
             'url' => env('APP_URL').'/documentos',
             'visibility' => 'public',
         ],
-        
+        'manifestos_anexo' =>[
+            'driver' => 'local',
+            'root' => public_path('manifestos_anexo'),
+            'url' => env('APP_URL').'/manifestos_anexo',
+            'visibility' => 'public',
+        ],
         'contratos' =>[
             'driver' => 'local',
             'root' => public_path('contratos'),
             'url' => env('APP_URL').'/contratos',
             'visibility' => 'public',
         ],
-
+               
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

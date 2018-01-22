@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 19 Jan 2018 04:56:02 +0000.
+ * Date: Sat, 20 Jan 2018 11:25:21 +0000.
  */
 
 namespace App;
@@ -19,6 +19,7 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $vigencia_final
  * @property string $observacao
  * @property string $caminho
+ * @property float $faturamento_minimo
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -32,7 +33,8 @@ class ContratoCliente extends Eloquent
 	protected $table = 'contrato_cliente';
 
 	protected $casts = [
-		'id_cliente' => 'int'
+		'id_cliente' => 'int',
+		'faturamento_minimo' => 'float'
 	];
 
 	protected $dates = [
@@ -46,7 +48,8 @@ class ContratoCliente extends Eloquent
 		'vigencia_inicio',
 		'vigencia_final',
 		'observacao',
-		'caminho'
+		'caminho',
+		'faturamento_minimo'
 	];
 
 	public function cliente()

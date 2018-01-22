@@ -49,6 +49,11 @@ class TipoTratamentoController extends Controller
         return $tipotratamento->response()->setStatusCode(200); //response()->json($tipotratamento,200);
     }
     
+    public function listTipoTratamento() {
+        $tipotratamento = TipoTratamento::all();
+        return response()->json($tipotratamento, 200);
+    }
+    
     /**
      * Metodo de validação da classe.
      *
