@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 21 Jan 2018 22:21:25 +0000.
+ * Date: Tue, 23 Jan 2018 00:15:12 +0000.
  */
 
 namespace App;
@@ -15,6 +15,8 @@ use App\BaseModel as Eloquent;
  * @property int $id
  * @property int $id_cliente
  * @property int $id_contrato_cliente
+ * @property int $id_transportador
+ * @property int $id_destinador
  * @property \Carbon\Carbon $data
  * @property string $numero
  * @property string $observacao
@@ -24,6 +26,7 @@ use App\BaseModel as Eloquent;
  * 
  * @property \App\Cliente $cliente
  * @property \App\ContratoCliente $contrato_cliente
+ * @property \App\Fornecedor $fornecedor
  * @property \Illuminate\Database\Eloquent\Collection $servicos
  *
  * @package App
@@ -34,7 +37,9 @@ class Manifesto extends Eloquent
 
 	protected $casts = [
 		'id_cliente' => 'int',
-		'id_contrato_cliente' => 'int'
+		'id_contrato_cliente' => 'int',
+		'id_transportador' => 'int',
+		'id_destinador' => 'int'
 	];
 
 	protected $dates = [
@@ -44,6 +49,8 @@ class Manifesto extends Eloquent
 	protected $fillable = [
 		'id_cliente',
 		'id_contrato_cliente',
+		'id_transportador',
+		'id_destinador',
 		'data',
 		'numero',
 		'observacao',
@@ -58,6 +65,11 @@ class Manifesto extends Eloquent
 	public function contrato_cliente()
 	{
 		return $this->belongsTo(\App\ContratoCliente::class, 'id_contrato_cliente');
+	}
+
+	public function fornecedor()
+	{
+		return $this->belongsTo(\App\Fornecedor::class, 'id_transportador');
 	}
 
 	public function servicos()

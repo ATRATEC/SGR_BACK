@@ -95,6 +95,69 @@ class ContratoClienteController extends Controller {
         $contratocliente = ContratoCliente::all();
         return response()->json($contratocliente, 200);
     }
+    
+    public function getTransportador($id) {
+        $arr = array();
+        
+        $condid = array('cc.id', '=', $id);
+        array_push($arr, $condid);
+        
+        $condsv = array('sv.transportador', '=', true);
+        array_push($arr, $condsv);
+        
+        
+        $contratocliente = DB::table('contrato_cliente as cc')
+                ->join('contrato_cliente_servico as ccs', 'ccs.id_contrato_cliente', 'cc.id')
+                ->join('contrato_fornecedor as cf', 'cf.id', 'ccs.id_contrato_fornecedor')
+                ->join('servico as sv', 'sv.id', 'ccs.id_servico')
+                ->join('fornecedor as for', 'for.id', 'cf.id_fornecedor')
+                ->select('for.*')
+                ->where($arr)
+                ->first();
+        return response()->json($contratocliente, 200);
+    }
+    
+    public function getDestinador($id) {
+        $arr = array();
+        
+        $condid = array('cc.id', '=', $id);
+        array_push($arr, $condid);
+        
+        $condsv = array('sv.destinador', '=', true);
+        array_push($arr, $condsv);
+        
+        
+        $contratocliente = DB::table('contrato_cliente as cc')
+                ->join('contrato_cliente_servico as ccs', 'ccs.id_contrato_cliente', 'cc.id')
+                ->join('contrato_fornecedor as cf', 'cf.id', 'ccs.id_contrato_fornecedor')
+                ->join('servico as sv', 'sv.id', 'ccs.id_servico')
+                ->join('fornecedor as for', 'for.id', 'cf.id_fornecedor')
+                ->select('for.*')
+                ->where($arr)
+                ->first();
+        return response()->json($contratocliente, 200);
+    }
+    
+    public function getArmazenador($id) {
+        $arr = array();
+        
+        $condid = array('cc.id', '=', $id);
+        array_push($arr, $condid);
+        
+        $condsv = array('sv.armazenador', '=', true);
+        array_push($arr, $condsv);
+        
+        
+        $contratocliente = DB::table('contrato_cliente as cc')
+                ->join('contrato_cliente_servico as ccs', 'ccs.id_contrato_cliente', 'cc.id')
+                ->join('contrato_fornecedor as cf', 'cf.id', 'ccs.id_contrato_fornecedor')
+                ->join('servico as sv', 'sv.id', 'ccs.id_servico')
+                ->join('fornecedor as for', 'for.id', 'cf.id_fornecedor')
+                ->select('for.*')
+                ->where($arr)
+                ->first();
+        return response()->json($contratocliente, 200);
+    }
 
     /**
      * Metodo de validação da classe.

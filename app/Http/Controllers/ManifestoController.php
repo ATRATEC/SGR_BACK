@@ -61,21 +61,37 @@ class ManifestoController extends Controller
             $desc = array('cliente.razao_social', 'like', '%' . $request->input('cliente') . '%');
             array_push($arr, $desc);
         }
+        
+        if ($request->has('transportador')) {
+            $desc = array('f1.razao_social', 'like', '%' . $request->input('transportador') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('destinador')) {
+            $desc = array('f2.razao_social', 'like', '%' . $request->input('destinador') . '%');
+            array_push($arr, $desc);
+        }
                                       
         if (count($arr) > 0) {            
             $Manifesto = DB::table('manifesto')
-                ->join('join', 'id_cliente', 'cliente.id')      
+                ->join('cliente', 'id_cliente', 'cliente.id')      
+                ->join('fornecedor as f1', 'id_transportador','f1.id')
+                ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
-                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao')
+                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
+                        'f1.razao_social as transportador','f2.razao_social as destinador')
                 ->where($arr)
                 ->orderBy($orderkey, $order)->paginate($nrcount);
             // $Manifesto = new ManifestoCollection(Manifesto::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
             // $Manifesto = DB::table('Manifesto')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
             $Manifesto = DB::table('manifesto')
-                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->join('cliente', 'id_cliente', 'cliente.id') 
+                ->join('fornecedor as f1', 'id_transportador','f1.id')
+                ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
-                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao')
+                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
+                        'f1.razao_social as transportador','f2.razao_social as destinador')
                 ->orderBy($orderkey, $order)->paginate($nrcount);
             // $Manifesto = new ManifestoCollection(Manifesto::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
@@ -100,6 +116,8 @@ class ManifestoController extends Controller
         $validator = Validator::make($request->all(), [                            
                     'id_cliente' => 'required',
                     'id_contrato_cliente' => 'required',
+                    'id_transportador' => 'required',
+                    'id_destinador' => 'required',
                     'data' => 'required',
                     'numero' => 'required',
         ], parent::$messages);
@@ -117,6 +135,8 @@ class ManifestoController extends Controller
         $validator = Validator::make($request->all(), [                            
                     'id_cliente' => 'required',
                     'id_contrato_cliente' => 'required',
+                    'id_transportador' => 'required',
+                    'id_destinador' => 'required',
                     'data' => 'required',
                     'numero' => 'required',
         ], parent::$messages);
@@ -156,9 +176,12 @@ class ManifestoController extends Controller
         $Manifesto->save();
         
         $ctrfor = DB::table('manifesto')
-                ->join('cliente', 'id_cliente', 'cliente.id')                
+                ->join('cliente', 'id_cliente', 'cliente.id') 
+                ->join('fornecedor as f1', 'id_transportador','f1.id')
+                ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
-                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao')
+                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
+                        'f1.razao_social as transportador','f2.razao_social as destinador')
                 ->where('manifesto.id', '=', $Manifesto->id)
                 ->first();
         
@@ -176,8 +199,11 @@ class ManifestoController extends Controller
     {
         $Manifesto = DB::table('manifesto')                
                 ->join('cliente', 'id_cliente', 'cliente.id')
+                ->join('fornecedor as f1', 'id_transportador','f1.id')
+                ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
-                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao')
+                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
+                        'f1.razao_social as transportador','f2.razao_social as destinador')
                 ->where('manifesto.id', '=', $id)
                 ->first();
         return response()->json($Manifesto, 200);
@@ -205,8 +231,11 @@ class ManifestoController extends Controller
         
         $ctrfor = DB::table('manifesto')                
                 ->join('cliente', 'id_cliente', 'cliente.id')
+                ->join('fornecedor as f1', 'id_transportador','f1.id')
+                ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
-                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao')
+                ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
+                        'f1.razao_social as transportador','f2.razao_social as destinador')
                 ->where('manifesto.id', '=', $Manifesto->id)
                 ->first();
 

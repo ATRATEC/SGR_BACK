@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 21 Jan 2018 01:22:28 +0000.
+ * Date: Tue, 23 Jan 2018 02:55:41 +0000.
  */
 
 namespace App;
@@ -14,8 +14,8 @@ use App\BaseModel as Eloquent;
  * 
  * @property int $id
  * @property int $id_manifesto
- * @property int $id_servico
  * @property int $id_residuo
+ * @property int $id_tipo_residuo
  * @property int $id_acondicionamento
  * @property int $id_tratamento
  * @property string $unidade
@@ -26,7 +26,7 @@ use App\BaseModel as Eloquent;
  * @property \App\Acondicionamento $acondicionamento
  * @property \App\Manifesto $manifesto
  * @property \App\Residuo $residuo
- * @property \App\Servico $servico
+ * @property \App\TipoResiduo $tipo_residuo
  * @property \App\TipoTratamento $tipo_tratamento
  *
  * @package App
@@ -37,8 +37,8 @@ class ManifestoServico extends Eloquent
 
 	protected $casts = [
 		'id_manifesto' => 'int',
-		'id_servico' => 'int',
 		'id_residuo' => 'int',
+		'id_tipo_residuo' => 'int',
 		'id_acondicionamento' => 'int',
 		'id_tratamento' => 'int',
 		'quantidade' => 'float'
@@ -46,8 +46,8 @@ class ManifestoServico extends Eloquent
 
 	protected $fillable = [
 		'id_manifesto',
-		'id_servico',
 		'id_residuo',
+		'id_tipo_residuo',
 		'id_acondicionamento',
 		'id_tratamento',
 		'unidade',
@@ -69,9 +69,9 @@ class ManifestoServico extends Eloquent
 		return $this->belongsTo(\App\Residuo::class, 'id_residuo');
 	}
 
-	public function servico()
+	public function tipo_residuo()
 	{
-		return $this->belongsTo(\App\Servico::class, 'id_servico');
+		return $this->belongsTo(\App\TipoResiduo::class, 'id_tipo_residuo');
 	}
 
 	public function tipo_tratamento()

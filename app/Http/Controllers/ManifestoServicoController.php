@@ -65,9 +65,9 @@ class ManifestoServicoController extends Controller {
      */
     private function Valitation(ManifestoServico $Manifestoservico) {
         $validator = Validator::make($Manifestoservico->toArray(), [
-                    'id_manifesto' => 'required',
-                    'id_servico' => 'required',        
+                    'id_manifesto' => 'required',                    
                     'id_residuo' => 'required',                    
+                    'id_tipo_residuo' => 'required',
                     'id_acondicionamento' => 'required',
                     'id_tratamento' => 'required',
                     'unidade' => 'required',
@@ -130,10 +130,10 @@ class ManifestoServicoController extends Controller {
             $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
                     ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('servico', 'id_servico', 'servico.id')
+                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
                     ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
                     ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
-                    ->select('manifesto_servico.*', 'servico.descricao as servico', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
+                    ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();
             return response()->json($lista, 201);
@@ -155,10 +155,10 @@ class ManifestoServicoController extends Controller {
         $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
                     ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('servico', 'id_servico', 'servico.id')
+                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
                     ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
                     ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
-                    ->select('manifesto_servico.*', 'servico.descricao as servico', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
+                    ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();
         //return response()->json($Manifestoservico, 200);
@@ -195,10 +195,10 @@ class ManifestoServicoController extends Controller {
             $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
                     ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('servico', 'id_servico', 'servico.id')
+                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
                     ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
                     ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
-                    ->select('manifesto_servico.*', 'servico.descricao as servico', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
+                    ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();
             return response()->json($lista, 201);
