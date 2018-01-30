@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Residuo;
-use App\Http\Resources\Residuo as ResiduoResource;
-use App\Http\Resources\ResiduoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -30,25 +28,58 @@ class ResiduoController extends Controller {
         $arr = array();
 
         if ($request->has('id')) {
-            $desc = array('id', '=', $request->input('id'));
+            $desc = array('residuo.id', '=', $request->input('id'));
             array_push($arr, $desc);
         }
 
         if ($request->has('descricao')) {
-            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
+            $desc = array('residuo.descricao', 'like', '%' . $request->input('descricao') . '%');
+            array_push($arr, $desc);
+        }
+
+        if ($request->has('classe_residuo')) {
+            $desc = array('cr.descricao', 'like', '%' . $request->input('classe_residuo') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('tipo_residuo')) {
+            $desc = array('tr.descricao', 'like', '%' . $request->input('tipo_residuo') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('acondicionamento')) {
+            $desc = array('ac.descricao', 'like', '%' . $request->input('acondicionamento') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('tratamento')) {
+            $desc = array('tt.descricao', 'like', '%' . $request->input('tratamento') . '%');
             array_push($arr, $desc);
         }
        
         if (count($arr) > 0) {
-            //$tiporesiduos = DB::table('tipo_residuo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
-            $tiporesiduos = new ResiduoCollection(Residuo::where()->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));            
+            $residuos = DB::table('residuo')
+                    ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
+                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
+                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+            //$tiporesiduos = new ResiduoCollection(Residuo::where()->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));            
         } else {
+            $residuos = DB::table('residuo')
+                    ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
+                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
+                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->orderBy($orderkey, $order)->paginate($nrcount);
             //$tiporesiduos = DB::table('tipo_residuo')->orderBy($orderkey, $order)->paginate($nrcount);
-            $tiporesiduos = new ResiduoCollection(Residuo::orderBy($orderkey, $order)->paginate($nrcount));
+//            $tiporesiduos = new ResiduoCollection(Residuo::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
-
-        return $tiporesiduos->response()->setStatusCode(200) ; // response()->json($tiporesiduos, 200) ;
+        return response()->json($residuos, 200) ;;
+//        return $tiporesiduos->response()->setStatusCode(200) ;
     }
     
     public function listResiduo()
@@ -100,17 +131,34 @@ class ResiduoController extends Controller {
         $tiporesiduo = new Residuo();
         $tiporesiduo->fill($request->all());
         $tiporesiduo->save();
-        return response()->json($tiporesiduo, 201);
+        
+        $residuo = DB::table('residuo')
+                    ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
+                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
+                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->where('residuo.id',$tiporesiduo->id)
+                    ->get()->first();
+        
+        return response()->json($residuo, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \SGR\tiporesiduo  $residuo
+     * @param  \SGR\Residuo  $residuo
      * @return \Illuminate\Http\Response
      */
-    public function show(Residuo $residuo) {
-        //$retorno = new ResiduoResource($residuo);
+    public function show($id) {
+        $residuo = DB::table('residuo')
+                    ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
+                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
+                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->where('residuo.id',$id)
+                    ->get()->first();
         return response()->json($residuo, 200);
     }
 
@@ -118,10 +166,10 @@ class ResiduoController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \SGR\Residuo  $tiporesiduo
+     * @param  \SGR\Residuo  $residuo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Residuo $tiporesiduo) {
+    public function update(Request $request, Residuo $residuo) {
         
         $validator = $this->tiporesiduoValitation($request);
 
@@ -132,15 +180,24 @@ class ResiduoController extends Controller {
                             ], 422);
         }
         
-        $tiporesiduo->update($request->all());
+        $residuo->update($request->all());
+        
+        $res = DB::table('residuo')
+                    ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
+                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
+                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->where('residuo.id', $residuo->id)
+                    ->first();
 
-        return response()->json($tiporesiduo, 200);
+        return response()->json($res, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \SGR\tiporesiduo  $tiporesiduo
+     * @param  \SGR\Residuo  $tiporesiduo
      * @return \Illuminate\Http\Response
      */
     public function destroy(Residuo $tiporesiduo) {

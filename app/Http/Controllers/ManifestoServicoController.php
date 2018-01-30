@@ -129,10 +129,10 @@ class ManifestoServicoController extends Controller {
 
             $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
-                    ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
-                    ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
-                    ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
+                    ->join('residuo', 'manifesto_servico.id_residuo', 'residuo.id')
+                    ->join('tipo_residuo', 'manifesto_servico.id_tipo_residuo', 'tipo_residuo.id')
+                    ->join('acondicionamento', 'manifesto_servico.id_acondicionamento', 'acondicionamento.id')
+                    ->join('tipo_tratamento', 'manifesto_servico.id_tratamento', 'tipo_tratamento.id')
                     ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();
@@ -154,10 +154,10 @@ class ManifestoServicoController extends Controller {
         // $Manifestoservico = ManifestoServico::where('id_contrato_cliente', $id)->get();
         $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
-                    ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
-                    ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
-                    ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
+                    ->join('residuo', 'manifesto_servico.id_residuo', 'residuo.id')
+                    ->join('tipo_residuo', 'manifesto_servico.id_tipo_residuo', 'tipo_residuo.id')
+                    ->join('acondicionamento', 'manifesto_servico.id_acondicionamento', 'acondicionamento.id')
+                    ->join('tipo_tratamento', 'manifesto_servico.id_tratamento', 'tipo_tratamento.id')
                     ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();
@@ -194,10 +194,10 @@ class ManifestoServicoController extends Controller {
 
             $lista = DB::table('manifesto_servico')
                     ->join('manifesto', 'id_manifesto', 'manifesto.id')                    
-                    ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->join('tipo_residuo', 'id_tipo_residuo', 'tipo_residuo.id')
-                    ->join('acondicionamento', 'id_acondicionamento', 'acondicionamento.id')
-                    ->join('tipo_tratamento', 'id_tratamento', 'tipo_tratamento.id')
+                    ->join('residuo', 'manifesto_servico.id_residuo', 'residuo.id')
+                    ->join('tipo_residuo', 'manifesto_servico.id_tipo_residuo', 'tipo_residuo.id')
+                    ->join('acondicionamento', 'manifesto_servico.id_acondicionamento', 'acondicionamento.id')
+                    ->join('tipo_tratamento', 'manifesto_servico.id_tratamento', 'tipo_tratamento.id')
                     ->select('manifesto_servico.*', 'tipo_residuo.descricao as tipo_residuo', 'residuo.descricao as residuo', 'acondicionamento.descricao as acondicionamento','tipo_tratamento.descricao as tratamento')
                     ->where('manifesto_servico.id_manifesto', '=', $id)
                     ->get();

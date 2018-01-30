@@ -44,8 +44,8 @@ class MovimentoEstoqueProxy {
 		$call=Array(
 			"call"=>$method,
 			"param"=>$param,
-			"app_key"=>'1142656109',
-			"app_secret"=>'66b2a456a2c92eaf9646bc95587d47f0'
+			"app_key"=> env('OMIE_APP_KEY'),
+			"app_secret"=>env('OMIE_APP_SECRET')
 		);
 		return json_decode(file_get_contents(self::$_EndPoint."?JSON=".urlencode(json_encode($call))));
 	}

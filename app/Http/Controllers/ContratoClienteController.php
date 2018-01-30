@@ -102,7 +102,7 @@ class ContratoClienteController extends Controller {
         $condid = array('cc.id', '=', $id);
         array_push($arr, $condid);
         
-        $condsv = array('sv.transportador', '=', true);
+        $condsv = array('sv.id_tipo_atividade', '=', 1); // 1=TRANSPORTADOR
         array_push($arr, $condsv);
         
         
@@ -123,7 +123,7 @@ class ContratoClienteController extends Controller {
         $condid = array('cc.id', '=', $id);
         array_push($arr, $condid);
         
-        $condsv = array('sv.destinador', '=', true);
+        $condsv = array('sv.id_tipo_atividade', '=', 2); // 2=DESTINADOR
         array_push($arr, $condsv);
         
         
@@ -144,7 +144,7 @@ class ContratoClienteController extends Controller {
         $condid = array('cc.id', '=', $id);
         array_push($arr, $condid);
         
-        $condsv = array('sv.armazenador', '=', true);
+        $condsv = array('sv.id_tipo_atividade', '=', 3); // 3=ARMAZENADOR
         array_push($arr, $condsv);
         
         

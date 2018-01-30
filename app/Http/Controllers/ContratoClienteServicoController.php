@@ -86,9 +86,7 @@ class ContratoClienteServicoController extends Controller {
                     'id_contrato_fornecedor' => 'required',
                     'id_servico' => 'required',
                     'id_residuo' => 'required',
-                    'unidade' => 'required',
-                    'preco_compra' => 'required',
-                    'preco_servico' => 'required',
+                    'unidade' => 'required',                    
                         ], parent::$messages);
 
         return $validator;

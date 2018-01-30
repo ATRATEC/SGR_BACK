@@ -27,6 +27,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/movimentos', 'HomeController@movimentos');
 //
 Route::get('/consultaestoque', 'HomeController@consultaestoque');
+
+Route::get('/teste', function () {
+    return env('OMIE_APP_SECRET');
+});
 //
 //Route::get('/redirect', function () {
 //    $query = http_build_query([
