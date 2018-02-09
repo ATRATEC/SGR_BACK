@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 19 Jan 2018 04:56:11 +0000.
+ * Date: Sun, 04 Feb 2018 01:44:02 +0000.
  */
 
 namespace App;
@@ -10,12 +10,11 @@ namespace App;
 use App\BaseModel as Eloquent;
 
 /**
- * Class ContratoClienteServico
+ * Class ContratoClienteResiduo
  * 
  * @property int $id
  * @property int $id_contrato_cliente
  * @property int $id_contrato_fornecedor
- * @property int $id_servico
  * @property int $id_residuo
  * @property string $unidade
  * @property float $preco_compra
@@ -26,18 +25,16 @@ use App\BaseModel as Eloquent;
  * @property \App\ContratoCliente $contrato_cliente
  * @property \App\ContratoFornecedor $contrato_fornecedor
  * @property \App\Residuo $residuo
- * @property \App\Servico $servico
  *
  * @package App
  */
-class ContratoClienteServico extends Eloquent
+class ContratoClienteResiduo extends Eloquent
 {
-	protected $table = 'contrato_cliente_servico';
+	protected $table = 'contrato_cliente_residuo';
 
 	protected $casts = [
 		'id_contrato_cliente' => 'int',
 		'id_contrato_fornecedor' => 'int',
-		'id_servico' => 'int',
 		'id_residuo' => 'int',
 		'preco_compra' => 'float',
 		'preco_servico' => 'float'
@@ -46,7 +43,6 @@ class ContratoClienteServico extends Eloquent
 	protected $fillable = [
 		'id_contrato_cliente',
 		'id_contrato_fornecedor',
-		'id_servico',
 		'id_residuo',
 		'unidade',
 		'preco_compra',
@@ -66,11 +62,6 @@ class ContratoClienteServico extends Eloquent
 	public function residuo()
 	{
 		return $this->belongsTo(\App\Residuo::class, 'id_residuo');
-	}
-
-	public function servico()
-	{
-		return $this->belongsTo(\App\Servico::class, 'id_servico');
 	}
 
 	public function unidade()

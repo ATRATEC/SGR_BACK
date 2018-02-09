@@ -73,6 +73,13 @@ return [
             'url' => env('APP_URL').'/contratos',
             'visibility' => 'public',
         ],
+        
+        'relatorios' =>[
+            'driver' => 'local',
+            'root' => public_path('relatorios'),
+            'url' => env('APP_URL').'/relatorios',
+            'visibility' => 'public',
+        ],
                
         's3' => [
             'driver' => 's3',

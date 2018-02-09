@@ -147,6 +147,8 @@ return [
         Way\Generators\GeneratorsServiceProvider::class,
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
         Reliese\Coders\CodersServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+        JasperPHP\JasperPHPServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -199,6 +201,7 @@ return [
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         'View' => Illuminate\Support\Facades\View::class,
     ],
 ];

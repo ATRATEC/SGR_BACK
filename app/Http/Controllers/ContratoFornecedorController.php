@@ -94,6 +94,86 @@ class ContratoFornecedorController extends Controller
         return response()->json($contratofornecedor,200);
     }
     
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexGrid(Request $request)
+    {
+        $nrcount = $request->input('nrcount', 15);
+        $orderkey = $request->input('orderkey', 'id');
+        $order = $request->input('order', 'asc');
+
+        $arr = array();
+
+        if ($request->has('id')) {
+            $desc = array('id', '=', $request->input('id'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('vigencia_inicio')) {
+            $desc = array('vigencia_inicio', '>=', $request->input('vigencia_inicio'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('vigencia_final')) {
+            $desc = array('vigencia_final', '<=', $request->input('vigencia_final'));
+            array_push($arr, $desc);
+        }
+              
+        if ($request->has('descricao')) {
+            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('fornecedor')) {
+            $desc = array('fornecedor.razao_social', 'like', '%' . $request->input('fornecedor') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('cliente')) {
+            $desc = array('cliente.razao_social', 'like', '%' . $request->input('cliente') . '%');
+            array_push($arr, $desc);
+        }
+        
+//        if ($request->has('id_cliente')) {
+//            $desc = array('contrato_fornecedor.id_cliente', '=', $request->input('id_cliente'));
+//            array_push($arr, $desc);
+//        }
+        
+        if ($request->has('id_tipo_atividade')) {
+            $desc = array('servico.id_tipo_atividade', '=', $request->input('id_tipo_atividade'));
+            array_push($arr, $desc);
+        }
+                                      
+        if (count($arr) > 0) {            
+            $contratofornecedor = DB::table('contrato_fornecedor')
+                ->join('contrato_fornecedor_servico as cfs', 'contrato_fornecedor.id', 'cfs.id_contrato')
+                ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->join('servico', 'cfs.id_servico', 'servico.id')
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
+                ->where($arr)
+                ->whereRaw('(contrato_fornecedor.id_cliente = '.$request->input('id_cliente').' or contrato_fornecedor.id_cliente is null)')    
+                ->orderBy($orderkey, $order)->paginate($nrcount);
+            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
+            // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
+        } else {
+            $contratofornecedor = DB::table('contrato_fornecedor')
+                ->join('contrato_fornecedor_servico as cfs', 'contrato_fornecedor.id', 'cfs.id_contrato')
+                ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
+                ->join('servico', 'cfs.id_servico', 'servico.id')    
+                ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')                
+                ->orderBy($orderkey, $order)->paginate($nrcount);
+            // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
+        }
+
+
+        return response()->json($contratofornecedor,200);
+    }
+    
     public function listContratoFornecedor()
     {
         $contratofornecedor = ContratoFornecedor::all();

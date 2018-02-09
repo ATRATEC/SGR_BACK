@@ -67,22 +67,30 @@ class ContratoClienteController extends Controller {
         }
         
         if ($request->has('id_cliente')) {
-            $desc = array('id_cliente', '=', $request->input('id_cliente'));
+            $desc = array('contrato_cliente.id_cliente', '=', $request->input('id_cliente'));
             array_push($arr, $desc);
         }
 
         if (count($arr) > 0) {
             $contratocliente = DB::table('contrato_cliente')
-                            ->join('cliente', 'id_cliente', 'cliente.id')
-                            ->select('contrato_cliente.*', 'cliente.razao_social as cliente')
+                            ->join('cliente', 'contrato_cliente.id_cliente', 'cliente.id')
+                            ->join('contrato_fornecedor as cft', 'cft.id', 'contrato_cliente.id_transportador')
+                            ->join('contrato_fornecedor as cfd', 'cfd.id', 'contrato_cliente.id_destinador')
+                            ->join('fornecedor as ft', 'ft.id', 'cft.id_fornecedor')
+                            ->join('fornecedor as fd', 'fd.id', 'cfd.id_fornecedor')
+                            ->select('contrato_cliente.*', 'cliente.razao_social as cliente', 'ft.razao_social as transportador', 'fd.razao_social as destinador')
                             ->where($arr)
                             ->orderBy($orderkey, $order)->paginate($nrcount);
             // $contratocliente = new ContratoClienteCollection(ContratoCliente::with(['cliente','cliente','servicos'])->where($arr)->whereIn('id_cliente',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
             // $contratocliente = DB::table('contratocliente')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
             $contratocliente = DB::table('contrato_cliente')
-                            ->join('cliente', 'id_cliente', 'cliente.id')
-                            ->select('contrato_cliente.*', 'cliente.razao_social as cliente')
+                            ->join('cliente', 'contrato_cliente.id_cliente', 'cliente.id')
+                            ->join('contrato_fornecedor as cft', 'cft.id', 'contrato_cliente.id_transportador')
+                            ->join('contrato_fornecedor as cfd', 'cfd.id', 'contrato_cliente.id_destinador')
+                            ->join('fornecedor as ft', 'ft.id', 'cft.id_fornecedor')
+                            ->join('fornecedor as fd', 'fd.id', 'cfd.id_fornecedor')
+                            ->select('contrato_cliente.*', 'cliente.razao_social as cliente', 'ft.razao_social as transportador', 'fd.razao_social as destinador')
                             ->orderBy($orderkey, $order)->paginate($nrcount);
             // $contratocliente = new ContratoClienteCollection(ContratoCliente::with(['cliente','cliente','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
@@ -221,8 +229,12 @@ class ContratoClienteController extends Controller {
         $contratocliente->save();
 
         $ctrfor = DB::table('contrato_cliente')
-                ->join('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_cliente.*', 'cliente.razao_social as cliente')
+                ->join('cliente', 'contrato_cliente.id_cliente', 'cliente.id')
+                ->join('contrato_fornecedor as cft', 'cft.id', 'contrato_cliente.id_transportador')
+                ->join('contrato_fornecedor as cfd', 'cfd.id', 'contrato_cliente.id_destinador')
+                ->join('fornecedor as ft', 'ft.id', 'cft.id_fornecedor')
+                ->join('fornecedor as fd', 'fd.id', 'cfd.id_fornecedor')
+                ->select('contrato_cliente.*', 'cliente.razao_social as cliente', 'ft.razao_social as transportador', 'fd.razao_social as destinador')
                 ->where('contrato_cliente.id', '=', $contratocliente->id)
                 ->first();
 
@@ -238,8 +250,12 @@ class ContratoClienteController extends Controller {
      */
     public function show($id) {
         $contratocliente = DB::table('contrato_cliente')
-                ->join('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_cliente.*', 'cliente.razao_social as cliente')
+                ->join('cliente', 'contrato_cliente.id_cliente', 'cliente.id')
+                ->join('contrato_fornecedor as cft', 'cft.id', 'contrato_cliente.id_transportador')
+                ->join('contrato_fornecedor as cfd', 'cfd.id', 'contrato_cliente.id_destinador')
+                ->join('fornecedor as ft', 'ft.id', 'cft.id_fornecedor')
+                ->join('fornecedor as fd', 'fd.id', 'cfd.id_fornecedor')
+                ->select('contrato_cliente.*', 'cliente.razao_social as cliente', 'ft.razao_social as transportador', 'fd.razao_social as destinador')
                 ->where('contrato_cliente.id', '=', $id)
                 ->first();
         return response()->json($contratocliente, 200);
@@ -265,8 +281,12 @@ class ContratoClienteController extends Controller {
         $contratocliente->update($request->all());
 
         $ctrfor = DB::table('contrato_cliente')
-                ->join('cliente', 'id_cliente', 'cliente.id')
-                ->select('contrato_cliente.*', 'cliente.razao_social as cliente')
+                ->join('cliente', 'contrato_cliente.id_cliente', 'cliente.id')
+                ->join('contrato_fornecedor as cft', 'cft.id', 'contrato_cliente.id_transportador')
+                ->join('contrato_fornecedor as cfd', 'cfd.id', 'contrato_cliente.id_destinador')
+                ->join('fornecedor as ft', 'ft.id', 'cft.id_fornecedor')
+                ->join('fornecedor as fd', 'fd.id', 'cfd.id_fornecedor')
+                ->select('contrato_cliente.*', 'cliente.razao_social as cliente', 'ft.razao_social as transportador', 'fd.razao_social as destinador')
                 ->where('contrato_cliente.id', '=', $contratocliente->id)
                 ->first();
 
