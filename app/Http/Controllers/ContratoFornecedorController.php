@@ -10,7 +10,7 @@
 namespace App\Http\Controllers;
 
 use App\ContratoFornecedor;
-use App\ContratoFornecedorServico;
+use App\ContratoFornecedorResiduo;
 use App\Exceptions\APIException;
 use App\Fornecedor;
 use App\Cliente;
@@ -148,11 +148,9 @@ class ContratoFornecedorController extends Controller
         }
                                       
         if (count($arr) > 0) {            
-            $contratofornecedor = DB::table('contrato_fornecedor')
-                ->join('contrato_fornecedor_servico as cfs', 'contrato_fornecedor.id', 'cfs.id_contrato')
-                ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
-                ->leftJoin('cliente', 'id_cliente', 'cliente.id')
-                ->join('servico', 'cfs.id_servico', 'servico.id')
+            $contratofornecedor = DB::table('contrato_fornecedor')                
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
+                ->leftJoin('cliente', 'id_cliente', 'cliente.id')                
                 ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')
                 ->where($arr)
                 ->whereRaw('(contrato_fornecedor.id_cliente = '.$request->input('id_cliente').' or contrato_fornecedor.id_cliente is null)')    
@@ -160,9 +158,8 @@ class ContratoFornecedorController extends Controller
             // $contratofornecedor = new ContratoFornecedorCollection(ContratoFornecedor::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));
             // $contratofornecedor = DB::table('contratofornecedor')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
         } else {
-            $contratofornecedor = DB::table('contrato_fornecedor')
-                ->join('contrato_fornecedor_servico as cfs', 'contrato_fornecedor.id', 'cfs.id_contrato')
-                ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
+            $contratofornecedor = DB::table('contrato_fornecedor')                
+                ->join('fornecedor', 'id_fornecedor', 'fornecedor.id')
                 ->leftJoin('cliente', 'id_cliente', 'cliente.id')
                 ->join('servico', 'cfs.id_servico', 'servico.id')    
                 ->select('contrato_fornecedor.*','fornecedor.razao_social as fornecedor', 'cliente.razao_social as cliente')                
@@ -188,8 +185,8 @@ class ContratoFornecedorController extends Controller
      */
     private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [                            
-                    'vigencia_inicio' => 'required',
-                    'vigencia_final' => 'required',
+                    'vigencia_inicio' => 'required|date',
+                    'vigencia_final' => 'required|date|after:vigencia_inicio',
                     'exclusivo' => 'required',
         ], parent::$messages);
 
@@ -205,7 +202,7 @@ class ContratoFornecedorController extends Controller
     private function ValitationUpdate(Request $request, ContratoFornecedor $contratofornecedor) {        
         $validator = Validator::make($request->all(), [                            
                     'vigencia_inicio' => 'required|date',
-                    'vigencia_final' => 'required|date',
+                    'vigencia_final' => 'required|date|after:vigencia_inicio',
                     'exclusivo' => 'required',
         ], parent::$messages);
 
@@ -354,8 +351,8 @@ class ContratoFornecedorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(ContratoFornecedor $contratofornecedor)
-    {
-        $contratofornecedorservico = ContratoFornecedorServico::where('id_contrato', $contratofornecedor->id)->delete();
+    {        
+        ContratoFornecedorResiduo::where('id_contrato', $contratofornecedor->id)->delete();
         $contratofornecedor->delete();
         return response()->json(null, 200);
     }

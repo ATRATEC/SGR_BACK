@@ -16,5 +16,7 @@ class Controller extends BaseController
                                 'unique' => 'Informação do Campo :attribute já existe na base.',
                                 'numeric' => 'Campo :attribute deve ser do tipo numerico.',
                                 'max' => 'Campo :attribute não pode ser maior que :max caracteres.',
+                                'after' => 'Data informada deve ser maior que data inicial',
+                                'date' => 'Data informada no campo :attribute é invalída',
                               ];
 }

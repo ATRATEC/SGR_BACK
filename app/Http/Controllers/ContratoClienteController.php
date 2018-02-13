@@ -10,7 +10,7 @@
 namespace App\Http\Controllers;
 
 use App\ContratoCliente;
-use App\ContratoClienteServico;
+use App\ContratoClienteResiduo;
 use App\Exceptions\APIException;
 use App\Cliente;
 use App\Http\Resources\ContratoClienteCollection;
@@ -345,7 +345,7 @@ class ContratoClienteController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(ContratoCliente $contratocliente) {
-        ContratoClienteServico::where('id_contrato_cliente', $contratocliente->id)->delete();
+        ContratoClienteResiduo::where('id_contrato_cliente', $contratocliente->id)->delete();
         if (!empty($contratocliente->caminho)) {
             $arquivoexclui = 'CLI_' . $contratocliente->id_cliente . '_CTR_' . $contratocliente->id . '_' . $contratocliente->caminho;
             $exists = Storage::disk('contratos')->exists($arquivoexclui);

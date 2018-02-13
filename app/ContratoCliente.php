@@ -70,9 +70,9 @@ class ContratoCliente extends Eloquent
 		return $this->belongsTo(\App\Fornecedor::class, 'id_transportador');
 	}
 
-	public function servicos()
+	public function residuos()
 	{
-		return $this->belongsToMany(\App\Servico::class, 'contrato_cliente_servico', 'id_contrato_cliente', 'id_servico')
+		return $this->belongsToMany(\App\Servico::class, 'contrato_cliente_residuo', 'id_contrato_cliente', 'id_residuo')
 					->withPivot('id', 'id_contrato_fornecedor', 'id_residuo', 'unidade', 'preco_compra', 'preco_servico')
 					->withTimestamps();
 	}
