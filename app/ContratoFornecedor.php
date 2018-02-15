@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Mon, 15 Jan 2018 04:42:31 +0000.
+ * Date: Wed, 14 Feb 2018 17:17:31 +0000.
  */
 
 namespace App;
@@ -26,8 +26,8 @@ use App\BaseModel as Eloquent;
  * 
  * @property \App\Cliente $cliente
  * @property \App\Fornecedor $fornecedor
- * @property \Illuminate\Database\Eloquent\Collection $contrato_cli_contrato_fors
- * @property \Illuminate\Database\Eloquent\Collection $servicos
+ * @property \Illuminate\Database\Eloquent\Collection $contrato_cliente_residuos
+ * @property \Illuminate\Database\Eloquent\Collection $residuos
  *
  * @package App
  */
@@ -67,15 +67,15 @@ class ContratoFornecedor extends Eloquent
 		return $this->belongsTo(\App\Fornecedor::class, 'id_fornecedor');
 	}
 
-	public function contrato_cli_contrato_fors()
+	public function contrato_cliente_residuos()
 	{
-		return $this->hasMany(\App\ContratoCliContratoFor::class, 'id_contrato_fornecedor');
+		return $this->hasMany(\App\ContratoClienteResiduo::class, 'id_contrato_fornecedor');
 	}
 
-	public function servicos()
+	public function residuos()
 	{
-		return $this->belongsToMany(\App\Servico::class, 'contrato_fornecedor_servico', 'id_contrato', 'id_servico')
-					->withPivot('id', 'id_fornecedor', 'preco_compra', 'preco_servico', 'selecionado')
+		return $this->belongsToMany(\App\Residuo::class, 'contrato_fornecedor_residuo', 'id_contrato', 'id_residuo')
+					->withPivot('id', 'id_fornecedor', 'id_servico', 'unidade', 'preco_venda', 'preco_servico')
 					->withTimestamps();
 	}
 }

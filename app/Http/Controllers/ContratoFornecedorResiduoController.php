@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ContratoFornecedorResiduo;
-use App\Servico;
-use App\ContratoFornecedor;
-use App\Http\Resources\ContratoFornecedorResiduoCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -22,12 +19,13 @@ class ContratoFornecedorResiduoController extends Controller {
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
-        $order = $request->input('order', 'asc');
+//        $nrcount = $request->input('nrcount', 15);
+//        $orderkey = $request->input('orderkey', 'id');
+//        $order = $request->input('order', 'asc');
 
         $arr = array();
 
@@ -40,16 +38,43 @@ class ContratoFornecedorResiduoController extends Controller {
             $desc = array('id_contrato', '=', $request->input('id_contrato'));
             array_push($arr, $desc);
         }
+        
+        if ($request->has('id_servico')) {
+            $desc = array('id_servico', '=', $request->input('id_servico'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('id_residuo')) {
+            $desc = array('id_residuo', '=', $request->input('id_residuo'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('unidade')) {
+            $desc = array('unidade', '=', $request->input('unidade'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('vigencia_inicio')) {
+            $desc = array('vigencia_inicio', '>=', $request->input('vigencia_inicio'));
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('vigencia_final')) {
+            $desc = array('vigencia_final', '<=', $request->input('vigencia_final'));
+            array_push($arr, $desc);
+        }
+        
 
         if (count($arr) > 0) {
             //$contratofornecedorresiduo = new ContratoFornecedorResiduoCollection(ContratoFornecedorResiduo::where($arr)->with(['contrato_fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
             // $contratofornecedorresiduo = DB::table('contratofornecedorresiduo')->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
             $contratofornecedorresiduo = DB::table('contrato_fornecedor_residuo')
-                    ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
+                    ->join('contrato_fornecedor', 'id_contrato', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor_residuo.id_fornecedor', 'fornecedor.id')
                     ->join('residuo', 'id_residuo', 'residuo.id')                    
                     ->join('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_fornecedor_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->select('contrato_fornecedor_residuo.*', 'fornecedor.nome_fantasia as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
+                    ->whereRaw('(contrato_fornecedor.id_cliente = '.$request->input('id_cliente').' or contrato_fornecedor.id_cliente is null)')
                     ->where($arr)
                     ->get();
         } else {
@@ -58,12 +83,12 @@ class ContratoFornecedorResiduoController extends Controller {
                     ->join('fornecedor', 'contrato_fornecedor_residuo.id_fornecedor', 'fornecedor.id')
                     ->join('residuo', 'id_residuo', 'residuo.id')                    
                     ->join('servico', 'id_servico', 'servico.id')
-                    ->select('contrato_fornecedor_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')                    
+                    ->select('contrato_fornecedor_residuo.*', 'fornecedor.nome_fantasia as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')                    
                     ->get();
            // $contratofornecedorresiduo = new ContratoFornecedorResiduoCollection(ContratoFornecedorResiduo::with(['contrato_fornecedor', 'fornecedor', 'servico'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
         
-        response()->json($contratofornecedorresiduo,200);
+        return response()->json($contratofornecedorresiduo,200);
 
         //return $contratofornecedorresiduo->response()->setStatusCode(200); //response()->json($contratofornecedorresiduo,200);
     }

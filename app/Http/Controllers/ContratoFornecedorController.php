@@ -43,22 +43,22 @@ class ContratoFornecedorController extends Controller
         $arr = array();
 
         if ($request->has('id')) {
-            $desc = array('id', '=', $request->input('id'));
+            $desc = array('contrato_fornecedor.id', '=', $request->input('id'));
             array_push($arr, $desc);
         }
         
         if ($request->has('vigencia_inicio')) {
-            $desc = array('vigencia_inicio', '>=', $request->input('vigencia_inicio'));
+            $desc = array('vigencia_inicio', '<=', $request->input('vigencia_inicio'));
             array_push($arr, $desc);
         }
         
         if ($request->has('vigencia_final')) {
-            $desc = array('vigencia_final', '<=', $request->input('vigencia_final'));
+            $desc = array('vigencia_final', '>=', $request->input('vigencia_final'));
             array_push($arr, $desc);
         }
               
         if ($request->has('descricao')) {
-            $desc = array('descricao', 'like', '%' . $request->input('descricao') . '%');
+            $desc = array('contrato_fornecedor.descricao', 'like', '%' . $request->input('descricao') . '%');
             array_push($arr, $desc);
         }
         
@@ -351,7 +351,11 @@ class ContratoFornecedorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(ContratoFornecedor $contratofornecedor)
-    {        
+    {  
+        if (count($contratofornecedor->contrato_cliente_residuos()->get())){
+            throw new APIException('Contrato não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos de cliente');
+        }
+        
         ContratoFornecedorResiduo::where('id_contrato', $contratofornecedor->id)->delete();
         $contratofornecedor->delete();
         return response()->json(null, 200);

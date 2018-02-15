@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 04 Feb 2018 01:44:02 +0000.
+ * Date: Wed, 14 Feb 2018 01:23:01 +0000.
  */
 
 namespace App;
@@ -16,6 +16,7 @@ use App\BaseModel as Eloquent;
  * @property int $id_contrato_cliente
  * @property int $id_contrato_fornecedor
  * @property int $id_residuo
+ * @property int $id_servico
  * @property string $unidade
  * @property float $preco_compra
  * @property float $preco_servico
@@ -25,6 +26,7 @@ use App\BaseModel as Eloquent;
  * @property \App\ContratoCliente $contrato_cliente
  * @property \App\ContratoFornecedor $contrato_fornecedor
  * @property \App\Residuo $residuo
+ * @property \App\Servico $servico
  *
  * @package App
  */
@@ -36,6 +38,7 @@ class ContratoClienteResiduo extends Eloquent
 		'id_contrato_cliente' => 'int',
 		'id_contrato_fornecedor' => 'int',
 		'id_residuo' => 'int',
+		'id_servico' => 'int',
 		'preco_compra' => 'float',
 		'preco_servico' => 'float'
 	];
@@ -44,6 +47,7 @@ class ContratoClienteResiduo extends Eloquent
 		'id_contrato_cliente',
 		'id_contrato_fornecedor',
 		'id_residuo',
+		'id_servico',
 		'unidade',
 		'preco_compra',
 		'preco_servico'
@@ -62,6 +66,11 @@ class ContratoClienteResiduo extends Eloquent
 	public function residuo()
 	{
 		return $this->belongsTo(\App\Residuo::class, 'id_residuo');
+	}
+
+	public function servico()
+	{
+		return $this->belongsTo(\App\Servico::class, 'id_servico');
 	}
 
 	public function unidade()

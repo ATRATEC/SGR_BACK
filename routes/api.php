@@ -144,7 +144,7 @@ Route::get('/contratofornecedorservicos/{contratofornecedor}', 'ContratoForneced
 Route::put('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@update')->middleware('auth:api');
 Route::delete('/contratofornecedorservicos/{contratofornecedor}', 'ContratoFornecedorServicoController@destroy')->middleware('auth:api');
 
-Route::get('/contratofornecedorresiduos', 'ContratoFornecedorResiduoController@index')->middleware('auth:api');
+Route::get('/contratofornecedorresiduos', 'ContratoFornecedorResiduoController@index');
 Route::post('/contratofornecedorresiduos', 'ContratoFornecedorResiduoController@store')->middleware('auth:api');
 Route::get('/listcontratofornecedorresiduos', 'ContratoFornecedorResiduoController@listContratoFornecedorResiduo')->middleware('auth:api');
 Route::get('/contratofornecedorresiduos/{contratofornecedorresiduo}', 'ContratoFornecedorResiduoController@show')->middleware('auth:api');

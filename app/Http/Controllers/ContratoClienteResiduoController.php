@@ -47,16 +47,18 @@ class ContratoClienteResiduoController extends Controller {
             $contratoclienteresiduo = DB::table('contrato_cliente_residuo')
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
-                    ->join('residuo', 'id_residuo', 'residuo.id')                    
-                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where($arr)
                     ->get();
         } else {
             $contratoclienteresiduo = DB::table('contrato_cliente_residuo')
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
-                    ->join('residuo', 'id_residuo', 'residuo.id')                    
-                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo')
+                    ->join('residuo', 'id_residuo', 'residuo.id')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $id)
                     ->get();
            // $contratoclienteresiduo = new ContratoClienteResiduoCollection(ContratoClienteResiduo::with(['contrato_fornecedor', 'fornecedor', 'residuo'])->orderBy($orderkey, $order)->paginate($nrcount));
@@ -83,6 +85,7 @@ class ContratoClienteResiduoController extends Controller {
                     'id_contrato_cliente' => 'required',
                     'id_contrato_fornecedor' => 'required',                    
                     'id_residuo' => 'required',
+                    'id_servico' => 'required',
                     'unidade' => 'required',                    
                         ], parent::$messages);
 
@@ -143,7 +146,8 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
                     ->join('residuo', 'id_residuo', 'residuo.id')                    
-                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $id)
                     ->get();
             return response()->json($lista, 201);
@@ -166,7 +170,8 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')                    
                     ->join('residuo', 'id_residuo', 'residuo.id')
-                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $id)
                     ->get();
         //return response()->json($contratoclienteresiduo, 200);
@@ -204,7 +209,8 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('contrato_fornecedor', 'id_contrato_fornecedor', 'contrato_fornecedor.id')
                     ->join('fornecedor', 'contrato_fornecedor.id_fornecedor', 'fornecedor.id')
                     ->join('residuo', 'id_residuo', 'residuo.id')                    
-                    ->select('contrato_cli_contrato_for.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo')
+                    ->join('servico', 'id_servico', 'servico.id')
+                    ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where('contrato_cli_contrato_for.id_contrato_cliente', '=', $id)
                     ->get();
             return response()->json($lista, 201);
