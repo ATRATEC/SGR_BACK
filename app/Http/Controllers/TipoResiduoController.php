@@ -80,7 +80,7 @@ class TipoResiduoController extends Controller
     private function ValitationUpdate(Request $request, TipoResiduo $tiporesiduo) {        
         $validator = Validator::make($request->all(), [                            
                     'descricao' => ['required',
-                                    Rule::unique('tiporesiduo')->ignore($tiporesiduo->id),
+                                    Rule::unique('tipo_residuo')->ignore($tiporesiduo->id),
                                     'max:50'],
         ], parent::$messages);
 

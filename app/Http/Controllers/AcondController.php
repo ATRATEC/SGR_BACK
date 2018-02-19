@@ -60,9 +60,25 @@ class AcondController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function Valitation(Request $request) {        
-        $validator = Validator::make($request->all(), [                                       
-                    'descricao' => 'required|max:50'                    
+    private function ValitationStore(Request $request) {        
+        $validator = Validator::make($request->all(), [
+                    'descricao' => 'required|unique:acondicionamento|max:50'
+        ], parent::$messages);
+
+        return $validator;
+    }
+    
+    /**
+     * Metodo de validação da classe.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Validator
+     */
+    private function ValitationUpdate(Request $request, Acondicionamento $acondicionamento) {        
+        $validator = Validator::make($request->all(), [                            
+                    'descricao' => ['required',
+                                    Rule::unique('acondicionamento')->ignore($acondicionamento->id),
+                                    'max:50'],
         ], parent::$messages);
 
         return $validator;
@@ -86,12 +102,12 @@ class AcondController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->Valitation($request);
+        $validator = $this->ValitationStore($request);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -121,12 +137,12 @@ class AcondController extends Controller
      */
     public function update(Request $request, Acondicionamento $acondicionamento)
     {
-        $validator = $this->Valitation($request);
+        $validator = $this->ValitationUpdate($request,$acondicionamento);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         

@@ -63,12 +63,12 @@ class ManifestoController extends Controller
         }
         
         if ($request->has('transportador')) {
-            $desc = array('f1.razao_social', 'like', '%' . $request->input('transportador') . '%');
+            $desc = array('f1.nome_fantasia', 'like', '%' . $request->input('transportador') . '%');
             array_push($arr, $desc);
         }
         
         if ($request->has('destinador')) {
-            $desc = array('f2.razao_social', 'like', '%' . $request->input('destinador') . '%');
+            $desc = array('f2.nome_fantasia', 'like', '%' . $request->input('destinador') . '%');
             array_push($arr, $desc);
         }
                                       
@@ -91,7 +91,7 @@ class ManifestoController extends Controller
                 ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
                 ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
-                        'f1.razao_social as transportador','f2.razao_social as destinador')
+                        'f1.nome_fantasia as transportador','f2.nome_fantasia as destinador')
                 ->orderBy($orderkey, $order)->paginate($nrcount);
             // $Manifesto = new ManifestoCollection(Manifesto::with(['cliente','fornecedor','servicos'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
@@ -119,7 +119,7 @@ class ManifestoController extends Controller
                     'id_transportador' => 'required',
                     'id_destinador' => 'required',
                     'data' => 'required',
-                    'numero' => 'required',
+                    'numero' => 'required|unique:manifesto|max:20',
         ], parent::$messages);
 
         return $validator;
@@ -131,14 +131,16 @@ class ManifestoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationUpdate(Request $request) {        
+    private function ValitationUpdate(Request $request, Manifesto $manifesto) {        
         $validator = Validator::make($request->all(), [                            
                     'id_cliente' => 'required',
                     'id_contrato_cliente' => 'required',
                     'id_transportador' => 'required',
                     'id_destinador' => 'required',
                     'data' => 'required',
-                    'numero' => 'required',
+                    'numero' => ['required',
+                                    Rule::unique('manifesto')->ignore($manifesto->id),
+                                    'max:20'],
         ], parent::$messages);
 
         return $validator;
@@ -181,7 +183,7 @@ class ManifestoController extends Controller
                 ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
                 ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
-                        'f1.razao_social as transportador','f2.razao_social as destinador')
+                        'f1.nome_fantasia as transportador','f2.nome_fantasia as destinador')
                 ->where('manifesto.id', '=', $Manifesto->id)
                 ->first();
         
@@ -203,7 +205,7 @@ class ManifestoController extends Controller
                 ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
                 ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
-                        'f1.razao_social as transportador','f2.razao_social as destinador')
+                        'f1.nome_fantasia as transportador','f2.nome_fantasia as destinador')
                 ->where('manifesto.id', '=', $id)
                 ->first();
         return response()->json($Manifesto, 200);
@@ -218,7 +220,7 @@ class ManifestoController extends Controller
      */
     public function update(Request $request, Manifesto $Manifesto)
     {
-        $validator = $this->ValitationUpdate($request);
+        $validator = $this->ValitationUpdate($request, $Manifesto);
 
         if ($validator->fails()) {
             return response()->json([
@@ -235,7 +237,7 @@ class ManifestoController extends Controller
                 ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
                 ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
-                        'f1.razao_social as transportador','f2.razao_social as destinador')
+                        'f1.nome_fantasia as transportador','f2.nome_fantasia as destinador')
                 ->where('manifesto.id', '=', $Manifesto->id)
                 ->first();
 

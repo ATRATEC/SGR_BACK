@@ -52,9 +52,58 @@ class ManifestoServicoController extends Controller {
         return $Manifestoservico->response()->setStatusCode(200); //response()->json($Manifestoservico,200);
     }
 
+    
     public function listManifestoServico() {
         $Manifestoservico = ManifestoServico::all();
         return response()->json($Manifestoservico, 200);
+    }
+    
+    /**
+     * Lista residuos
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function listResiduoManifesto(Request $request) {
+        $arr = array();
+        $arr2 = array();
+        
+
+        if ($request->has('id_contrato_cliente')) {
+            $desc = array('ccr.id_contrato_cliente', '=', $request->input('id_contrato_cliente'));            
+            array_push($arr, $desc);
+            array_push($arr2, $desc);
+        }
+        
+//        $desc = array('ccr.id_contrato_cliente', '=', 3);
+//            array_push($arr, $desc);
+
+        if ($request->has('id_destinador')) {
+            $desc = array('cf.id_fornecedor', '=', $request->input('id_destinador'));            
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('id_transportador')) {
+            $desc = array('cf.id_fornecedor', '=', $request->input('id_transportador'));            
+            array_push($arr2, $desc);
+        }
+        
+//        $desc2 = array('cf.id_fornecedor', '=', 3);
+//            array_push($arr, $desc2);
+        
+        $lista = DB::table('contrato_cliente_residuo as ccr')
+                    ->join('contrato_fornecedor as cf', 'ccr.id_contrato_fornecedor', 'cf.id')                    
+                    ->join('residuo as res', 'ccr.id_residuo', 'res.id')
+                    ->join('tipo_residuo as tr', 'res.id_tipo_residuo', 'tr.id')
+                    ->join('acondicionamento as ac', 'res.id_acondicionamento', 'ac.id')
+                    ->join('tipo_tratamento as tt', 'res.id_tratamento', 'tt.id')
+                    ->select('res.id as id_residuo','res.id_tipo_residuo','res.id_acondicionamento','res.id_tratamento','ccr.unidade', 'tr.descricao as tipo_residuo', 'res.descricao as residuo', 'ac.descricao as acondicionamento','tt.descricao as tratamento')
+                    ->where($arr)
+                    ->orWhere($arr2)
+                    ->groupBy('res.id','res.id_tipo_residuo','res.id_acondicionamento','res.id_tratamento','ccr.unidade', 'tr.descricao', 'res.descricao', 'ac.descricao', 'tt.descricao')
+                    ->orderBy('res.descricao')
+                    ->get();
+            return response()->json($lista, 201);
     }
 
     /**

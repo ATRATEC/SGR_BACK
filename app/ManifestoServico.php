@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 23 Jan 2018 02:55:41 +0000.
+ * Date: Mon, 19 Feb 2018 19:31:10 +0000.
  */
 
 namespace App;
@@ -20,6 +20,7 @@ use App\BaseModel as Eloquent;
  * @property int $id_tratamento
  * @property string $unidade
  * @property float $quantidade
+ * @property float $quantidade_final
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -41,7 +42,8 @@ class ManifestoServico extends Eloquent
 		'id_tipo_residuo' => 'int',
 		'id_acondicionamento' => 'int',
 		'id_tratamento' => 'int',
-		'quantidade' => 'float'
+		'quantidade' => 'float',
+		'quantidade_final' => 'float'
 	];
 
 	protected $fillable = [
@@ -51,7 +53,8 @@ class ManifestoServico extends Eloquent
 		'id_acondicionamento',
 		'id_tratamento',
 		'unidade',
-		'quantidade'
+		'quantidade',
+		'quantidade_final'
 	];
 
 	public function acondicionamento()

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use App\Exceptions\APIException;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class ResiduoController extends Controller {
@@ -84,7 +86,7 @@ class ResiduoController extends Controller {
     
     public function listResiduo()
     {
-        $residuo = Residuo::all();
+        $residuo = Residuo::orderby('descricao')->get();
         return response()->json($residuo, 200);
     }
         
@@ -103,9 +105,39 @@ class ResiduoController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function tiporesiduoValitation(Request $request) {        
+//    private function tiporesiduoValitation(Request $request) {        
+//        $validator = Validator::make($request->all(), [
+//                    'descricao' => 'required|unique:servico|max:50'
+//        ], parent::$messages);
+//
+//        return $validator;
+//    }
+    
+    /**
+     * Metodo de validação da classe.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Validator
+     */
+    private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [
-                    'descricao' => 'required|max:50'
+                    'descricao' => 'required|unique:residuo|max:50'
+        ], parent::$messages);
+
+        return $validator;
+    }
+    
+    /**
+     * Metodo de validação da classe.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Validator
+     */
+    private function ValitationUpdate(Request $request, Residuo $residuo) {        
+        $validator = Validator::make($request->all(), [                            
+                    'descricao' => ['required',
+                                    Rule::unique('residuo')->ignore($residuo->id),
+                                    'max:50'],
         ], parent::$messages);
 
         return $validator;
@@ -119,12 +151,12 @@ class ResiduoController extends Controller {
      */
     public function store(Request $request) {
         
-        $validator = $this->tiporesiduoValitation($request);
+        $validator = $this->ValitationStore($request);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -171,12 +203,12 @@ class ResiduoController extends Controller {
      */
     public function update(Request $request, Residuo $residuo) {
         
-        $validator = $this->tiporesiduoValitation($request);
+        $validator = $this->ValitationUpdate($request, $residuo);
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
@@ -201,6 +233,17 @@ class ResiduoController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Residuo $tiporesiduo) {
+        if (count($tiporesiduo->contrato_fornecedores()->get())){
+            throw new APIException('Resíduo não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos de Fornecedores');
+        }
+        
+        if (count($tiporesiduo->contrato_clientes()->get())){
+            throw new APIException('Resíduo não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos de Clientes');
+        }
+        
+        if (count($tiporesiduo->manifesto_servicos()->get())){
+            throw new APIException('Resíduo não pode ser excluído. Pois esta sendo utilizado em um ou mais Manifestos');
+        }
         $tiporesiduo->delete();
         return response()->json(null, 200);
     }

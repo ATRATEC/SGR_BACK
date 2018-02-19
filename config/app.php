@@ -148,6 +148,7 @@ return [
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
         Reliese\Coders\CodersServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         JasperPHP\JasperPHPServiceProvider::class,
         /*
          * Application Service Providers...
@@ -202,6 +203,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'View' => Illuminate\Support\Facades\View::class,
     ],
 ];

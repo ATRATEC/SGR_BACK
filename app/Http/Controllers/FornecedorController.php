@@ -166,7 +166,7 @@ class FornecedorController extends Controller
         if ($validator->fails()) {
             return response()->json([
                         'error' => 'Validação falhou',
-                        'message' => $validator->errors()->all()
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         

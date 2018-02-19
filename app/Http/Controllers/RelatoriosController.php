@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use PDF;
 use App\Cliente;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use JasperPHP\JasperPHP;
 
 class RelatoriosController extends Controller
@@ -42,7 +43,7 @@ class RelatoriosController extends Controller
         // o tipo de saída
         // parametros ( nesse caso não tem nenhum)         
         $report->process(
-                public_path() . '/relatorios/clientes.jrxml', $output, ['pdf'], ['param_id'=>1], $this->getDatabaseConfig()
+                public_path() . '/relatorios/clientes.jrxml', $output, ['pdf'], ['param_id' => 1], $this->getDatabaseConfig()
         )->execute();
         $file = $output . '.pdf';
         $path = $file;
@@ -60,7 +61,7 @@ class RelatoriosController extends Controller
                         ->header('Content-Type', 'application/pdf')
                         ->header('Content-Disposition', 'inline; filename="cliente.pdf"');
     }
-    
+
     public function receita(Request $request)
     {
         $arr = array();
@@ -82,22 +83,22 @@ class RelatoriosController extends Controller
 //            $desc = array('pdatade', $request->input('datade'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('dataate')) {
             $arr['pdataate'] = $request->input('dataate');
 //            $desc = array('pdataate', $request->input('dataate'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('id_contratocli')) {
             $arr['pid_contratocli'] = $request->input('id_contratocli');
 //            $desc = array('pid_contratocli', $request->input('id_contratocli'));
 //            array_push($arr, $desc);
-        }       
-        
-        
+        }
+
+
         $arr['pUrlBase'] = public_path() . '/relatorios/logo_av.png';
-        
+
         // coloca na variavel o caminho do novo relatório que será gerado
         $output = public_path() . '/relatorios/' . time() . '_Receita';
         // instancia um novo objeto JasperPHP
@@ -128,7 +129,7 @@ class RelatoriosController extends Controller
                         ->header('Content-Type', 'application/pdf')
                         ->header('Content-Disposition', 'inline; filename="receita.pdf"');
     }
-    
+
     public function receitaCliente(Request $request)
     {
         $arr = array();
@@ -150,22 +151,22 @@ class RelatoriosController extends Controller
 //            $desc = array('pdatade', $request->input('datade'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('dataate')) {
             $arr['pdataate'] = $request->input('dataate');
 //            $desc = array('pdataate', $request->input('dataate'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('id_contratocli')) {
             $arr['pid_contratocli'] = $request->input('id_contratocli');
 //            $desc = array('pid_contratocli', $request->input('id_contratocli'));
 //            array_push($arr, $desc);
-        }       
-        
+        }
+
         //Passa por parametro a imagem de logo do relatório.
         $arr['pUrlBase'] = public_path() . '/relatorios/logo_av.png';
-        
+
         // coloca na variavel o caminho do novo relatório que será gerado
         $output = public_path() . '/relatorios/' . time() . '_ReceitaCliente';
         // instancia um novo objeto JasperPHP
@@ -196,7 +197,7 @@ class RelatoriosController extends Controller
                         ->header('Content-Type', 'application/pdf')
                         ->header('Content-Disposition', 'inline; filename="receita_cliente.pdf"');
     }
-    
+
     public function despesa(Request $request)
     {
         $arr = array();
@@ -218,22 +219,22 @@ class RelatoriosController extends Controller
 //            $desc = array('pdatade', $request->input('datade'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('dataate')) {
             $arr['pdataate'] = $request->input('dataate');
 //            $desc = array('pdataate', $request->input('dataate'));
 //            array_push($arr, $desc);
         }
-        
+
         if ($request->has('id_contratocli')) {
             $arr['pid_contratocli'] = $request->input('id_contratocli');
 //            $desc = array('pid_contratocli', $request->input('id_contratocli'));
 //            array_push($arr, $desc);
-        }     
-        
+        }
+
         //Passa por parametro a imagem de logo do relatório.
         $arr['pUrlBase'] = public_path() . '/relatorios/logo_av.png';
-        
+
         // coloca na variavel o caminho do novo relatório que será gesrado
         $output = public_path() . '/relatorios/' . time() . '_Despesa';
         // instancia um novo objeto JasperPHP
@@ -274,11 +275,43 @@ class RelatoriosController extends Controller
 
     public function relcliente()
     {
+        date_default_timezone_set('America/Sao_Paulo');
+        $periodode = '01/01/2018';
+        $periodoate = '31/12/2018';
         $clientes = Cliente::all();
-        //return view('relatorio.clientes', ['clientes' => $clientes,]);
-        $pdf = PDF::loadView('relatorio.clientes', ['clientes' => $clientes,]);
+//        return view('relatorio.clientes', ['clientes' => $clientes,]);
+        $pdf = PDF::loadView('relatorio.clientes', ['clientes' => $clientes, 'periodode' => $periodode, 'periodoate' => $periodoate]);
 //        return $pdf->download('clientes.pdf');
         return $pdf->setPaper('a4', 'landscape')->save(public_path() . '/relatorios/my_stored_file.pdf')->stream();
+    }
+
+    public function downloadExcel($type)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = Cliente::all();
+        return Excel::create('clientes', function($excel) use ($data) {
+                $excel->sheet('clientes', function($sheet) use ($data)
+        {
+                        $sheet->fromArray($data);
+                        $sheet->row(1, function($row) {
+
+                            // call cell manipulation methods
+                            $row->setBackground('#000000');
+
+                        });
+        });
+        })->download($type);
+        
+//        return Excel::create('New file', function($excel)
+//                {
+//                    $excel->sheet('New sheet', function($sheet)
+//                    {
+//                        $periodode = '01/01/2018';
+//                        $periodoate = '31/12/2018';
+//                        $clientes = Cliente::all();
+//                        $sheet->loadView('relatorio.clientes',['clientes' => $clientes, 'periodode' => $periodode, 'periodoate' => $periodoate]);
+//                    });
+//                })->download($type);
     }
 
 }

@@ -214,8 +214,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
@@ -255,8 +255,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
@@ -293,8 +293,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -339,8 +339,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -414,8 +414,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors() . ' variavel ' . $request->numero
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
@@ -454,8 +454,8 @@ class DocumentoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors() . ' variavel ' . $request->numero
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         

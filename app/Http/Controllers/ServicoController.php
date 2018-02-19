@@ -121,8 +121,8 @@ class ServicoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
 
@@ -167,8 +167,8 @@ class ServicoController extends Controller {
 
         if ($validator->fails()) {
             return response()->json([
-                        'message' => 'Validação falhou',
-                        'errors' => $validator->errors()
+                        'error' => 'Validação falhou',
+                        'message' => $validator->errors()->all(),
                             ], 422);
         }
         
