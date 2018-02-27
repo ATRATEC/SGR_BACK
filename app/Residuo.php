@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 18 Feb 2018 00:04:04 +0000.
+ * Date: Tue, 27 Feb 2018 00:04:06 +0000.
  */
 
 namespace App;
@@ -18,6 +18,9 @@ use App\BaseModel as Eloquent;
  * @property int $id_tipo_residuo
  * @property int $id_acondicionamento
  * @property int $id_tratamento
+ * @property string $codigo_nbr
+ * @property string $codigo_onu
+ * @property int $tipo_receita
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -42,7 +45,8 @@ class Residuo extends Eloquent
 		'id_classe' => 'int',
 		'id_tipo_residuo' => 'int',
 		'id_acondicionamento' => 'int',
-		'id_tratamento' => 'int'
+		'id_tratamento' => 'int',
+		'tipo_receita' => 'int'
 	];
 
 	protected $fillable = [
@@ -50,7 +54,10 @@ class Residuo extends Eloquent
 		'id_classe',
 		'id_tipo_residuo',
 		'id_acondicionamento',
-		'id_tratamento'
+		'id_tratamento',
+		'codigo_nbr',
+		'codigo_onu',
+		'tipo_receita'
 	];
 
 	public function acondicionamento()
@@ -80,14 +87,14 @@ class Residuo extends Eloquent
 					->withTimestamps();
 	}
 
-	public function contrato_fornecedores()
+	public function contrato_fornecedors()
 	{
 		return $this->belongsToMany(\App\ContratoFornecedor::class, 'contrato_fornecedor_residuo', 'id_residuo', 'id_contrato')
 					->withPivot('id', 'id_fornecedor', 'id_servico', 'unidade', 'preco_venda', 'preco_servico')
 					->withTimestamps();
 	}
 
-	public function fornecedores()
+	public function fornecedors()
 	{
 		return $this->belongsToMany(\App\Fornecedor::class, 'contrato_fornecedor_residuo', 'id_residuo', 'id_fornecedor')
 					->withPivot('id', 'id_contrato', 'id_servico', 'unidade', 'preco_venda', 'preco_servico')

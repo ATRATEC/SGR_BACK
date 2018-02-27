@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class TipoDocumentoController extends Controller
@@ -138,7 +139,7 @@ class TipoDocumentoController extends Controller
      */
     public function update(Request $request, TipoDocumento $tipodocumento)
     {
-        $validator = $this->ValitationUpdate($request);
+        $validator = $this->ValitationUpdate($request, $tipodocumento);
 
         if ($validator->fails()) {
             return response()->json([

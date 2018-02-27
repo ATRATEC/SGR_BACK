@@ -20,7 +20,7 @@
     </tr>
 </table>
 <hr>
-<span>Cliente: <b>Lojas Renner S/A.</b></span>
+<span>Cliente: <b>{{$cliente->razao_social}}</b></span>
 <hr>
 <table style="width: 100%">
     
@@ -30,14 +30,27 @@
         <th>Resíduo</th>
         <th>Transportador</th>
         <th>Destinador</th>
-        <th>Qtd</th>
-        <th>Und</th>
-        <th>Val Unit.</th>
-        <th>Val Total</th>
+        <th style="text-align: right">Qtd</th>
+        <th style="text-align: center">Und</th>
+        <th style="text-align: right">Val Unit.</th>
+        <th style="text-align: right">Val Total</th>
     </tr>
-    @if (count($clientes) > 0)
-        @foreach ($clientes as $cliente)
-            @switch($loop->index)
+    @if (count($receitas) > 0)
+        <?php $i = 0 ?>
+        @foreach ($receitas as $receita)
+            <?php $i += $receita->Total ?>
+            <tr style="font-size: 10px">
+                <td>{{date_format(date_create($receita->Data_Coleta), 'd/m/Y')}}</td>
+                <td>{{$receita->Manifesto}}</td>
+                <td>{{$receita->Residuo}}</td>
+                <td>{{$receita->Transportador}}</td>
+                <td>{{$receita->Destinador}}</td>
+                <td style="text-align: right">{{$receita->Qtd}}</td>
+                <td style="text-align: center">{{$receita->Und}}</td>
+                <td style="text-align: right">{{number_format($receita->ValUnit,2,',','.')}}</td>
+                <td style="text-align: right">{{number_format($receita->Total,2,',','.')}}</td>
+            </tr> 
+<!--            @switch($loop->index)
                 @case(60)
                     </table>
                     <div class="page-break"></div>
@@ -48,21 +61,21 @@
                         <th>Resíduo</th>
                         <th>Transportador</th>
                         <th>Destinador</th>
-                        <th>Qtd</th>
-                        <th>Und</th>
-                        <th>Val Unit.</th>
-                        <th>Val Total</th>
+                        <th style="text-align: right">Qtd</th>
+                        <th style="text-align: center">Und</th>
+                        <th style="text-align: right">Val Unit.</th>
+                        <th style="text-align: right">Val Total</th>
                     </tr>
                     <tr style="font-size: 8px">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td >{{$cliente->id}}</td>
-                        <td>{{$cliente->cnpj_cpf}}</td>
-                        <td>{{$cliente->razao_social}}</td>
+                        <td>{{$receita->Data_Coleta}}</td>
+                        <td>{{$receita->Manifesto}}</td>
+                        <td>{{$receita->Residuo}}</td>
+                        <td>{{$receita->Transportador}}</td>
+                        <td>{{$receita->Destinador}}</td>
+                        <td style="text-align: right">{{$receita->Qtd}}</td>
+                        <td style="text-align: center">{{$receita->Und}}</td>
+                        <td style="text-align: right">{{number_format($receita->ValUnit,2,',','.')}}</td>
+                        <td style="text-align: right">{{number_format($receita->Total,2,',','.')}}</td>
                     </tr>   
                     @break
 
@@ -76,63 +89,52 @@
                         <th>Resíduo</th>
                         <th>Transportador</th>
                         <th>Destinador</th>
-                        <th>Qtd</th>
-                        <th>Und</th>
-                        <th>Val Unit.</th>
-                        <th>Val Total</th>
+                        <th style="text-align: right">Qtd</th>
+                        <th style="text-align: center">Und</th>
+                        <th style="text-align: right">Val Unit.</th>
+                        <th style="text-align: right">Val Total</th>
                     </tr>
                     <tr style="font-size: 8px">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td >{{$cliente->id}}</td>
-                        <td>{{$cliente->cnpj_cpf}}</td>
-                        <td></td>
+                        <td>{{$receita->Data_Coleta}}</td>
+                        <td>{{$receita->Manifesto}}</td>
+                        <td>{{$receita->Residuo}}</td>
+                        <td>{{$receita->Transportador}}</td>
+                        <td>{{$receita->Destinador}}</td>
+                        <td style="text-align: right">{{$receita->Qtd}}</td>
+                        <td style="text-align: center">{{$receita->Und}}</td>                        
+                        <td style="text-align: right">{{number_format($receita->ValUnit,2,',','.')}}</td>
+                        <td style="text-align: right">{{number_format($receita->Total,2,',','.')}}</td>
                     </tr>   
                     @break
 
                 @default
                     <tr style="font-size: 8px">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{$cliente->id}}</td>
-                        <td>{{$cliente->cnpj_cpf}}</td>
-                        <td></td>
+                        <td>{{$receita->Data_Coleta}}</td>
+                        <td>{{$receita->Manifesto}}</td>
+                        <td>{{$receita->Residuo}}</td>
+                        <td>{{$receita->Transportador}}</td>
+                        <td>{{$receita->Destinador}}</td>
+                        <td style="text-align: right">{{$receita->Qtd}}</td>
+                        <td style="text-align: center">{{$receita->Und}}</td>
+                        <td style="text-align: right">{{number_format($receita->ValUnit,2,',','.')}}</td>
+                        <td style="text-align: right">{{number_format($receita->Total,2,',','.')}}</td>
                     </tr>   
-            @endswitch
-        @endforeach
+            @endswitch-->
+        @endforeach        
     @endif
 </table>
-            
-<!--<div style="float: none; position: absolute; width: 100%; display: inline-block">
-    <div style="float: left; position: static; background-color: red;display: inline; width: 150px">imagem</div>
-    <div style="background-color: blue; width: 550px">titulo</div>
-    <div style="float: right; position: relative; background-color: green; width: 150px">infopag</div>
-</div>-->
-<!--<div style="display: inline-block; width: 100%; background-color: gray">linha</div>-->
-
-<!--<table>
-    <tr style="background-color: #DDD">
-        <th>Código</th>        
-        <th>CNPJ / CPF</th>
-        <th>Razão Social</th>
-    </tr>
-    @if (count($clientes) > 0)
-        @foreach ($clientes as $cliente)
-            <tr>
-                <td >{{$cliente->id}}</td>
-                <td>{{$cliente->cnpj_cpf}}</td>
-                <td>{{$cliente->razao_social}}</td>
-            </tr>            
-        @endforeach
-    @endif
-</table>-->
+<hr>
+<table style="width: 100%">
+    <tr style="font-size: 10px">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: right"></td>
+            <td style="text-align: center"></td>                        
+            <td colspan="2" style="text-align: right"><b>Total Geral:</b> {{number_format($i,2,',','.')}}</td>            
+        </tr>
+</table>
 @endsection
 

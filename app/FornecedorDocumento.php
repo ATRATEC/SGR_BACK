@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sun, 07 Jan 2018 19:45:03 +0000.
+ * Date: Wed, 21 Feb 2018 02:11:21 +0000.
  */
 
 namespace App;
@@ -13,13 +13,15 @@ use App\BaseModel as Eloquent;
  * Class FornecedorDocumento
  * 
  * @property int $id
- * @property int $id_fornecedor
- * @property int $id_documento
  * @property int $id_tipo_documento
+ * @property int $id_fornecedor
+ * @property string $numero
+ * @property \Carbon\Carbon $emissao
+ * @property \Carbon\Carbon $vencimento
+ * @property string $caminho
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \App\Documento $documento
  * @property \App\Fornecedor $fornecedor
  * @property \App\TipoDocumento $tipo_documento
  *
@@ -30,21 +32,23 @@ class FornecedorDocumento extends Eloquent
 	protected $table = 'fornecedor_documento';
 
 	protected $casts = [
-		'id_fornecedor' => 'int',
-		'id_documento' => 'int',
-		'id_tipo_documento' => 'int'
+		'id_tipo_documento' => 'int',
+		'id_fornecedor' => 'int'
+	];
+
+	protected $dates = [
+		'emissao',
+		'vencimento'
 	];
 
 	protected $fillable = [
+		'id_tipo_documento',
 		'id_fornecedor',
-		'id_documento',
-		'id_tipo_documento'
+		'numero',
+		'emissao',
+		'vencimento',
+		'caminho'
 	];
-
-	public function documento()
-	{
-		return $this->belongsTo(\App\Documento::class, 'id_documento');
-	}
 
 	public function fornecedor()
 	{

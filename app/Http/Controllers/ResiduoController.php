@@ -121,7 +121,8 @@ class ResiduoController extends Controller {
      */
     private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [
-                    'descricao' => 'required|unique:residuo|max:50'
+                    'descricao' => 'required|unique:residuo|max:50',
+                    'tipo_receita' => 'required',
         ], parent::$messages);
 
         return $validator;
@@ -138,6 +139,7 @@ class ResiduoController extends Controller {
                     'descricao' => ['required',
                                     Rule::unique('residuo')->ignore($residuo->id),
                                     'max:50'],
+                    'tipo_receita' => 'required',                
         ], parent::$messages);
 
         return $validator;

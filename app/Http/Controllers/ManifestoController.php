@@ -79,7 +79,7 @@ class ManifestoController extends Controller
                 ->join('fornecedor as f2', 'id_destinador', 'f2.id')
                 ->join('contrato_cliente','id_contrato_cliente', 'contrato_cliente.id')
                 ->select('manifesto.*', 'cliente.razao_social as cliente', 'contrato_cliente.descricao as descricao',
-                        'f1.razao_social as transportador','f2.razao_social as destinador')
+                        'f1.nome_fantasia as transportador','f2.nome_fantasia as destinador')
                 ->where($arr)
                 ->orderBy($orderkey, $order)->paginate($nrcount);
             // $Manifesto = new ManifestoCollection(Manifesto::with(['cliente','fornecedor','servicos'])->where($arr)->whereIn('id_fornecedor',$array_for)->orderBy($orderkey, $order)->paginate($nrcount));

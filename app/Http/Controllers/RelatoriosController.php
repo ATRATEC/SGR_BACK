@@ -8,6 +8,8 @@ use App\Cliente;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use JasperPHP\JasperPHP;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 class RelatoriosController extends Controller
 {
@@ -278,11 +280,96 @@ class RelatoriosController extends Controller
         date_default_timezone_set('America/Sao_Paulo');
         $periodode = '01/01/2018';
         $periodoate = '31/12/2018';
-        $clientes = Cliente::all();
+        $cliente = Cliente::find(30);
+        $receitas = $this->ConsultaReceitaCliente(30);
 //        return view('relatorio.clientes', ['clientes' => $clientes,]);
-        $pdf = PDF::loadView('relatorio.clientes', ['clientes' => $clientes, 'periodode' => $periodode, 'periodoate' => $periodoate]);
+        $pdf = PDF::loadView('relatorio.clientes', ['receitas' => $receitas, 'periodode' => $periodode, 'periodoate' => $periodoate, 'cliente' => $cliente]);
 //        return $pdf->download('clientes.pdf');
         return $pdf->setPaper('a4', 'landscape')->save(public_path() . '/relatorios/my_stored_file.pdf')->stream();
+    }
+    
+    public function testeconsulta()
+    {
+//        $query = 'select '												
+//                .'  man.data as Data_Coleta, '
+//                .'  man.numero as Manifesto, '
+//                .'  man.id_cliente, '
+//                .'  cli.razao_social as Cliente, '
+//                .'  res.descricao as Residuo, '
+//                .'  f1.nome_fantasia as Transportador, '
+//                .'  f2.nome_fantasia as Destinador, '
+//                .'  ms.quantidade as Qtd, '
+//                .'  ms.unidade as Und, '
+//                .'  ccr.preco_compra as ValUnit, '
+//                .'  ms.quantidade * ccr.preco_compra as Total '
+//                .'from '
+//                .'  manifesto man '
+//                .'  inner join manifesto_servico ms on man.id = ms.id_manifesto '
+//                .'  inner join contrato_cliente cc ON cc.id = man.id_contrato_cliente '
+//                .'  inner join ( '
+//                .'	select '
+//                .'		ccrg.id_contrato_cliente, '
+//                .'		ccrg.id_residuo, '
+//                .'		sum(ccrg.preco_compra) as preco_compra '
+//                .'	from '
+//                .'		contrato_cliente_residuo ccrg '
+//                .'	group by '
+//                .'		ccrg.id_contrato_cliente, '
+//                .'		ccrg.id_residuo) ccr '
+//                .'  on (ccr.id_contrato_cliente = cc.id and ms.id_residuo = ccr.id_residuo) '
+//                .'  inner join cliente cli on cli.id = man.id_cliente '
+//                .'  inner join fornecedor f1 on f1.id = man.id_transportador '
+//                .'  inner join fornecedor f2 ON f2.id = man.id_destinador '
+//                .'  inner join residuo res on res.id = ms.id_residuo '
+//                .'  where res.id = 3';
+//        $resultado = DB::select($query);
+        
+        $resultado = $this->ConsultaReceitaCliente();
+        
+        return response()->json($resultado, 200);
+    }
+    
+    private function ConsultaReceitaCliente($id_cliente)
+    {
+        $query = 'select '												
+                .'  man.data as Data_Coleta, '
+                .'  man.numero as Manifesto, '
+                .'  man.id_cliente, '
+                .'  cli.razao_social as Cliente, '
+                .'  res.descricao as Residuo, '
+                .'  f1.nome_fantasia as Transportador, '
+                .'  f2.nome_fantasia as Destinador, '
+                .'  ms.quantidade as Qtd, '
+                .'  ms.unidade as Und, '
+                .'  ccr.preco_compra as ValUnit, '
+                .'  ms.quantidade * ccr.preco_compra as Total '
+                .'from '
+                .'  manifesto man '
+                .'  inner join manifesto_servico ms on man.id = ms.id_manifesto '
+                .'  inner join contrato_cliente cc ON cc.id = man.id_contrato_cliente '
+                .'  inner join ( '
+                .'	select '
+                .'		ccrg.id_contrato_cliente, '
+                .'		ccrg.id_contrato_fornecedor, '
+                .'		ccrg.id_residuo, '                
+                .'		sum(ccrg.preco_compra) as preco_compra '
+                .'	from '
+                .'		contrato_cliente_residuo ccrg '
+                .'	group by '
+                .'		ccrg.id_contrato_cliente, '
+                .'		ccrg.id_contrato_fornecedor, '
+                .'		ccrg.id_residuo) ccr '
+                .'  on (ccr.id_contrato_cliente = cc.id and ms.id_residuo = ccr.id_residuo) '
+                .'  inner join cliente cli on cli.id = man.id_cliente '
+                .'  inner join fornecedor f1 on f1.id = man.id_transportador '
+                .'  inner join fornecedor f2 ON f2.id = man.id_destinador '
+                .'  inner join residuo res on res.id = ms.id_residuo '
+                .'  where res.tipo_receita = 0'
+                .'  and man.id_cliente = ' . $id_cliente
+                .'  order by man.id_cliente, ms.unidade, man.data, man.numero';
+        $resultado = DB::select($query);
+        
+        return $resultado;
     }
 
     public function downloadExcel($type)

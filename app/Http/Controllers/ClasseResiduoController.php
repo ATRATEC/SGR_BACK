@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use App\Exceptions\APIException;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class ClasseResiduoController extends Controller
@@ -137,7 +139,7 @@ class ClasseResiduoController extends Controller
      */
     public function update(Request $request, ClasseResiduo $classeresiduo)
     {
-        $validator = $this->ValitationUpdate($request);
+        $validator = $this->ValitationUpdate($request, $classeresiduo);
 
         if ($validator->fails()) {
             return response()->json([

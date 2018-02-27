@@ -51,6 +51,7 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('servico', 'id_servico', 'servico.id')
                     ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where($arr)
+                    ->orderBy('contrato_cliente_residuo.id', 'asc')                    
                     ->get();
         } else {
             $contratoclienteresiduo = DB::table('contrato_cliente_residuo')
@@ -59,7 +60,8 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('residuo', 'id_residuo', 'residuo.id')
                     ->join('servico', 'id_servico', 'servico.id')
                     ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
-                    ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $id)
+                    ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $request->input('id'))
+                    ->orderBy('contrato_cliente_residuo.id', 'asc')                    
                     ->get();
            // $contratoclienteresiduo = new ContratoClienteResiduoCollection(ContratoClienteResiduo::with(['contrato_fornecedor', 'fornecedor', 'residuo'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
@@ -173,6 +175,7 @@ class ContratoClienteResiduoController extends Controller {
                     ->join('servico', 'id_servico', 'servico.id')
                     ->select('contrato_cliente_residuo.*', 'fornecedor.razao_social as fornecedor', 'residuo.descricao as residuo', 'servico.descricao as servico')
                     ->where('contrato_cliente_residuo.id_contrato_cliente', '=', $id)
+                    ->orderBy('contrato_cliente_residuo.id', 'asc')                    
                     ->get();
         //return response()->json($contratoclienteresiduo, 200);
         return response()->json($lista, 200);
