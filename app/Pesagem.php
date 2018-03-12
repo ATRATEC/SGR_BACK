@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 05 Jan 2018 19:44:14 +0000.
+ * Date: Mon, 12 Mar 2018 03:02:16 +0000.
  */
 
 namespace App;
@@ -14,17 +14,15 @@ use App\BaseModel as Eloquent;
  * 
  * @property int $id
  * @property int $id_cliente
- * @property int $id_residuo
+ * @property int $id_contrato_cliente
  * @property \Carbon\Carbon $data
- * @property int $quantidade
- * @property float $peso
- * @property string $unidade
- * @property float $peso_total
+ * @property string $observacao
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \App\Cliente $cliente
- * @property \App\Residuo $residuo
+ * @property \App\ContratoCliente $contrato_cliente
+ * @property \Illuminate\Database\Eloquent\Collection $item_pesagems
  *
  * @package App
  */
@@ -34,10 +32,7 @@ class Pesagem extends Eloquent
 
 	protected $casts = [
 		'id_cliente' => 'int',
-		'id_residuo' => 'int',
-		'quantidade' => 'int',
-		'peso' => 'float',
-		'peso_total' => 'float'
+		'id_contrato_cliente' => 'int'
 	];
 
 	protected $dates = [
@@ -46,12 +41,9 @@ class Pesagem extends Eloquent
 
 	protected $fillable = [
 		'id_cliente',
-		'id_residuo',
+		'id_contrato_cliente',
 		'data',
-		'quantidade',
-		'peso',
-		'unidade',
-		'peso_total'
+		'observacao'
 	];
 
 	public function cliente()
@@ -59,8 +51,13 @@ class Pesagem extends Eloquent
 		return $this->belongsTo(\App\Cliente::class, 'id_cliente');
 	}
 
-	public function residuo()
+	public function contrato_cliente()
 	{
-		return $this->belongsTo(\App\Residuo::class, 'id_residuo');
+		return $this->belongsTo(\App\ContratoCliente::class, 'id_contrato_cliente');
+	}
+
+	public function item_pesagems()
+	{
+		return $this->hasMany(\App\ItemPesagem::class, 'id_pesagem');
 	}
 }

@@ -62,15 +62,26 @@ class FornecedorDocumentoController extends Controller {
                             ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
                             ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social', 'fornecedor_documento.id_fornecedor')
                             ->where($arr)
-                            ->orderBy($orderkey, $order)->paginate($nrcount);
+                            ->orderBy($orderkey, $order)->get();
         } else {
             $documento = DB::table('fornecedor_documento')                            
                             ->join('fornecedor', 'fornecedor_documento.id_fornecedor', 'fornecedor.id')
                             ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
-                            ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social')->orderBy($orderkey, $order)->paginate($nrcount);
+                            ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social')->orderBy($orderkey, $order)->get();
         }
 
         return response()->json($documento, 200);        
+    }
+    
+    public function listFornecedorDocumentoAnexo($id) {
+        $fornecedordocumentos = DB::table('fornecedor_documento')                            
+                            ->join('fornecedor', 'fornecedor_documento.id_fornecedor', 'fornecedor.id')
+                            ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
+                            ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social')
+                            ->where('fornecedor_documento.id_fornecedor', '=', $id)
+                            ->whereNotNull('fornecedor_documento.caminho')
+                            ->get();
+        return response()->json($fornecedordocumentos, 200);
     }
     
     public function listFornecedorDocumento() {
@@ -81,17 +92,19 @@ class FornecedorDocumentoController extends Controller {
     /**
      * Metodo de validação da classe.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\FornecedorDocumento $fornecedordocumento
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationStore(Request $request) {
-        $validator = Validator::make($request->all(), [
+    private function ValitationStore(FornecedorDocumento $fornecedordocumento) {
+        $validator = Validator::make($fornecedordocumento->toArray(), [
                     'id_fornecedor' => 'required',
                     'id_tipo_documento' => 'required',
                     'emissao' => 'required|Date',
                     'vencimento' => 'required|Date',
                     'numero' => ['required',                                 
-                                'unique:fornecedor_documento,numero, id_fornecedor',
+                                Rule::unique('fornecedor_documento','numero')->where(function ($query) use ($fornecedordocumento) {
+                                $query->where('id_fornecedor', $fornecedordocumento->id_fornecedor);
+                                }),
                                  'max:20'],
                         ], parent::$messages);
 
@@ -101,21 +114,44 @@ class FornecedorDocumentoController extends Controller {
     /**
      * Metodo de validação da classe.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\FornecedorDocumento $fornecedordocumento
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationUpdate(Request $request, FornecedorDocumento $fornecedordocumento) {
-        $validator = Validator::make($request->all(), [
+    private function ValitationUpdate(FornecedorDocumento $fornecedordocumento) {
+        $validator = Validator::make($fornecedordocumento->toArray(), [
                     'id_fornecedor' => 'required',
                     'id_tipo_documento' => 'required',
                     'emissao' => 'required|Date',
                     'vencimento' => 'required|Date',                    
                     'numero' => ['required',
-                                    Rule::unique('fornecedor_documento','numero','id_fornecedor')->ignore($fornecedordocumento->id),
+                                 Rule::unique('fornecedor_documento','numero')->ignore($fornecedordocumento->id)->where(function ($query) use ($fornecedordocumento) {
+                                    $query->where('id_fornecedor', $fornecedordocumento->id_fornecedor);
+                                    }),   
                                     'max:20'],
                         ], parent::$messages);
 
         return $validator;
+    }
+    
+    public function validaFornecedorDocumento($id_fornecedor, $numero, $id)
+    {
+        $arr = array();
+        
+        $condcli = array('id_fornecedor', '=', $id_fornecedor);
+        array_push($arr, $condcli);
+        
+        $condtipo = array('numero', '=', $numero);
+        array_push($arr, $condtipo);
+        
+        if (isset($id))
+        {
+            $condid = array('id', '<>', $id);
+            array_push($arr, $condid);
+        }
+        
+        $fornecedordocumento = FornecedorDocumento::where($arr)->get();
+        
+        return $fornecedordocumento->count() > 0;                
     }
 
     /**
@@ -135,26 +171,53 @@ class FornecedorDocumentoController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $validator = $this->ValitationStore($request);
+        if ($request->has('data')) {
+            $id = $request->id;
+            $data = $request->data;
 
-        if ($validator->fails()) {
-            return response()->json([
-                        'error' => 'Validação falhou',
-                        'message' => $validator->errors()->all(),
-                            ], 422);
+            foreach ($data as $item) {
+                if (isset($item['id'])) {
+                    //Fluxo de atualização / deleção                    
+                    $fornecedordocumento = FornecedorDocumento::find($item['id']);
+                    $fornecedordocumento->fill($item);
+                    $validator = $this->ValitationUpdate($fornecedordocumento);
+                                       
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
+                    }
+                    $fornecedordocumento->save();
+                } else {
+                    //fluxo de criação
+                    $fornecedordocumento = new FornecedorDocumento();
+                    $fornecedordocumento->fill($item);
+                    $validator = $this->ValitationStore($fornecedordocumento);
+                                        
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
+                    }
+                    $fornecedordocumento->save();
+                }
+            }
+            
+            $doc = DB::table('fornecedor_documento')                        
+                ->join('fornecedor', 'fornecedor_documento.id_fornecedor', 'fornecedor.id')
+                ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
+                ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social', 'fornecedor_documento.id_fornecedor')
+                ->where('fornecedor_documento.id_fornecedor', '=', $id)
+                ->get();
+
+            return response()->json($doc, 201);           
         }
-                        
-        $fornecedorDocumento = new FornecedorDocumento();
-        $fornecedorDocumento->fill($request->all());        
-        $fornecedorDocumento->save();
-
-        $doc = DB::table('fornecedor_documento')                        
-                        ->join('fornecedor', 'fornecedor_documento.id_fornecedor', 'fornecedor.id')
-                        ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
-                        ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social', 'fornecedor_documento.id_fornecedor')
-                        ->where('fornecedor_documento.id', '=', $fornecedorDocumento->id)->first();
-
-        return response()->json($doc, 201);
+        return response()->json([
+                    'error' => 'Validação falhou',
+                    'message' => 'Nenhum dado enviado para gravação',
+                        ], 422);
     }
     
     public function upload(Request $request) {
@@ -178,7 +241,7 @@ class FornecedorDocumentoController extends Controller {
             $id_fornecedor = $request->id_fornecedor;
             $id_documento = $request->id_documento;
 
-            $documento = Documento::find($id_documento);
+            $documento = FornecedorDocumento::find($id_documento);
 
             if (!empty($documento->caminho)) {
                 $arquivoexclui = 'FOR_' . $id_fornecedor . '_DOC_' . $id_documento . '_' . $documento->caminho;
@@ -206,7 +269,7 @@ class FornecedorDocumentoController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\FornecedorDocumento  $fornecedordocumento
+     * @param  \App\contratofornecedorresiduo  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
@@ -214,7 +277,8 @@ class FornecedorDocumentoController extends Controller {
                         ->join('fornecedor', 'fornecedor_documento.id_fornecedor', 'fornecedor.id')
                         ->join('tipo_documento', 'fornecedor_documento.id_tipo_documento', 'tipo_documento.id')
                         ->select('fornecedor_documento.*', 'tipo_documento.descricao', 'fornecedor.razao_social', 'fornecedor_documento.id_fornecedor')
-                        ->where('fornecedor_documento.id', '=', $id)->first();
+                        ->where('fornecedor_documento.id_fornecedor', '=', $id)
+                        ->get();
         return response()->json($documento, 200);
     }
     
@@ -234,6 +298,11 @@ class FornecedorDocumentoController extends Controller {
                         'message' => $validator->errors()->all(),
                             ], 422);
         }
+        
+//        if ($this->validaFornecedorDocumento($request->id_fornecedor, $request->numero, $fornecedordocumento->id))
+//        {
+//            throw new APIException('Documento jÃ¡ informado para o fornecedor');
+//        }
         
         $fornecedordocumento->update($request->all());
         
@@ -263,6 +332,20 @@ class FornecedorDocumentoController extends Controller {
         }
         
         $fornecedordocumento->delete();        
+        return response()->json(null, 200);
+    }
+    
+    public function deleteAnexo(FornecedorDocumento $fornecedordocumento) {
+                                
+        if (!empty($fornecedordocumento->caminho)) {
+            $arquivoexclui = 'FOR_' . $fornecedordocumento->id_fornecedor . '_DOC_' . $fornecedordocumento->id . '_' . $fornecedordocumento->caminho;
+            $exists = Storage::disk('documentos')->exists($arquivoexclui);
+            if ($exists) {
+                Storage::disk('documentos')->delete($arquivoexclui);
+            }
+            $fornecedordocumento->caminho = null;
+            $fornecedordocumento->save();
+        }                
         return response()->json(null, 200);
     }
             

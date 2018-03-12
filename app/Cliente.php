@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 02 Jan 2018 19:25:01 +0000.
+ * Date: Mon, 05 Mar 2018 23:51:42 +0000.
  */
 
 namespace App;
@@ -48,6 +48,7 @@ use App\BaseModel as Eloquent;
  * @property string $cnae
  * @property string $obsEndereco
  * @property string $obsTelefonesEmail
+ * @property bool $inativo
  * @property \Carbon\Carbon $inclusao
  * @property string $usuario_inclusao
  * @property \Carbon\Carbon $alteracao
@@ -58,7 +59,12 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $documentos
+ * @property \Illuminate\Database\Eloquent\Collection $cliente_documentos
+ * @property \Illuminate\Database\Eloquent\Collection $contrato_clientes
+ * @property \Illuminate\Database\Eloquent\Collection $contrato_fornecedors
+ * @property \Illuminate\Database\Eloquent\Collection $manifestos
+ * @property \Illuminate\Database\Eloquent\Collection $pesagems
+ * @property \Illuminate\Database\Eloquent\Collection $precos
  *
  * @package App
  */
@@ -68,6 +74,7 @@ class Cliente extends Eloquent
 
 	protected $casts = [
 		'codigo_omie' => 'int',
+		'inativo' => 'bool',
 		'id_empresa' => 'int',
 		'id_filial' => 'int'
 	];
@@ -114,6 +121,7 @@ class Cliente extends Eloquent
 		'cnae',
 		'obsEndereco',
 		'obsTelefonesEmail',
+		'inativo',
 		'inclusao',
 		'usuario_inclusao',
 		'alteracao',
@@ -123,9 +131,33 @@ class Cliente extends Eloquent
 		'id_filial'
 	];
 
-	public function documentos()
+	public function cliente_documentos()
 	{
-		return $this->belongsToMany(\App\Documento::class, 'cliente_documento', 'id_cliente', 'id_documento')
-					->withPivot('id');
+		return $this->hasMany(\App\ClienteDocumento::class, 'id_cliente');
+	}
+
+	public function contrato_clientes()
+	{
+		return $this->hasMany(\App\ContratoCliente::class, 'id_cliente');
+	}
+
+	public function contrato_fornecedores()
+	{
+		return $this->hasMany(\App\ContratoFornecedor::class, 'id_cliente');
+	}
+
+	public function manifestos()
+	{
+		return $this->hasMany(\App\Manifesto::class, 'id_cliente');
+	}
+
+	public function pesagems()
+	{
+		return $this->hasMany(\App\Pesagem::class, 'id_cliente');
+	}
+
+	public function precos()
+	{
+		return $this->hasMany(\App\Preco::class, 'id_cliente');
 	}
 }

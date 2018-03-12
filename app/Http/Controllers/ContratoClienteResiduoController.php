@@ -66,7 +66,7 @@ class ContratoClienteResiduoController extends Controller {
            // $contratoclienteresiduo = new ContratoClienteResiduoCollection(ContratoClienteResiduo::with(['contrato_fornecedor', 'fornecedor', 'residuo'])->orderBy($orderkey, $order)->paginate($nrcount));
         }
         
-        response()->json($contratoclienteresiduo,200);
+        return response()->json($contratoclienteresiduo,200);
 
         //return $contratoclienteresiduo->response()->setStatusCode(200); //response()->json($contratoclienteresiduo,200);
     }

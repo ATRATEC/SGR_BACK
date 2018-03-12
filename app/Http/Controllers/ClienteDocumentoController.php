@@ -62,15 +62,26 @@ class ClienteDocumentoController extends Controller {
                             ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
                             ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social', 'cliente_documento.id_cliente')
                             ->where($arr)
-                            ->orderBy($orderkey, $order)->paginate($nrcount);
+                            ->orderBy($orderkey, $order)->get();
         } else {
             $documento = DB::table('cliente_documento')                            
                             ->join('cliente', 'cliente_documento.id_cliente', 'cliente.id')
                             ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
-                            ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social')->orderBy($orderkey, $order)->paginate($nrcount);
+                            ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social')->orderBy($orderkey, $order)->get();
         }
 
         return response()->json($documento, 200);        
+    }
+    
+    public function listClienteDocumentoAnexo($id) {
+        $clientedocumentos = DB::table('cliente_documento')                            
+                            ->join('cliente', 'cliente_documento.id_cliente', 'cliente.id')
+                            ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
+                            ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social')
+                            ->where('cliente_documento.id_cliente', '=', $id)
+                            ->whereNotNull('cliente_documento.caminho')
+                            ->get();
+        return response()->json($clientedocumentos, 200);
     }
     
     public function listClienteDocumento() {
@@ -81,18 +92,18 @@ class ClienteDocumentoController extends Controller {
     /**
      * Metodo de validação da classe.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\ClienteDocumento $clientedocumento
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationStore(Request $request) {
-        $validator = Validator::make($request->all(), [
+    private function ValitationStore(ClienteDocumento $clientedocumento) {
+        $validator = Validator::make($clientedocumento->toArray(), [
                     'id_cliente' => 'required',
                     'id_tipo_documento' => 'required',
                     'emissao' => 'required|Date',
                     'vencimento' => 'required|Date',
                     'numero' => ['required',                                 
-                                Rule::unique('cliente_documento','numero')->where(function ($query) use ($request) {
-                                $query->where('id_cliente', $request->id_cliente);
+                                Rule::unique('cliente_documento','numero')->where(function ($query) use ($clientedocumento) {
+                                $query->where('id_cliente', $clientedocumento->id_cliente);
                                 }),
                                  'max:20'],
                         ], parent::$messages);
@@ -103,18 +114,18 @@ class ClienteDocumentoController extends Controller {
     /**
      * Metodo de validação da classe.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\ClienteDocumento $clientedocumento
      * @return \Illuminate\Support\Facades\Validator
      */
-    private function ValitationUpdate(Request $request, ClienteDocumento $clientedocumento) {
-        $validator = Validator::make($request->all(), [
+    private function ValitationUpdate(ClienteDocumento $clientedocumento) {
+        $validator = Validator::make($clientedocumento->toArray(), [
                     'id_cliente' => 'required',
                     'id_tipo_documento' => 'required',
                     'emissao' => 'required|Date',
                     'vencimento' => 'required|Date',                    
                     'numero' => ['required',
-                                 Rule::unique('cliente_documento','numero')->ignore($clientedocumento->id)->where(function ($query) use ($request) {
-                                    $query->where('id_cliente', $request->id_cliente);
+                                 Rule::unique('cliente_documento','numero')->ignore($clientedocumento->id)->where(function ($query) use ($clientedocumento) {
+                                    $query->where('id_cliente', $clientedocumento->id_cliente);
                                     }),   
                                     'max:20'],
                         ], parent::$messages);
@@ -160,31 +171,53 @@ class ClienteDocumentoController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $validator = $this->ValitationStore($request);
+        if ($request->has('data')) {
+            $id = $request->id;
+            $data = $request->data;
 
-        if ($validator->fails()) {
-            return response()->json([
-                        'error' => 'Validação falhou',
-                        'message' => $validator->errors()->all(),
-                            ], 422);
+            foreach ($data as $item) {
+                if (isset($item['id'])) {
+                    //Fluxo de atualização / deleção                    
+                    $clientedocumento = ClienteDocumento::find($item['id']);
+                    $clientedocumento->fill($item);
+                    $validator = $this->ValitationUpdate($clientedocumento);
+                                       
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
+                    }
+                    $clientedocumento->save();
+                } else {
+                    //fluxo de criação
+                    $clientedocumento = new ClienteDocumento();
+                    $clientedocumento->fill($item);
+                    $validator = $this->ValitationStore($clientedocumento);
+                                        
+                    if ($validator->fails()) {
+                        return response()->json([
+                                    'error' => 'Validação falhou',
+                                    'message' => $validator->errors()->all(),
+                                        ], 422);
+                    }
+                    $clientedocumento->save();
+                }
+            }
+            
+            $doc = DB::table('cliente_documento')                        
+                ->join('cliente', 'cliente_documento.id_cliente', 'cliente.id')
+                ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
+                ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social', 'cliente_documento.id_cliente')
+                ->where('cliente_documento.id_cliente', '=', $id)
+                ->get();
+
+            return response()->json($doc, 201);           
         }
-        
-//        if ($this->validaClienteDocumento($request->id_cliente, $request->numero, null))
-//        {
-//            throw new APIException('Documento jÃ¡ informado para o cliente');
-//        }
-                        
-        $clienteDocumento = new ClienteDocumento();
-        $clienteDocumento->fill($request->all());        
-        $clienteDocumento->save();
-
-        $doc = DB::table('cliente_documento')                        
-                        ->join('cliente', 'cliente_documento.id_cliente', 'cliente.id')
-                        ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
-                        ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social', 'cliente_documento.id_cliente')
-                        ->where('cliente_documento.id', '=', $clienteDocumento->id)->first();
-
-        return response()->json($doc, 201);
+        return response()->json([
+                    'error' => 'Validação falhou',
+                    'message' => 'Nenhum dado enviado para gravação',
+                        ], 422);
     }
     
     public function upload(Request $request) {
@@ -236,7 +269,7 @@ class ClienteDocumentoController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\ClienteDocumento  $clientedocumento
+     * @param  \App\contratoclienteresiduo  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
@@ -244,7 +277,8 @@ class ClienteDocumentoController extends Controller {
                         ->join('cliente', 'cliente_documento.id_cliente', 'cliente.id')
                         ->join('tipo_documento', 'cliente_documento.id_tipo_documento', 'tipo_documento.id')
                         ->select('cliente_documento.*', 'tipo_documento.descricao', 'cliente.razao_social', 'cliente_documento.id_cliente')
-                        ->where('cliente_documento.id', '=', $id)->first();
+                        ->where('cliente_documento.id_cliente', '=', $id)
+                        ->get();
         return response()->json($documento, 200);
     }
     
@@ -298,6 +332,20 @@ class ClienteDocumentoController extends Controller {
         }
         
         $clientedocumento->delete();        
+        return response()->json(null, 200);
+    }
+    
+    public function deleteAnexo(ClienteDocumento $clientedocumento) {
+                                
+        if (!empty($clientedocumento->caminho)) {
+            $arquivoexclui = 'CLI_' . $clientedocumento->id_cliente . '_DOC_' . $clientedocumento->id . '_' . $clientedocumento->caminho;
+            $exists = Storage::disk('documentos')->exists($arquivoexclui);
+            if ($exists) {
+                Storage::disk('documentos')->delete($arquivoexclui);
+            }
+            $clientedocumento->caminho = null;
+            $clientedocumento->save();
+        }                
         return response()->json(null, 200);
     }
             

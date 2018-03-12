@@ -37,7 +37,7 @@ class ContratoFornecedorController extends Controller
     public function index(Request $request)
     {
         $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
+        $orderkey = $request->input('orderkey', 'fornecedor.razao_social');
         $order = $request->input('order', 'asc');
 
         $arr = array();
@@ -102,7 +102,7 @@ class ContratoFornecedorController extends Controller
     public function indexGrid(Request $request)
     {
         $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
+        $orderkey = $request->input('orderkey', 'fornecedor.razao_social');
         $order = $request->input('order', 'asc');
 
         $arr = array();

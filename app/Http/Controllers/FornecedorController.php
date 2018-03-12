@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use App\Exceptions\APIException;
 use Validator;
 
 class FornecedorController extends Controller
@@ -61,6 +62,11 @@ class FornecedorController extends Controller
         
         if ($request->has('email')) {
             $desc = array('email', 'like', '%' . $request->input('email') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('inativo')) {            
+            $desc = array('inativo', '=', boolval($request->input('inativo')));
             array_push($arr, $desc);
         }
        
@@ -183,6 +189,14 @@ class FornecedorController extends Controller
      */
     public function destroy(Fornecedor $fornecedor)
     {
+        if (count($fornecedor->contrato_fornecedores()->get())){
+            throw new APIException('Fornecedor não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos');
+        }
+                        
+        if (count($fornecedor->manifestos()->get())){
+            throw new APIException('Fornecedor não pode ser excluído. Pois esta sendo utilizado em um ou mais Manifestos');
+        }
+        
         $fornecedor->delete();
         return response()->json(null, 200);
     }

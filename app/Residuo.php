@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 27 Feb 2018 00:04:06 +0000.
+ * Date: Sun, 04 Mar 2018 04:25:54 +0000.
  */
 
 namespace App;
@@ -16,18 +16,14 @@ use App\BaseModel as Eloquent;
  * @property string $descricao
  * @property int $id_classe
  * @property int $id_tipo_residuo
- * @property int $id_acondicionamento
- * @property int $id_tratamento
  * @property string $codigo_nbr
  * @property string $codigo_onu
- * @property int $tipo_receita
+ * @property string $codigo_ibama
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \App\Acondicionamento $acondicionamento
  * @property \App\ClasseResiduo $classe_residuo
  * @property \App\TipoResiduo $tipo_residuo
- * @property \App\TipoTratamento $tipo_tratamento
  * @property \Illuminate\Database\Eloquent\Collection $contrato_clientes
  * @property \Illuminate\Database\Eloquent\Collection $contrato_fornecedors
  * @property \Illuminate\Database\Eloquent\Collection $fornecedors
@@ -43,27 +39,17 @@ class Residuo extends Eloquent
 
 	protected $casts = [
 		'id_classe' => 'int',
-		'id_tipo_residuo' => 'int',
-		'id_acondicionamento' => 'int',
-		'id_tratamento' => 'int',
-		'tipo_receita' => 'int'
+		'id_tipo_residuo' => 'int'
 	];
 
 	protected $fillable = [
 		'descricao',
 		'id_classe',
 		'id_tipo_residuo',
-		'id_acondicionamento',
-		'id_tratamento',
 		'codigo_nbr',
 		'codigo_onu',
-		'tipo_receita'
+		'codigo_ibama'
 	];
-
-	public function acondicionamento()
-	{
-		return $this->belongsTo(\App\Acondicionamento::class, 'id_acondicionamento');
-	}
 
 	public function classe_residuo()
 	{
@@ -73,11 +59,6 @@ class Residuo extends Eloquent
 	public function tipo_residuo()
 	{
 		return $this->belongsTo(\App\TipoResiduo::class, 'id_tipo_residuo');
-	}
-
-	public function tipo_tratamento()
-	{
-		return $this->belongsTo(\App\TipoTratamento::class, 'id_tratamento');
 	}
 
 	public function contrato_clientes()

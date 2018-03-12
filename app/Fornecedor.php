@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 10 Jan 2018 19:05:01 +0000.
+ * Date: Tue, 06 Mar 2018 04:31:46 +0000.
  */
 
 namespace App;
@@ -48,6 +48,7 @@ use App\BaseModel as Eloquent;
  * @property string $cnae
  * @property string $obsEndereco
  * @property string $obsTelefonesEmail
+ * @property bool $inativo
  * @property \Carbon\Carbon $inclusao
  * @property string $usuario_inclusao
  * @property \Carbon\Carbon $alteracao
@@ -59,8 +60,8 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \Illuminate\Database\Eloquent\Collection $contrato_fornecedors
- * @property \Illuminate\Database\Eloquent\Collection $servicos
- * @property \Illuminate\Database\Eloquent\Collection $documentos
+ * @property \Illuminate\Database\Eloquent\Collection $residuos
+ * @property \Illuminate\Database\Eloquent\Collection $fornecedor_documentos
  * @property \Illuminate\Database\Eloquent\Collection $manifestos
  * @property \Illuminate\Database\Eloquent\Collection $precos
  *
@@ -72,6 +73,7 @@ class Fornecedor extends Eloquent
 
 	protected $casts = [
 		'codigo_omie' => 'int',
+		'inativo' => 'bool',
 		'id_empresa' => 'int',
 		'id_filial' => 'int'
 	];
@@ -118,6 +120,7 @@ class Fornecedor extends Eloquent
 		'cnae',
 		'obsEndereco',
 		'obsTelefonesEmail',
+		'inativo',
 		'inclusao',
 		'usuario_inclusao',
 		'alteracao',
@@ -132,23 +135,21 @@ class Fornecedor extends Eloquent
 		return $this->hasMany(\App\ContratoFornecedor::class, 'id_fornecedor');
 	}
 
-	public function servicos()
+	public function residuos()
 	{
-		return $this->belongsToMany(\App\Servico::class, 'contrato_fornecedor_servico', 'id_fornecedor', 'id_servico')
-					->withPivot('id', 'id_contrato', 'preco', 'selecionado')
+		return $this->belongsToMany(\App\Residuo::class, 'contrato_fornecedor_residuo', 'id_fornecedor', 'id_residuo')
+					->withPivot('id', 'id_contrato', 'id_servico', 'unidade', 'preco_venda', 'preco_servico')
 					->withTimestamps();
 	}
 
-	public function documentos()
+	public function fornecedor_documentos()
 	{
-		return $this->belongsToMany(\App\Documento::class, 'fornecedor_documento', 'id_fornecedor', 'id_documento')
-					->withPivot('id', 'id_tipo_documento')
-					->withTimestamps();
+		return $this->hasMany(\App\FornecedorDocumento::class, 'id_fornecedor');
 	}
 
 	public function manifestos()
 	{
-		return $this->hasMany(\App\Manifesto::class, 'id_fornecedor_transportador');
+		return $this->hasMany(\App\Manifesto::class, 'id_transportador');
 	}
 
 	public function precos()

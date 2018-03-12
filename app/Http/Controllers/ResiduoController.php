@@ -24,7 +24,7 @@ class ResiduoController extends Controller {
      */
     public function index(Request $request) {
         $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
+        $orderkey = $request->input('orderkey', 'residuo.descricao');
         $order = $request->input('order', 'asc');
 
         $arr = array();
@@ -49,38 +49,29 @@ class ResiduoController extends Controller {
             array_push($arr, $desc);
         }
         
-        if ($request->has('acondicionamento')) {
-            $desc = array('ac.descricao', 'like', '%' . $request->input('acondicionamento') . '%');
+        if ($request->has('codigo_ibama')) {
+            $desc = array('residuo.codigo_ibama', 'like', '%' . $request->input('codigo_ibama') . '%');
             array_push($arr, $desc);
         }
-        
-        if ($request->has('tratamento')) {
-            $desc = array('tt.descricao', 'like', '%' . $request->input('tratamento') . '%');
-            array_push($arr, $desc);
-        }
-       
+                       
         if (count($arr) > 0) {
             $residuos = DB::table('residuo')
                     ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
-                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
-                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
-                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
-                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')                    
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo')
                     ->where($arr)->orderBy($orderkey, $order)->paginate($nrcount);
             //$tiporesiduos = new ResiduoCollection(Residuo::where()->where($arr)->orderBy($orderkey, $order)->paginate($nrcount));            
         } else {
             $residuos = DB::table('residuo')
                     ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
-                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
-                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
-                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
-                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')                    
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo')
                     ->orderBy($orderkey, $order)->paginate($nrcount);
             //$tiporesiduos = DB::table('tipo_residuo')->orderBy($orderkey, $order)->paginate($nrcount);
 //            $tiporesiduos = new ResiduoCollection(Residuo::orderBy($orderkey, $order)->paginate($nrcount));
         }
 
-        return response()->json($residuos, 200) ;;
+        return response()->json($residuos, 200) ;
 //        return $tiporesiduos->response()->setStatusCode(200) ;
     }
     
@@ -121,8 +112,7 @@ class ResiduoController extends Controller {
      */
     private function ValitationStore(Request $request) {        
         $validator = Validator::make($request->all(), [
-                    'descricao' => 'required|unique:residuo|max:50',
-                    'tipo_receita' => 'required',
+                    'descricao' => 'required|unique:residuo|max:50'
         ], parent::$messages);
 
         return $validator;
@@ -138,8 +128,7 @@ class ResiduoController extends Controller {
         $validator = Validator::make($request->all(), [                            
                     'descricao' => ['required',
                                     Rule::unique('residuo')->ignore($residuo->id),
-                                    'max:50'],
-                    'tipo_receita' => 'required',                
+                                    'max:50']
         ], parent::$messages);
 
         return $validator;
@@ -168,10 +157,8 @@ class ResiduoController extends Controller {
         
         $residuo = DB::table('residuo')
                     ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
-                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
-                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
-                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
-                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')                    
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo')
                     ->where('residuo.id',$tiporesiduo->id)
                     ->get()->first();
         
@@ -187,10 +174,8 @@ class ResiduoController extends Controller {
     public function show($id) {
         $residuo = DB::table('residuo')
                     ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
-                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
-                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
-                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
-                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')                    
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo')
                     ->where('residuo.id',$id)
                     ->get()->first();
         return response()->json($residuo, 200);
@@ -218,10 +203,8 @@ class ResiduoController extends Controller {
         
         $res = DB::table('residuo')
                     ->leftJoin('classe_residuo as cr', 'id_classe', 'cr.id')
-                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')
-                    ->leftJoin('acondicionamento as ac', 'id_acondicionamento', 'ac.id')
-                    ->leftJoin('tipo_tratamento as tt', 'id_tratamento', 'tt.id')
-                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo', 'ac.descricao as acondicionamento', 'tt.descricao as tratamento')
+                    ->leftJoin('tipo_residuo as tr', 'id_tipo_residuo', 'tr.id')                    
+                    ->select('residuo.*','cr.descricao as classe_residuo', 'tr.descricao as tipo_residuo')
                     ->where('residuo.id', $residuo->id)
                     ->first();
 

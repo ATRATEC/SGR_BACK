@@ -94,13 +94,11 @@ class ManifestoServicoController extends Controller {
         $lista = DB::table('contrato_cliente_residuo as ccr')
                     ->join('contrato_fornecedor as cf', 'ccr.id_contrato_fornecedor', 'cf.id')                    
                     ->join('residuo as res', 'ccr.id_residuo', 'res.id')
-                    ->join('tipo_residuo as tr', 'res.id_tipo_residuo', 'tr.id')
-                    ->join('acondicionamento as ac', 'res.id_acondicionamento', 'ac.id')
-                    ->join('tipo_tratamento as tt', 'res.id_tratamento', 'tt.id')
-                    ->select('res.id as id_residuo','res.id_tipo_residuo','res.id_acondicionamento','res.id_tratamento','ccr.unidade', 'tr.descricao as tipo_residuo', 'res.descricao as residuo', 'ac.descricao as acondicionamento','tt.descricao as tratamento')
+                    ->join('tipo_residuo as tr', 'res.id_tipo_residuo', 'tr.id')                    
+                    ->select('res.id as id_residuo','res.id_tipo_residuo','ccr.unidade', 'tr.descricao as tipo_residuo', 'res.descricao as residuo')
                     ->where($arr)
                     ->orWhere($arr2)
-                    ->groupBy('res.id','res.id_tipo_residuo','res.id_acondicionamento','res.id_tratamento','ccr.unidade', 'tr.descricao', 'res.descricao', 'ac.descricao', 'tt.descricao')
+                    ->groupBy('res.id','res.id_tipo_residuo','ccr.unidade', 'tr.descricao', 'res.descricao')
                     ->orderBy('res.descricao')
                     ->get();
             return response()->json($lista, 201);

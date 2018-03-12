@@ -7,10 +7,13 @@
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
+		<link rel="shortcut icon" href="{{ asset('assets/imagens/sgr.ico') }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
         <base href="/sgr">
 <!--        <base href="/js">-->
+
+        
         
 
 

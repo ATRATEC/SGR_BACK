@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use App\Exceptions\APIException;
 use Validator;
 
 class ClienteController extends Controller
@@ -24,7 +25,7 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $nrcount = $request->input('nrcount', 15);
-        $orderkey = $request->input('orderkey', 'id');
+        $orderkey = $request->input('orderkey', 'razao_social');
         $order = $request->input('order', 'asc');
 
         $arr = array();
@@ -61,6 +62,11 @@ class ClienteController extends Controller
         
         if ($request->has('email')) {
             $desc = array('email', 'like', '%' . $request->input('email') . '%');
+            array_push($arr, $desc);
+        }
+        
+        if ($request->has('inativo')) {            
+            $desc = array('inativo', '=', boolval($request->input('inativo')));
             array_push($arr, $desc);
         }
        
@@ -182,6 +188,18 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
+        if (count($cliente->contrato_fornecedores()->get())){
+            throw new APIException('Cliente não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos');
+        }
+        
+        if (count($cliente->contrato_clientes()->get())){
+            throw new APIException('Cliente não pode ser excluído. Pois esta sendo utilizado em um ou mais contratos');
+        }
+        
+        if (count($cliente->manifestos()->get())){
+            throw new APIException('Cliente não pode ser excluído. Pois esta sendo utilizado em um ou mais Manifestos');
+        }
+        
         $cliente->delete();
         return response()->json(null, 200);
     }
