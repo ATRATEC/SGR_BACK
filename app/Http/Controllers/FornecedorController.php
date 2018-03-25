@@ -66,7 +66,7 @@ class FornecedorController extends Controller
         }
         
         if ($request->has('inativo')) {            
-            $desc = array('inativo', '=', boolval($request->input('inativo')));
+            $desc = array('inativo', '=', $request->input('inativo'));
             array_push($arr, $desc);
         }
        

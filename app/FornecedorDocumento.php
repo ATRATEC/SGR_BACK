@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 06 Mar 2018 05:23:40 +0000.
+ * Date: Wed, 14 Mar 2018 15:19:48 +0000.
  */
 
 namespace App;
@@ -19,7 +19,7 @@ use App\BaseModel as Eloquent;
  * @property \Carbon\Carbon $emissao
  * @property \Carbon\Carbon $vencimento
  * @property string $caminho
- * @property bool $extensao
+ * @property string $extensao
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
@@ -34,8 +34,7 @@ class FornecedorDocumento extends Eloquent
 
 	protected $casts = [
 		'id_tipo_documento' => 'int',
-		'id_fornecedor' => 'int',
-		'extensao' => 'bool'
+		'id_fornecedor' => 'int'
 	];
 
 	protected $dates = [

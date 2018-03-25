@@ -79,7 +79,7 @@ Route::delete('/tipotratamentos/{tipotratamento}', 'TipoTratamentoController@des
 
 Route::get('/clientes', 'ClienteController@index');
 Route::post('/clientes', 'ClienteController@store')->middleware('auth:api');
-Route::get('/clientes/{cliente}', 'ClienteController@show')->middleware('auth:api');
+Route::get('/clientes/{cliente}', 'ClienteController@show');
 Route::put('/clientes/{cliente}', 'ClienteController@update')->middleware('auth:api');
 Route::delete('/clientes/{cliente}', 'ClienteController@destroy')->middleware('auth:api');
 
@@ -252,12 +252,23 @@ Route::delete('/itempesagens/{itempesagem}', 'ItemPesagemController@destroy')->m
 //Route::get('/exibeclientes', 'RelatoriosController@relcliente');
 //Route::get('/exibeclientesxls/{type}', 'RelatoriosController@downloadExcel');
 //Route::get('/relatorios/clientes', 'RelatoriosController@index');
+//Relatorios ambiente verde
+Route::get('/relatorios/receitas', 'RelatoriosController@receita');
+Route::get('/relatorios/receitasclasse', 'RelatoriosController@receitaClasse');
+Route::get('/relatorios/receitasinteticas', 'RelatoriosController@receitaSintetica');
+Route::get('/relatorios/receitasclassesinteticas', 'RelatoriosController@receitaClasseSintetica');
+Route::get('/relatorios/despesasavcli', 'RelatoriosController@despesaavcli');
+Route::get('/relatorios/despesasavfor', 'RelatoriosController@despesaavfor');
+Route::get('/relatorios/despesasavclisint', 'RelatoriosController@despesaAvCliSintetica');
+Route::get('/relatorios/despesasavforsint', 'RelatoriosController@despesaAvForSintetica');
 
-Route::get('/relatorios/receitas', 'RelatoriosController@receita')->middleware('auth:api');
+
+//Relatorios clientes
 Route::get('/relatorios/receitaclientes', 'RelatoriosController@receitaCliente')->middleware('auth:api');
 Route::get('/relatorios/despesaclientes', 'RelatoriosController@despesaCliente')->middleware('auth:api');
 Route::get('/relatorios/locacaoclientes', 'RelatoriosController@locacaoCliente')->middleware('auth:api');
 Route::get('/relatorios/despesas', 'RelatoriosController@despesa')->middleware('auth:api');
+Route::get('/relatorios/pesagens', 'RelatoriosController@pesagens');
 Route::get('/relatorios/printpdf2', 'RelatoriosController@relcliente')->middleware('auth:api');
 //Route::post('/relatorios/printpdf', 'RelatoriosController@printHtml');
 //Route::get('/relatorios/testeconsulta', 'RelatoriosController@testeconsulta')->middleware('auth:api');

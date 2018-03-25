@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Mon, 05 Mar 2018 23:51:42 +0000.
+ * Date: Tue, 13 Mar 2018 02:34:18 +0000.
  */
 
 namespace App;
@@ -48,7 +48,7 @@ use App\BaseModel as Eloquent;
  * @property string $cnae
  * @property string $obsEndereco
  * @property string $obsTelefonesEmail
- * @property bool $inativo
+ * @property string $inativo
  * @property \Carbon\Carbon $inclusao
  * @property string $usuario_inclusao
  * @property \Carbon\Carbon $alteracao
@@ -62,6 +62,7 @@ use App\BaseModel as Eloquent;
  * @property \Illuminate\Database\Eloquent\Collection $cliente_documentos
  * @property \Illuminate\Database\Eloquent\Collection $contrato_clientes
  * @property \Illuminate\Database\Eloquent\Collection $contrato_fornecedors
+ * @property \Illuminate\Database\Eloquent\Collection $locacaos
  * @property \Illuminate\Database\Eloquent\Collection $manifestos
  * @property \Illuminate\Database\Eloquent\Collection $pesagems
  * @property \Illuminate\Database\Eloquent\Collection $precos
@@ -74,7 +75,6 @@ class Cliente extends Eloquent
 
 	protected $casts = [
 		'codigo_omie' => 'int',
-		'inativo' => 'bool',
 		'id_empresa' => 'int',
 		'id_filial' => 'int'
 	];
@@ -141,9 +141,14 @@ class Cliente extends Eloquent
 		return $this->hasMany(\App\ContratoCliente::class, 'id_cliente');
 	}
 
-	public function contrato_fornecedores()
+	public function contrato_fornecedors()
 	{
 		return $this->hasMany(\App\ContratoFornecedor::class, 'id_cliente');
+	}
+
+	public function locacaos()
+	{
+		return $this->hasMany(\App\Locacao::class, 'id_cliente');
 	}
 
 	public function manifestos()

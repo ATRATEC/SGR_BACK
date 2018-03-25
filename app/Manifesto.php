@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 23 Jan 2018 00:15:12 +0000.
+ * Date: Fri, 23 Mar 2018 03:56:10 +0000.
  */
 
 namespace App;
@@ -21,13 +21,16 @@ use App\BaseModel as Eloquent;
  * @property string $numero
  * @property string $observacao
  * @property string $caminho
+ * @property string $pago
+ * @property \Carbon\Carbon $previsao_pagamento
+ * @property \Carbon\Carbon $data_pagamento
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \App\Cliente $cliente
  * @property \App\ContratoCliente $contrato_cliente
  * @property \App\Fornecedor $fornecedor
- * @property \Illuminate\Database\Eloquent\Collection $servicos
+ * @property \Illuminate\Database\Eloquent\Collection $manifesto_servicos
  *
  * @package App
  */
@@ -43,7 +46,9 @@ class Manifesto extends Eloquent
 	];
 
 	protected $dates = [
-		'data'
+		'data',
+		'previsao_pagamento',
+		'data_pagamento'
 	];
 
 	protected $fillable = [
@@ -54,7 +59,10 @@ class Manifesto extends Eloquent
 		'data',
 		'numero',
 		'observacao',
-		'caminho'
+		'caminho',
+		'pago',
+		'previsao_pagamento',
+		'data_pagamento'
 	];
 
 	public function cliente()
@@ -72,10 +80,8 @@ class Manifesto extends Eloquent
 		return $this->belongsTo(\App\Fornecedor::class, 'id_transportador');
 	}
 
-	public function servicos()
+	public function manifesto_servicos()
 	{
-		return $this->belongsToMany(\App\Servico::class, 'manifesto_servico', 'id_manifesto', 'id_servico')
-					->withPivot('id', 'id_residuo', 'id_acondicionamento', 'id_tratamento', 'unidade', 'quantidade')
-					->withTimestamps();
+		return $this->hasMany(\App\ManifestoServico::class, 'id_manifesto');
 	}
 }

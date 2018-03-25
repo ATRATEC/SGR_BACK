@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 06 Mar 2018 04:31:46 +0000.
+ * Date: Tue, 13 Mar 2018 03:57:27 +0000.
  */
 
 namespace App;
@@ -48,7 +48,7 @@ use App\BaseModel as Eloquent;
  * @property string $cnae
  * @property string $obsEndereco
  * @property string $obsTelefonesEmail
- * @property bool $inativo
+ * @property string $inativo
  * @property \Carbon\Carbon $inclusao
  * @property string $usuario_inclusao
  * @property \Carbon\Carbon $alteracao
@@ -73,7 +73,6 @@ class Fornecedor extends Eloquent
 
 	protected $casts = [
 		'codigo_omie' => 'int',
-		'inativo' => 'bool',
 		'id_empresa' => 'int',
 		'id_filial' => 'int'
 	];
@@ -130,7 +129,7 @@ class Fornecedor extends Eloquent
 		'id_filial'
 	];
 
-	public function contrato_fornecedores()
+	public function contrato_fornecedors()
 	{
 		return $this->hasMany(\App\ContratoFornecedor::class, 'id_fornecedor');
 	}
