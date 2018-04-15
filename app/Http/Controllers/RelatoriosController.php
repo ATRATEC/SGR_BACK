@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use JasperPHP\JasperPHP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use PHPExcel_Worksheet_Drawing;
+use PDO;
 
 class RelatoriosController extends Controller
 {
@@ -94,6 +96,13 @@ class RelatoriosController extends Controller
     public function pesagens(Request $request)
     {
         $lista = $this->ConsultaPesagens($request);
+        
+        return response()->json($lista, 200);
+    }
+    
+    public function mapaResiduos(Request $request)
+    {
+        $lista = $this->ConsultaMapaResiduo($request);
         
         return response()->json($lista, 200);
     }
@@ -648,7 +657,7 @@ class RelatoriosController extends Controller
     // <editor-fold desc="Metodos de consulta sinteticos">  
     private function ConsultaReceitaSintetica(Request $request)
     {        
-        $query = 'select destinador, GROUP_CONCAT(manifesto) as manifestos, sum(valor_total) as total from '  
+        $query = 'select destinador as credor, cnpj_cpf, GROUP_CONCAT(manifesto) as manifestos, sum(valor_total) as total from '  
                 .'(select '	
                 .'  man.data as coleta, '
                 .'  concat(" ",man.numero) as manifesto, '
@@ -658,6 +667,7 @@ class RelatoriosController extends Controller
                 .'  cr.id as id_classe, '
                 .'  cr.descricao as classe, '
                 .'  f1.nome_fantasia as transportador, '
+                .'  f2.cnpj_cpf as cnpj_cpf, '
                 .'  f2.razao_social as destinador, '
                 .'  tt.descricao as tratamento, '
                 .'  ms.quantidade as quantidade, '
@@ -713,7 +723,7 @@ class RelatoriosController extends Controller
 
                 
                 $query = $query.') consulta ';
-                $query = $query.'group by destinador';
+                $query = $query.'group by destinador, cnpj_cpf';
         $resultado = DB::select($query);
         
         return $resultado;
@@ -721,11 +731,12 @@ class RelatoriosController extends Controller
     
     private function ConsultaReceitaClasseSintetica(Request $request)
     {        
-        $query = 'select cliente,classe, GROUP_CONCAT(manifesto) as  manifestos, sum(valor_total) as total from'
+        $query = 'select cliente as credor, cnpj_cpf, GROUP_CONCAT(manifesto) as  manifestos, sum(valor_total) as total from'
                 .'(select'									
                 .'  man.data as coleta, '
                 .'  concat(" ",man.numero) as manifesto, '
                 .'  man.id_cliente, '
+                .'  cli.cnpj_cpf as cnpj_cpf, '
                 .'  cli.razao_social as cliente, '
                 .'  res.descricao as residuo, '
                 .'  cr.id as id_classe, '
@@ -784,7 +795,7 @@ class RelatoriosController extends Controller
 
                 
                 $query = $query.') consulta ';
-                $query = $query.'group by cliente, classe';
+                $query = $query.'group by cliente, cnpj_cpf';
         $resultado = DB::select($query);
         
         return $resultado;
@@ -792,8 +803,9 @@ class RelatoriosController extends Controller
     
     private function ConsultaDespesaSintetica(Request $request)
     {        
-        $query = 'select Cliente, GROUP_CONCAT(Manifesto) as manifestos, sum(Total) as total from'
+        $query = 'select cnpj_cpf, Cliente as credor,"Compra de Resíduo" as servico, GROUP_CONCAT(Manifesto) as manifestos, sum(Total) as total from'
                 .'(select                                                                  '
+                .'  cli.cnpj_cpf as cnpj_cpf,                                              '
                 .'  man.data as Data_Coleta,                                               '
                 .'  concat(" ",man.numero) as Manifesto,                                   '
                 .'  man.id_cliente,                                                        '
@@ -847,7 +859,7 @@ class RelatoriosController extends Controller
         }
                 
         $query = $query.') consulta ';
-        $query = $query.'group by Cliente';
+        $query = $query.'group by cnpj_cpf, Cliente';
         $resultado = DB::select($query);
         
         return $resultado;
@@ -855,7 +867,7 @@ class RelatoriosController extends Controller
     
     private function ConsultaDespesaForSintetica(Request $request)
     {        
-        $query = 'select fornecedor,servico, GROUP_CONCAT(manifesto) as manifestos, sum(valor_total) as total from '
+        $query = 'select cnpj_cpf, fornecedor as credor,servico, GROUP_CONCAT(manifesto) as manifestos, sum(valor_total) as total from '
                 .'(select															   '										
                 .'  man.data as coleta,                                                '
                 .'  man.numero as manifesto,                                           '
@@ -915,27 +927,226 @@ class RelatoriosController extends Controller
         }
                 
         $query = $query.' ) consulta ';
-        $query = $query.' group by fornecedor, servico';
+        $query = $query.' group by cnpj_cpf, fornecedor, servico';
+        $resultado = DB::select($query);
+        
+        return $resultado;
+    }
+    
+    private function ConsultaMapaResiduo(Request $request)
+    {        
+        $query = 'select distinct                                                    '	                
+                .'  r.descricao as residuo,                                          '
+                .'  ac.descricao as acondicionamento,                                '
+                .'  tr.descricao as tipo_residuo,                                    '
+                .'  r.codigo_nbr as codigo_nbr,                                      '
+                .'  cr.descricao as classe,                                          '
+                .'  r.codigo_onu as codigo_onu,                                      '                                
+                .'  f1.nome_fantasia as transportador,                               '
+                .'  f2.nome_fantasia as destinador,                                  '
+                .'  tt.descricao as tipo_tratamento                                  '
+                .'from                                                               '
+                .'  manifesto m                                                      '
+                .'  inner join manifesto_servico ms on m.id = ms.id                  '
+                .'  inner join residuo r on ms.id_residuo = r.id                     '
+                .'  inner join acondicionamento ac ON ac.id = ms.id_acondicionamento '
+                .'  inner join tipo_residuo tr ON tr.id = ms.id_tipo_residuo         '
+                .'  inner join classe_residuo cr ON cr.id = r.id_classe              '
+                .'  inner join fornecedor f1 on f1.id = m.id_transportador           '
+                .'  inner join fornecedor f2 on f2.id = m.id_destinador              '
+                .'  inner join tipo_tratamento tt ON tt.id = ms.id_tratamento        '
+                .'where r.descricao is not null ';
+//.'  order by man.data, man.numero, forn.razao_social                   ';
+                                 
+        if ($request->has('id_cliente')) {
+            $query = $query.'  and m.id_cliente = ' . $request->input('id_cliente');                    
+        }
+        
+        if ($request->has('datade')) {
+            $query = $query.'  and m.data >= date(' .$request->input('datade').')';
+        }
+
+        if ($request->has('dataate')) {
+            $query = $query.'  and m.data <= date(' .$request->input('dataate').')';
+        }
+        
+        $query = $query.' order by r.descricao asc ';
+        
         $resultado = DB::select($query);
         
         return $resultado;
     }
     // </editor-fold>
+    
+    public function downloadMapaResiduo(Request $request)
+    {
+        $type = 'xlsx';
+        $cliente = Cliente::find($request->input('id_cliente'));
+        
+        $data = json_decode(json_encode($this->ConsultaMapaResiduo($request)), true);
+        
+        $head = array(
+            'IDENTIFICAÇÃO DO RESÍDUO',
+            'ACONDICIONAMENTO',
+            'ESTADO FÍSICO',
+            'CÓDIGO',
+            'CLASSE',
+            'N° ONU',
+            'TRANSPORTADOR',
+            'DESTINADOR',	
+            'TRATAMENTO REALIZADO'
+        );
+//        return response()->json($data, 200);
+        
+        return Excel::create('MAPA_RESIDUO', function($excel) use ($data, $head, $cliente)  
+        {
+            $excel->sheet('clientes', function($sheet) use ($data, $head, $cliente) 
+            {
+                $rowcount = count($data) + 3;
+
+                // $sheet->fromArray($head, null, 'A2', false, false);
+                $sheet->setAllBorders('medium');
+                $sheet->fromModel($data, null, 'A3', false, false);
+                $sheet->prependRow(3, $head);
+
+                // Imagem do cabeçalho
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                $objDrawing->setPath(public_path('/assets/imagens/logo_av_small.png')); //your image path
+                $objDrawing->setOffsetX(5);                       //setOffsetX works properly
+                $objDrawing->setOffsetY(5); 
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+                //definindo tamanha da primeira linha (logo + titulo)
+                $sheet->setHeight(1, 50);
+                //definindo tamanha da terceira linha (cabeçalho de colunas)
+                $sheet->setHeight(3, 20);
+                //congelando celulas
+                $sheet->setFreeze('A1');
+                $sheet->setFreeze('A2');
+                $sheet->setFreeze('A3');
+                $sheet->setFreeze('A4');
+
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+                $sheet->mergeCells('C1:I2');
+
+                $sheet->setBorder('A1:I'.$rowcount, 'thin');
+                $sheet->cell('C1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue('MAPA DE GERENCIAMENTO DE RESÍDUOS');
+                    $cell->setAlignment('center');
+                    $cell->setValignment('center');
+                    $cell->setFontColor('#ffffff');
+                    $cell->setBackground('#6B8E23');
+                    $cell->setFontSize(16);
+                    $cell->setFontWeight('bold');
+
+                });
+
+                $sheet->cell('A2', function($cell) use ($cliente) {
+                    
+                    $cell->setValue('CLIENTE: '. $cliente->nome_fantasia);                    
+                    $cell->setFontWeight('bold');
+
+                });
+
+                $sheet->row(3, function($row) {
+
+                    // call cell manipulation methods
+                    $row->setBackground('#8FBC8F');
+                    $row->setFontWeight('bold');
+
+                });
+            });
+        })->download($type);
+        
+    }
 
     public function downloadExcel($type)
     {
         date_default_timezone_set('America/Sao_Paulo');
         $data = Cliente::all();
-        return Excel::create('clientes', function($excel) use ($data) {
-                $excel->sheet('clientes', function($sheet) use ($data)
+        $head = array(
+            'ID',
+            'CODIGO_OMIE',
+            'CODIGO_INTEGRACAO',
+            'CNPJ_CPF',
+            'RAZAO_SOCIAL',
+            'NOME_FANTASIA',
+            'LOGRADOURO',
+            'ENDERECO',	
+            'ENDERECO_NUMERO',	
+            'COMPLEMENTO',
+            'BAIRRO',
+            'CIDADE',
+            'ESTADO',
+            'CEP',
+            'CODIGO_PAIS',
+            'NASCIMENTO',
+            'CONTATO',
+            'TELEFONE1_DDD',
+            'TELEFONE1_NUMERO',
+            'TELEFONE2_DDD',
+            'TELEFONE2_NUMERO',
+            'FAX_DDD',
+            'FAX_NUMERO',
+            'EMAIL',
+            'HOMEPAGE',
+            'OBSERVACAO',
+            'INSCRICAO_MUNICIPAL',
+            'INSCRICAO_ESTADUAL',
+            'INSCRICAO_SUFRAMA',
+            'PESSOA_FISICA',
+            'OPTANTE_SIMPLES_NACIONAL',
+            'BLOQUEADO',
+            'IMPORTADO_API',
+            'CNAE',
+            'OBSENDERECO',
+            'OBSTELEFONESEMAIL',
+            'INATIVO',
+            'INCLUSAO',
+            'USUARIO_INCLUSAO',
+            'ALTERACAO',
+            'USUARIO_ALTERACAO',
+            'SINCRONIZAR',
+            'ID_EMPRESA',
+            'ID_FILIAL',
+            'CREATED_AT',
+            'UPDATED_AT'
+    );
+        return Excel::create('clientes', function($excel) use ($data, $head)  {
+                $excel->sheet('clientes', function($sheet) use ($data, $head) 
         {
-                        $sheet->fromArray($data);
-                        $sheet->row(1, function($row) {
-
-                            // call cell manipulation methods
-                            $row->setBackground('#000000');
-
-                        });
+                        // $sheet->fromArray($head, null, 'A2', false, false);
+                        $sheet->fromArray($data, null, 'A3', false, false);
+                        $sheet->prependRow(3, $head);
+                        
+                        $objDrawing = new PHPExcel_Worksheet_Drawing;
+                        $objDrawing->setPath(public_path('/assets/imagens/logo_av_small.png')); //your image path
+                        $objDrawing->setOffsetX(5);                       //setOffsetX works properly
+                        $objDrawing->setOffsetY(5); 
+//
+//                        $objDrawing->setWidth(224);
+//                        $objDrawing->setHeight(52);
+                        $objDrawing->setCoordinates('A1');
+                        $objDrawing->setWorksheet($sheet);
+                        
+                        //definindo tamanha da primeira linha
+                        $sheet->setHeight(1, 50);
+                        //congelando celulas
+                        $sheet->setFreeze('A1');
+                        $sheet->setFreeze('A2');
+                        $sheet->setFreeze('A3');
+                        $sheet->setFreeze('A4');
+                        
+//                        $sheet->row(1, function($row) {
+//
+//                            // call cell manipulation methods
+//                            $row->setBackground('#000000');
+//
+//                        });
         });
         })->download($type);
         

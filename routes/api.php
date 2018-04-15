@@ -31,6 +31,13 @@ Route::get('/movimentos', 'HomeController@movimentos')->middleware('auth:api');
 
 Route::group(['namespace' => 'api'], function () {
     Route::post('/login', 'UserController@login');
+    Route::post('/aclcontrol/reset', 'UserController@sendResetLinkEmail');
+    Route::post('/aclcontrol/adduser', 'UserController@addUsuario');
+    Route::put('/aclcontrol/edituser/{user}', 'UserController@editUsuario');
+    Route::put('/aclcontrol/changepassword/{user}', 'UserController@changePasswordUsuario');
+    Route::get('/aclcontrol/listuser', 'UserController@listUsuario');
+    Route::get('/aclcontrol/listperfil', 'UserController@listPerfil');
+    Route::get('/aclcontrol/findperfil/{perfil}', 'UserController@findPerfil');
 });
 
 Route::post('/produtos', 'ProdutoController@store')->middleware('auth:api');
@@ -261,6 +268,8 @@ Route::get('/relatorios/despesasavcli', 'RelatoriosController@despesaavcli');
 Route::get('/relatorios/despesasavfor', 'RelatoriosController@despesaavfor');
 Route::get('/relatorios/despesasavclisint', 'RelatoriosController@despesaAvCliSintetica');
 Route::get('/relatorios/despesasavforsint', 'RelatoriosController@despesaAvForSintetica');
+Route::get('/relatorios/maparesiduos/consulta', 'RelatoriosController@mapaResiduos');
+Route::get('/relatorios/maparesiduos/exporta', 'RelatoriosController@downloadMapaResiduo');
 
 
 //Relatorios clientes
